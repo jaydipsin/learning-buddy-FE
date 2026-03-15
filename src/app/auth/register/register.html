@@ -1,0 +1,223 @@
+<div
+  class="h-screen w-full flex flex-col lg:flex-row bg-[var(--color-bg)] text-[var(--color-text)] font-sans transition-colors duration-300"
+>
+  <div class="absolute top-6 right-6 z-50">
+    <button
+      (click)="toggleTheme()"
+      class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-alt)] text-[var(--color-text)] hover:opacity-80 transition-all font-medium text-xs sm:text-sm focus:ring-2 focus:ring-[var(--color-blue)] focus:outline-none shadow-sm"
+    >
+      @if (isDarkMode) {
+        <span>☀️ Light</span>
+      } @else {
+        <span>🌙 Dark</span>
+      }
+    </button>
+  </div>
+
+  <div
+    class="w-full lg:w-[70%] bg-gradient-to-br from-[var(--color-bg-alt)] to-[var(--color-bg)] p-8 lg:p-16 xl:p-20 flex flex-col justify-between relative overflow-hidden"
+  >
+    <div
+      class="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[var(--color-blue)] rounded-full mix-blend-multiply opacity-5 filter blur-[120px] animate-pulse"
+    ></div>
+
+    <div class="relative z-10 flex items-center gap-3 mb-12">
+      <div
+        class="w-12 h-12 bg-[var(--color-blue)] rounded-xl flex items-center justify-center shadow-lg shadow-[var(--color-blue)]/20"
+      >
+        <span class="text-white font-black text-xl tracking-tighter">LB</span>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight">Learning Buddy</h1>
+    </div>
+
+    <div class="relative z-10 max-w-4xl">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-6 tracking-tight">
+        Master your exams with <span class="text-[var(--color-blue)]">intelligent mock tests.</span>
+      </h2>
+      <p
+        class="text-[var(--color-text-muted)] text-lg md:text-xl mb-12 max-w-2xl leading-relaxed font-medium"
+      >
+        Stop guessing and start analyzing. Our platform identifies your weak spots instantly,
+        providing targeted practice to maximize your scores.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div
+          class="bg-[var(--color-bg)] border border-[var(--color-border)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+        >
+          <div
+            class="w-10 h-10 bg-[var(--color-bg-alt)] rounded-lg flex items-center justify-center mb-4 text-[var(--color-blue)]"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Extensive Question Bank</h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Access thousands of chapter-wise and full-length mock tests curated by top educators.
+          </p>
+        </div>
+
+        <div
+          class="bg-[var(--color-bg)] border border-[var(--color-border)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
+        >
+          <div
+            class="w-10 h-10 bg-[var(--color-bg-alt)] rounded-lg flex items-center justify-center mb-4 text-[var(--color-blue)]"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold mb-2">Deep Performance Analytics</h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            Get detailed insights into your time management, accuracy, and subject-wise proficiency.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10 mt-12 text-[var(--color-text-muted)] text-sm font-medium">
+      &copy; 2026 Learning Buddy Platform
+    </div>
+  </div>
+
+  <div
+    class="w-full lg:w-[30%] min-h-screen bg-[var(--color-bg)] flex flex-col justify-center items-center p-6 sm:p-10 border-l border-[var(--color-border)] shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] z-20"
+  >
+    <div class="w-full max-w-[360px]">
+      <div class="lg:hidden flex items-center justify-center gap-2 mb-10">
+        <div class="w-10 h-10 bg-[var(--color-blue)] rounded-xl flex items-center justify-center">
+          <span class="text-white font-black text-lg">LB</span>
+        </div>
+        <h1 class="text-2xl font-extrabold">Learning Buddy</h1>
+      </div>
+
+      <div class="mb-10 text-left">
+        <h2 class="text-3xl font-bold tracking-tight">
+          @if (isLogin) {
+            Welcome back
+          } @else {
+            Create account
+          }
+        </h2>
+        <p class="text-sm text-[var(--color-text-muted)] mt-2 font-medium">
+          @if (isLogin) {
+            Log in to continue your preparation.
+          } @else {
+            Join to start practicing today.
+          }
+        </p>
+      </div>
+
+      <form class="space-y-4">
+        @if (!isLogin) {
+          <div>
+            <label
+              for="fullName"
+              class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              placeholder="Student Name"
+              class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
+            />
+          </div>
+        }
+
+        <div>
+          <label
+            for="email"
+            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
+          >
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="student@example.com"
+            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
+          />
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-2 ml-1">
+            <label
+              for="password"
+              class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider"
+            >
+              Password
+            </label>
+            @if (isLogin) {
+              <a
+                href="#"
+                class="text-xs font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors"
+              >
+                Forgot?
+              </a>
+            }
+          </div>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3.5 mt-6 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 focus:ring-4 focus:ring-[var(--color-blue)]/50 outline-none transition-all active:scale-[0.98]"
+        >
+          @if (isLogin) {
+            Sign In to Dashboard
+          } @else {
+            Start Practicing
+          }
+        </button>
+      </form>
+
+      <div class="mt-8 text-center">
+        <p class="text-sm font-medium text-[var(--color-text-muted)]">
+          @if (isLogin) {
+            Don't have an account?
+            <button
+              type="button"
+              (click)="toggleAuthMode()"
+              class="font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors focus:outline-none ml-1"
+            >
+              Sign up
+            </button>
+          } @else {
+            Already have an account?
+            <button
+              type="button"
+              (click)="toggleAuthMode()"
+              class="font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors focus:outline-none ml-1"
+            >
+              Log in
+            </button>
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

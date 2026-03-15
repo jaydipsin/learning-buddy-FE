@@ -1,3 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+/* styles.css */
+@import 'tailwindcss';
 
-@import "tailwindcss";
+@layer base {
+  :root {
+    --color-bg: #ffffff;           /* Main Background */
+    --color-bg-alt: #f4f4f5;       /* Inputs & Cards Background */
+    --color-text: #121212;         /* Main Text */
+    --color-text-muted: #71717a;   /* Subtitles & Labels */
+    --color-blue: #007bff;         /* Your Standard Blue */
+    --color-blue-hover: #0056b3;   /* Button Hover State */
+    --color-border: #e4e4e7;       /* Soft Borders */
+  }
+
+  /* When body has .dark class */
+  body.dark {
+    --color-bg: #121212;           
+    --color-bg-alt: #1e1e1e;       
+    --color-text: #ffffff;         
+    --color-text-muted: #a1a1aa;   
+    --color-blue: #74c0fc;         /* Your Softer Dark Mode Blue */
+    --color-blue-hover: #339af0;   
+    --color-border: #27272a;       
+  }
+}
