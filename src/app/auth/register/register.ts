@@ -18,5 +18,22 @@ export class Register {
     document.body.classList.toggle('dark', this.isDarkMode);
   }
 
-  toggleAuthMode() {}
+currentStep: number = 1;
+
+toggleAuthMode() {
+  this.isLogin = !this.isLogin;
+  this.currentStep = 1; // Reset steps when switching
+}
+
+handleNext() {
+  if (this.isLogin) {
+    // Perform Login Logic
+  } else {
+    if (this.currentStep < 3) {
+      this.currentStep++;
+    } else {
+      // Perform Signup Final Submission
+    }
+  }
+}
 }

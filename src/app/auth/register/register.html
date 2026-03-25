@@ -97,127 +97,119 @@
     </div>
   </div>
 
-  <div
-    class="w-full lg:w-[30%] min-h-screen bg-[var(--color-bg)] flex flex-col justify-center items-center p-6 sm:p-10 border-l border-[var(--color-border)] shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] z-20"
-  >
-    <div class="w-full max-w-[360px]">
-      <div class="lg:hidden flex items-center justify-center gap-2 mb-10">
-        <div class="w-10 h-10 bg-[var(--color-blue)] rounded-xl flex items-center justify-center">
-          <span class="text-white font-black text-lg">LB</span>
+<div class="w-full lg:w-[30%] min-h-screen bg-[var(--color-bg)] flex flex-col justify-center items-center p-6 sm:p-10 border-l border-[var(--color-border)] shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] z-20">
+  <div class="w-full max-w-[360px]">
+    
+    <div class="lg:hidden flex items-center justify-center gap-2 mb-10">
+      <div class="w-10 h-10 bg-[var(--color-blue)] rounded-xl flex items-center justify-center">
+        <span class="text-white font-black text-lg">LB</span>
+      </div>
+      <h1 class="text-2xl font-extrabold">Learning Buddy</h1>
+    </div>
+
+    <div class="mb-8 text-left">
+      <h2 class="text-3xl font-bold tracking-tight">
+        {{ isLogin ? 'Welcome back' : 'Create account' }}
+      </h2>
+      <p class="text-sm text-[var(--color-text-muted)] mt-2 font-medium">
+        {{ isLogin ? 'Log in to continue your preparation.' : 'Join to start practicing today.' }}
+      </p>
+    </div>
+
+    @if (!isLogin) {
+      <div class="flex items-center gap-2 mb-8">
+        @for (step of [1, 2, 3]; track step) {
+          <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
+               [class.bg-[var(--color-blue)]]="currentStep >= step"
+               [class.bg-[var(--color-border)]]="currentStep < step">
+          </div>
+        }
+      </div>
+    }
+
+    <form class="space-y-4">
+      
+      @if (isLogin) {
+        <div>
+          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Email</label>
+          <input type="email" placeholder="student@example.com" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
         </div>
-        <h1 class="text-2xl font-extrabold">Learning Buddy</h1>
-      </div>
+        <div>
+          <div class="flex justify-between items-center mb-2 ml-1">
+            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Password</label>
+            <a href="#" class="text-xs font-bold text-[var(--color-blue)] hover:underline">Forgot?</a>
+          </div>
+          <input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+        </div>
+      }
 
-      <div class="mb-10 text-left">
-        <h2 class="text-3xl font-bold tracking-tight">
-          @if (isLogin) {
-            Welcome back
-          } @else {
-            Create account
-          }
-        </h2>
-        <p class="text-sm text-[var(--color-text-muted)] mt-2 font-medium">
-          @if (isLogin) {
-            Log in to continue your preparation.
-          } @else {
-            Join to start practicing today.
-          }
-        </p>
-      </div>
-
-      <form class="space-y-4">
-        @if (!isLogin) {
-          <div>
-            <label
-              for="fullName"
-              class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="fullName"
-              placeholder="Student Name"
-              class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
-            />
+      @else {
+        
+        @if (currentStep === 1) {
+          <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Full Name</label>
+              <input type="text" placeholder="John Doe" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Email</label>
+              <input type="email" placeholder="john@example.com" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Password</label>
+              <input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+            </div>
           </div>
         }
 
-        <div>
-          <label
-            for="email"
-            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-          >
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="student@example.com"
-            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
-          />
-        </div>
-
-        <div>
-          <div class="flex justify-between items-center mb-2 ml-1">
-            <label
-              for="password"
-              class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider"
-            >
-              Password
-            </label>
-            @if (isLogin) {
-              <a
-                href="#"
-                class="text-xs font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors"
-              >
-                Forgot?
-              </a>
-            }
+        @if (currentStep === 2) {
+          <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+            <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Select Your Course</label>
+            <select class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none appearance-none">
+              <option value="">Choose a path...</option>
+              <option value="eng">Engineering Entrance</option>
+              <option value="med">Medical Entrance</option>
+              <option value="upsc">Civil Services</option>
+            </select>
+            <p class="text-[10px] text-[var(--color-text-muted)] italic px-1">You can add more subjects later in your dashboard.</p>
           </div>
-          <input
-            type="password"
-            id="password"
-            placeholder="••••••••"
-            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] outline-none transition-all"
-          />
-        </div>
+        }
 
-        <button
-          type="submit"
-          class="w-full py-3.5 mt-6 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 focus:ring-4 focus:ring-[var(--color-blue)]/50 outline-none transition-all active:scale-[0.98]"
-        >
-          @if (isLogin) {
-            Sign In to Dashboard
-          } @else {
-            Start Practicing
-          }
+        @if (currentStep === 3) {
+          <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Organization (Optional)</label>
+              <input type="text" placeholder="School or Coaching Name" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Parent's Email (Optional)</label>
+              <input type="email" placeholder="parent@example.com" class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+            </div>
+          </div>
+        }
+      }
+
+      <div class="flex gap-3 pt-4">
+        @if (!isLogin && currentStep > 1) {
+          <button type="button" (click)="currentStep = currentStep - 1" class="flex-1 py-3.5 border border-[var(--color-border)] text-[var(--color-text)] font-bold rounded-xl hover:bg-[var(--color-bg-alt)] transition-all">
+            Back
+          </button>
+        }
+        
+        <button type="button" (click)="handleNext()" class="flex-[2] py-3.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 transition-all active:scale-[0.98]">
+          {{ isLogin ? 'Sign In' : (currentStep === 3 ? 'Finish & Start' : 'Next Step') }}
         </button>
-      </form>
-
-      <div class="mt-8 text-center">
-        <p class="text-sm font-medium text-[var(--color-text-muted)]">
-          @if (isLogin) {
-            Don't have an account?
-            <button
-              type="button"
-              (click)="toggleAuthMode()"
-              class="font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors focus:outline-none ml-1"
-            >
-              Sign up
-            </button>
-          } @else {
-            Already have an account?
-            <button
-              type="button"
-              (click)="toggleAuthMode()"
-              class="font-bold text-[var(--color-blue)] hover:text-[var(--color-blue-hover)] hover:underline transition-colors focus:outline-none ml-1"
-            >
-              Log in
-            </button>
-          }
-        </p>
       </div>
+    </form>
+
+    <div class="mt-8 text-center">
+      <p class="text-sm font-medium text-[var(--color-text-muted)]">
+        {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+        <button type="button" (click)="toggleAuthMode()" class="font-bold text-[var(--color-blue)] hover:underline ml-1">
+          {{ isLogin ? 'Sign up' : 'Log in' }}
+        </button>
+      </p>
     </div>
   </div>
+</div>
 </div>
