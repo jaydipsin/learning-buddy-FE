@@ -1,0 +1,467 @@
+<div class="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] font-sans transition-colors duration-300">
+
+  <!-- ========== HEADER ========== -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-[var(--color-bg)]/80 border-b border-[var(--color-border)]">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-[var(--color-blue)] rounded-lg flex items-center justify-center shadow-sm">
+          <span class="text-white font-bold text-xs tracking-wider">LB</span>
+        </div>
+        <h1 class="text-base font-bold hidden sm:block tracking-tight">Learning Buddy</h1>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)]">
+          <span class="text-sm">🔥</span>
+          <span class="font-bold text-xs">12</span>
+        </div>
+        <button class="bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition-all active:scale-95 text-xs shadow-md shadow-[var(--color-blue)]/20">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+          <span class="hidden sm:inline">New Mock</span>
+        </button>
+        <button (click)="toggleTheme()" class="w-9 h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] hover:border-[var(--color-blue)] flex items-center justify-center transition-all text-sm">
+          {{ isDarkMode ? '☀️' : '🌙' }}
+        </button>
+        <button class="w-9 h-9 rounded-lg border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-blue)] transition-colors">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" class="w-full h-full object-cover">
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="max-w-[1400px] mx-auto px-4 md:px-8 py-6">
+    <div class="main-grid">
+
+      <!-- ====== LEFT COLUMN — Primary Content ====== -->
+      <div class="space-y-6">
+
+        <!-- SECTION: Hero — Score Overview -->
+        <section class="hero-grid anim-1">
+
+          <!-- Left: Big Score Card -->
+          <div class="hero-bg p-6 relative z-10">
+            <div class="flex items-start justify-between mb-5">
+              <div>
+                <p class="text-[10px] font-extrabold text-[var(--color-text-muted)] uppercase tracking-widest mb-1.5">Latest Mock</p>
+                <h2 class="text-lg font-extrabold leading-tight">{{ latestTest.name }}</h2>
+                <p class="text-xs text-[var(--color-text-muted)] mt-1 font-medium">{{ latestTest.date }} · {{ latestTest.totalTime }} minutes</p>
+              </div>
+              <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--color-blue)]/10 text-[var(--color-blue)] border border-[var(--color-blue)]/20">FULL MOCK</span>
+            </div>
+
+            <div class="flex items-center gap-6 mb-6">
+              <!-- SVG Score Ring -->
+              <div class="relative flex-shrink-0">
+                <svg width="100" height="100" viewBox="0 0 100 100" class="score-ring">
+                  <circle cx="50" cy="50" r="42" class="score-ring-track" />
+                  <circle cx="50" cy="50" r="42" class="score-ring-fill"
+                    [attr.stroke]="latestTest.percentage >= 75 ? '#22c55e' : latestTest.percentage >= 60 ? '#f59e0b' : '#ef4444'"
+                    [attr.stroke-dasharray]="264"
+                    [attr.stroke-dashoffset]="264 - (264 * latestTest.percentage / 100)" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center" style="transform: rotate(0deg)">
+                  <span class="text-xl font-black leading-none">{{ latestTest.percentage }}%</span>
+                  <span class="text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mt-0.5">Score</span>
+                </div>
+              </div>
+
+              <!-- Key metrics -->
+              <div class="flex-1 space-y-2.5">
+                <div class="flex items-baseline justify-between">
+                  <span class="text-xs text-[var(--color-text-muted)] font-semibold">Marks</span>
+                  <span class="text-base font-black">{{ latestTest.scored }}<span class="text-xs font-semibold text-[var(--color-text-muted)]"> / {{ latestTest.totalMarks }}</span></span>
+                </div>
+                <div class="h-px bg-[var(--color-border)]"></div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-xs text-[var(--color-text-muted)] font-semibold">Percentile</span>
+                  <span class="text-base font-black text-[var(--color-blue)]">{{ latestTest.percentile }}%</span>
+                </div>
+                <div class="h-px bg-[var(--color-border)]"></div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-xs text-[var(--color-text-muted)] font-semibold">All-India Rank</span>
+                  <span class="text-base font-black">#{{ latestTest.rank }} <span class="text-[10px] font-semibold text-[var(--color-text-muted)]">/ {{ latestTest.totalStudents | number }}</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Correct / Incorrect / Skipped -->
+            <div class="q-grid">
+              <div class="q-cell q-correct">
+                <div class="text-lg font-black text-green-500">{{ latestTest.correct }}</div>
+                <div class="text-[9px] font-extrabold text-green-600/70 uppercase tracking-widest">Correct</div>
+              </div>
+              <div class="q-cell q-incorrect">
+                <div class="text-lg font-black text-red-400">{{ latestTest.incorrect }}</div>
+                <div class="text-[9px] font-extrabold text-red-500/70 uppercase tracking-widest">Wrong</div>
+              </div>
+              <div class="q-cell q-skipped">
+                <div class="text-lg font-black text-[var(--color-text-muted)]">{{ latestTest.skipped }}</div>
+                <div class="text-[9px] font-extrabold text-[var(--color-text-muted)]/70 uppercase tracking-widest">Skipped</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Trend + Quick Stats -->
+          <div class="space-y-3">
+            <!-- Score Trend -->
+            <div class="glass-card p-5">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--color-text-muted)]">Score Trend</h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full score-badge-green">↑ 12.9%</span>
+              </div>
+              <div class="spark-container">
+                @for (point of performanceTrend; track point.test) {
+                  <div class="spark-bar group"
+                    [class]="point.test === '#7' ? 'spark-bar-active' : 'spark-bar-muted'"
+                    [style.height.%]="point.score"
+                    [title]="'Mock ' + point.test + ': ' + point.score + '%'">
+                  </div>
+                }
+              </div>
+              <div class="flex justify-between mt-2 text-[9px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
+                @for (point of performanceTrend; track point.test) {
+                  <span class="flex-1 text-center">{{ point.test }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Time Used -->
+            <div class="glass-card p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--color-text-muted)]">Time Used</h3>
+                <span class="text-xs font-bold text-green-500">{{ latestTest.totalTime - latestTest.timeSpent }}m left</span>
+              </div>
+              <div class="text-2xl font-black leading-none mb-3">{{ latestTest.timeSpent }}<span class="text-sm font-semibold text-[var(--color-text-muted)]"> / {{ latestTest.totalTime }} min</span></div>
+              <div class="time-bar">
+                <div class="time-bar-fill time-under" [style.width.%]="(latestTest.timeSpent / latestTest.totalTime) * 100"></div>
+              </div>
+            </div>
+
+            <!-- Attempt Rate -->
+            <div class="glass-card p-5 flex items-center justify-between">
+              <div>
+                <p class="text-[10px] font-extrabold text-[var(--color-text-muted)] uppercase tracking-widest mb-1">Attempt Rate</p>
+                <p class="text-2xl font-black leading-none">{{ ((latestTest.totalQuestions - latestTest.skipped) / latestTest.totalQuestions * 100) | number:'1.0-0' }}%</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs font-bold text-[var(--color-text-muted)]">{{ latestTest.totalQuestions - latestTest.skipped }}/{{ latestTest.totalQuestions }}</p>
+                <p class="text-[10px] font-bold text-amber-400 mt-0.5">{{ latestTest.skipped }} unanswered</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: Subject-wise Breakdown -->
+        <section class="anim-2">
+          <div class="section-label">Subject Performance</div>
+          <div class="subjects-grid">
+            @for (sub of subjects; track sub.name; let i = $index) {
+              <div class="subject-card">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="subject-icon bg-[var(--color-bg-alt)] border border-[var(--color-border)]">{{ sub.icon }}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold text-sm">{{ sub.name }}</div>
+                    <div class="text-[10px] text-[var(--color-text-muted)] font-semibold">{{ sub.correct }}/{{ sub.total }} correct · {{ sub.avgTime }}m/q</div>
+                  </div>
+                  <span class="text-sm font-extrabold px-2.5 py-1 rounded-lg" [ngClass]="getScoreBg(sub.accuracy)">{{ sub.accuracy }}%</span>
+                </div>
+
+                <!-- Stacked segment bar -->
+                <div class="segment-bar mb-3">
+                  <div class="seg-correct" [style.width.%]="(sub.correct / sub.total) * 100"></div>
+                  <div class="seg-incorrect" [style.width.%]="(sub.incorrect / sub.total) * 100"></div>
+                  <div class="seg-skipped" [style.width.%]="(sub.skipped / sub.total) * 100"></div>
+                </div>
+
+                <div class="flex items-center justify-between text-[10px]">
+                  <div class="flex gap-3">
+                    <span class="font-semibold text-green-500">{{ sub.correct }} ✓</span>
+                    <span class="font-semibold text-red-400">{{ sub.incorrect }} ✗</span>
+                    <span class="font-semibold text-[var(--color-text-muted)]">{{ sub.skipped }} —</span>
+                  </div>
+                  @if (sub.accuracy >= sub.targetAccuracy) {
+                    <span class="font-bold text-green-500">✓ Target</span>
+                  } @else {
+                    <span class="font-bold text-amber-400">{{ (sub.targetAccuracy - sub.accuracy) | number:'1.0-0' }}% below</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- SECTION: Time Analysis -->
+        <section class="anim-3">
+          <div class="elevated-card overflow-hidden">
+            <div class="p-5 border-b border-[var(--color-border)] flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold">Time Analysis</h3>
+                <p class="text-[10px] text-[var(--color-text-muted)] font-semibold mt-0.5">How you spent your {{ latestTest.totalTime }} min</p>
+              </div>
+              <div class="flex gap-1">
+                <button class="tab-btn" [class.active]="activeTimeTab === 'section'" (click)="setTimeTab('section')">By Section</button>
+                <button class="tab-btn" [class.active]="activeTimeTab === 'question'" (click)="setTimeTab('question')">Per Question</button>
+              </div>
+            </div>
+
+            <div class="p-5">
+              @if (activeTimeTab === 'section') {
+                <div class="space-y-5">
+                  @for (item of timeBySection; track item.section) {
+                    <div>
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold">{{ item.section }}</span>
+                        <div class="flex items-center gap-2.5">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)]">{{ item.spent }}/{{ item.allocated }} min</span>
+                          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                            [ngClass]="item.overUnder > 0 ? 'score-badge-red' : 'score-badge-green'">
+                            {{ item.overUnder > 0 ? '+' : '' }}{{ item.overUnder }}m
+                          </span>
+                        </div>
+                      </div>
+                      <div class="time-bar">
+                        <div class="time-bar-fill" [class]="item.overUnder > 0 ? 'time-over' : 'time-under'"
+                          [style.width.%]="(item.spent / item.allocated) * 100"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="space-y-3">
+                  @for (sub of subjects; track sub.name) {
+                    <div class="stat-pill">
+                      <div class="subject-icon bg-[var(--color-bg-alt)] border border-[var(--color-border)] text-sm">{{ sub.icon }}</div>
+                      <div class="flex-1">
+                        <div class="text-sm font-bold">{{ sub.name }}</div>
+                        <div class="text-[10px] text-[var(--color-text-muted)] font-semibold">Average per question</div>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-lg font-black" [ngClass]="sub.avgTime > 1.5 ? 'text-amber-400' : 'text-green-500'">{{ sub.avgTime }}</span>
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)]"> min</span>
+                        <p class="text-[9px] font-bold uppercase tracking-wider" [ngClass]="sub.avgTime > 1.5 ? 'text-amber-400' : 'text-green-500'">
+                          {{ sub.avgTime > 1.5 ? '⚠ Slow' : '✓ Good' }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                  <div class="text-[10px] text-[var(--color-text-muted)] font-semibold pt-3 border-t border-[var(--color-border)] leading-relaxed">
+                    💡 <strong class="text-[var(--color-text)]">Target:</strong> ~1.0 min/question. Chemistry is your bottleneck — consider timed drill practice.
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: Strengths vs Weaknesses -->
+        <section class="anim-4">
+          <div class="sw-grid">
+            <!-- Strengths -->
+            <div class="elevated-card p-5">
+              <div class="flex items-center gap-2.5 mb-4">
+                <div class="w-2 h-2 rounded-full bg-green-500 shadow-sm shadow-green-500/50"></div>
+                <h3 class="text-sm font-bold">Your Strengths</h3>
+                <span class="text-[10px] font-bold text-green-500 ml-auto">Top topics</span>
+              </div>
+              <div class="space-y-1">
+                @for (item of strengths; track item.topic) {
+                  <div class="sw-item">
+                    <div class="min-w-0">
+                      <div class="text-sm font-bold truncate">{{ item.topic }}</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)] font-semibold">{{ item.subject }} · {{ item.tests }} tests</div>
+                    </div>
+                    <span class="text-sm font-extrabold text-green-500 flex-shrink-0">{{ item.accuracy }}%</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Weaknesses -->
+            <div class="elevated-card p-5">
+              <div class="flex items-center gap-2.5 mb-4">
+                <div class="w-2 h-2 rounded-full bg-red-400 shadow-sm shadow-red-400/50"></div>
+                <h3 class="text-sm font-bold">Needs Work</h3>
+                <span class="text-[10px] font-bold text-red-400 ml-auto">Focus areas</span>
+              </div>
+              <div class="space-y-1">
+                @for (item of weaknesses; track item.topic) {
+                  <div class="sw-item">
+                    <div class="min-w-0">
+                      <div class="text-sm font-bold truncate">{{ item.topic }}</div>
+                      <div class="text-[10px] font-semibold flex items-center gap-1.5">
+                        <span class="text-[var(--color-text-muted)]">{{ item.subject }}</span>
+                        <span [ngClass]="getTrendClass(item.trend)" class="font-bold">{{ getTrendIcon(item.trend) }} {{ item.trend }}</span>
+                      </div>
+                    </div>
+                    <span class="text-sm font-extrabold text-red-400 flex-shrink-0">{{ item.accuracy }}%</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: Bottom — Insights + Recent Tests -->
+        <section class="bottom-grid anim-5">
+          <!-- Actionable Insights -->
+          <div class="elevated-card overflow-hidden">
+            <div class="p-5 border-b border-[var(--color-border)]">
+              <h3 class="text-sm font-bold">What To Do Next</h3>
+              <p class="text-[10px] text-[var(--color-text-muted)] font-semibold mt-0.5">Based on your last 5 tests</p>
+            </div>
+            <div class="p-4 space-y-2.5">
+              @for (insight of insights; track insight.title) {
+                <div class="insight-card" [ngClass]="getInsightClass(insight.actionType)">
+                  <div class="flex items-start gap-3">
+                    <span class="text-lg mt-0.5 flex-shrink-0">{{ insight.icon }}</span>
+                    <div class="flex-1 min-w-0">
+                      <h4 class="text-xs font-bold leading-snug">{{ insight.title }}</h4>
+                      <p class="text-[10px] text-[var(--color-text-muted)] font-medium mt-1 leading-relaxed">{{ insight.description }}</p>
+                    </div>
+                    <button class="flex-shrink-0 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all" [ngClass]="getActionClass(insight.actionType)">
+                      {{ insight.action }}
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Recent Tests -->
+          <div class="elevated-card overflow-hidden">
+            <div class="p-5 border-b border-[var(--color-border)] flex items-center justify-between">
+              <h3 class="text-sm font-bold">Recent Tests</h3>
+              <button class="text-[10px] font-bold text-[var(--color-blue)] hover:underline underline-offset-2">View All →</button>
+            </div>
+            <div class="divide-y divide-[var(--color-border)]">
+              @for (test of recentTests; track test.name) {
+                <div class="test-row">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="test-dot" [ngClass]="test.percentage >= 70 ? 'dot-green' : test.percentage >= 50 ? 'dot-amber' : 'dot-red'"></div>
+                    <div class="min-w-0">
+                      <div class="text-xs font-bold truncate">{{ test.name }}</div>
+                      <div class="text-[10px] text-[var(--color-text-muted)] font-medium flex items-center gap-1.5 mt-0.5">
+                        {{ test.date }}
+                        <span class="px-1.5 py-px rounded-md bg-[var(--color-bg-alt)] border border-[var(--color-border)] text-[9px] font-bold">{{ test.type }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-xs font-black" [ngClass]="getScoreColor(test.percentage)">{{ test.percentage }}%</div>
+                    <div class="text-[10px] font-bold mt-0.5" [class]="test.delta >= 0 ? 'text-green-500' : 'text-red-400'">
+                      {{ test.delta >= 0 ? '+' : '' }}{{ test.delta }}%
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ====== RIGHT COLUMN — Chat Assistant ====== -->
+      <div class="anim-6">
+        <div class="sticky top-20">
+          <div class="chat-panel">
+            <!-- Chat Header -->
+            <div class="chat-header">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-[var(--color-blue)] flex items-center justify-center shadow-sm shadow-[var(--color-blue)]/30">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold">Study Assistant</div>
+                  <div class="flex items-center gap-1 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[9px] font-bold text-green-500 uppercase tracking-wider">Online</span>
+                  </div>
+                </div>
+              </div>
+              <button (click)="toggleChat()" class="w-7 h-7 rounded-md hover:bg-[var(--color-bg-alt)] flex items-center justify-center transition-colors text-[var(--color-text-muted)]">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-body">
+              @for (msg of chatMessages; track $index) {
+                @if (msg.from === 'ai') {
+                  <div class="flex items-start gap-2">
+                    <div class="w-5 h-5 rounded-full bg-[var(--color-blue)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <div class="chat-bubble-ai">{{ msg.text }}</div>
+                  </div>
+                } @else {
+                  <div class="flex justify-end">
+                    <div class="chat-bubble-user">{{ msg.text }}</div>
+                  </div>
+                }
+              }
+            </div>
+
+            <!-- Suggested quick actions -->
+            <div class="px-3 pb-2">
+              <div class="flex gap-1.5 overflow-x-auto pb-1">
+                <button class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                  Explain my weak areas
+                </button>
+                <button class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                  Create a quiz
+                </button>
+                <button class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                  Study plan
+                </button>
+              </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-area">
+              <div class="relative">
+                <input type="text" [(ngModel)]="chatMessage" (keyup.enter)="sendMessage()" placeholder="Ask anything about your tests..." class="chat-input">
+                <button (click)="sendMessage()" class="chat-send-btn">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Recommendations (below chat) -->
+          <div class="elevated-card mt-4 p-4">
+            <h3 class="text-[10px] font-extrabold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">Recommended Next</h3>
+            <div class="space-y-2">
+              <button class="w-full text-left p-3 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] transition-all group flex items-center gap-3">
+                <span class="text-lg">⚗️</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold group-hover:text-[var(--color-blue)] transition-colors">Organic Chemistry</div>
+                  <div class="text-[10px] text-[var(--color-text-muted)] font-medium">Weak area · 45 min</div>
+                </div>
+                <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-blue)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+              <button class="w-full text-left p-3 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] transition-all group flex items-center gap-3">
+                <span class="text-lg">📝</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold group-hover:text-[var(--color-blue)] transition-colors">Previous Year Papers</div>
+                  <div class="text-[10px] text-[var(--color-text-muted)] font-medium">Recommended · 3 hrs</div>
+                </div>
+                <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-blue)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+              <button class="w-full text-left p-3 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] transition-all group flex items-center gap-3">
+                <span class="text-lg">⚡</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold group-hover:text-[var(--color-blue)] transition-colors">Thermodynamics Drill</div>
+                  <div class="text-[10px] text-[var(--color-text-muted)] font-medium">Quick fix · 20 min</div>
+                </div>
+                <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-blue)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>

@@ -1,0 +1,515 @@
+/* =======================================
+   DASHBOARD — Premium Design System
+   ======================================= */
+
+/* ---------- Score Ring ---------- */
+.score-ring {
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.2));
+}
+.score-ring-track {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 5;
+}
+.score-ring-fill {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Glassmorphic Cards ---------- */
+.glass-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.glass-card:hover {
+  border-color: var(--color-blue);
+  box-shadow: 0 8px 32px rgba(0, 123, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+/* Elevated card — more prominent */
+.elevated-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* ---------- Gradient Accent Stripe ---------- */
+.accent-stripe {
+  position: relative;
+  overflow: hidden;
+}
+.accent-stripe::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-blue), #8b5cf6, #ec4899);
+  border-radius: 16px 16px 0 0;
+}
+
+/* ---------- Hero gradient bg ---------- */
+.hero-bg {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-blue) 6%, var(--color-bg)),
+    var(--color-bg) 60%);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-blue) 8%, transparent), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ---------- Layout Grids ---------- */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .main-grid {
+    grid-template-columns: 1fr 340px;
+  }
+}
+
+.subjects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .subjects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.sw-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .sw-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .bottom-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+/* ---------- Subject Cards ---------- */
+.subject-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.subject-card:hover {
+  border-color: var(--color-blue);
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.1);
+  transform: translateY(-2px);
+}
+.subject-card .subject-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Segment bar */
+.segment-bar {
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  background: var(--color-bg-alt);
+}
+.segment-bar > div {
+  height: 100%;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.seg-correct { background: #22c55e; }
+.seg-incorrect { background: #ef4444; }
+.seg-skipped { background: var(--color-border); }
+
+/* ---------- Score Badges ---------- */
+.score-badge-green {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.score-badge-amber {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+.score-badge-red {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* ---------- Progress bar colors ---------- */
+.bar-green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.bar-amber { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.bar-red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+/* ---------- Time Analysis ---------- */
+.time-bar {
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  position: relative;
+}
+.time-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.time-over { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.time-under { background: linear-gradient(90deg, var(--color-blue), #22c55e); }
+
+.tab-btn {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tab-btn:hover {
+  border-color: var(--color-blue);
+  color: var(--color-text);
+}
+.tab-btn.active {
+  background: var(--color-blue);
+  color: #fff;
+  border-color: var(--color-blue);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* ---------- Trend Indicators ---------- */
+.trend-up { color: #16a34a; }
+.trend-down { color: #dc2626; }
+.trend-flat { color: var(--color-text-muted); }
+
+/* ---------- Insight Cards ---------- */
+.insight-card {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  padding: 1rem 1.25rem;
+  border-left: 3px solid transparent;
+  transition: all 0.25s ease;
+}
+.insight-card:hover {
+  transform: translateX(2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.insight-danger { border-left-color: #ef4444; }
+.insight-warning { border-left-color: #f59e0b; }
+.insight-success { border-left-color: #22c55e; }
+.insight-info { border-left-color: var(--color-blue); }
+
+/* action btns */
+.action-btn-danger { background: rgba(239,68,68,0.1); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
+.action-btn-danger:hover { background: rgba(239,68,68,0.18); }
+.action-btn-warning { background: rgba(245,158,11,0.1); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
+.action-btn-warning:hover { background: rgba(245,158,11,0.18); }
+.action-btn-success { background: rgba(34,197,94,0.1); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
+.action-btn-success:hover { background: rgba(34,197,94,0.18); }
+.action-btn-info { background: rgba(0,123,255,0.1); color: var(--color-blue); border: 1px solid rgba(0,123,255,0.2); }
+.action-btn-info:hover { background: rgba(0,123,255,0.18); }
+
+/* ---------- Chat Panel ---------- */
+.chat-panel {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 520px;
+  transition: all 0.3s ease;
+}
+.chat-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-blue) 5%, var(--color-bg)),
+    var(--color-bg));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-bubble-ai {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 14px 14px 14px 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 85%;
+  color: var(--color-text);
+}
+.chat-bubble-user {
+  background: var(--color-blue);
+  color: #fff;
+  border-radius: 14px 14px 4px 14px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 85%;
+  align-self: flex-end;
+}
+.chat-input-area {
+  padding: 12px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+.chat-input {
+  width: 100%;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 44px 10px 14px;
+  font-size: 13px;
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+.chat-send-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--color-blue);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.chat-send-btn:hover {
+  background: var(--color-blue-hover);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* ---------- Stat Pill ---------- */
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+.stat-pill:hover {
+  border-color: var(--color-blue);
+}
+
+/* ---------- Recent Test Row ---------- */
+.test-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+.test-row:hover {
+  background: var(--color-bg-alt);
+}
+.test-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+.dot-green { background: #22c55e; color: #22c55e; }
+.dot-amber { background: #f59e0b; color: #f59e0b; }
+.dot-red { background: #ef4444; color: #ef4444; }
+
+/* ---------- Animations ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.anim-1 { animation: fadeUp 0.5s ease forwards; }
+.anim-2 { animation: fadeUp 0.5s ease 0.08s forwards; opacity: 0; }
+.anim-3 { animation: fadeUp 0.5s ease 0.16s forwards; opacity: 0; }
+.anim-4 { animation: fadeUp 0.5s ease 0.24s forwards; opacity: 0; }
+.anim-5 { animation: fadeUp 0.5s ease 0.32s forwards; opacity: 0; }
+.anim-6 { animation: fadeUp 0.5s ease 0.4s forwards; opacity: 0; }
+
+.anim-scale { animation: scaleIn 0.4s ease forwards; }
+.anim-slide { animation: slideRight 0.4s ease forwards; }
+
+/* ---------- Scrollbar ---------- */
+.chat-body::-webkit-scrollbar { width: 4px; }
+.chat-body::-webkit-scrollbar-track { background: transparent; }
+.chat-body::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+/* ---------- Questions Breakdown ---------- */
+.q-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.q-cell {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid;
+}
+.q-correct {
+  background: rgba(34, 197, 94, 0.06);
+  border-color: rgba(34, 197, 94, 0.15);
+}
+.q-incorrect {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+.q-skipped {
+  background: var(--color-bg-alt);
+  border-color: var(--color-border);
+}
+
+/* ---------- Spark Bars ---------- */
+.spark-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 72px;
+}
+.spark-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  position: relative;
+  min-width: 0;
+}
+.spark-bar:hover {
+  filter: brightness(1.15);
+}
+.spark-bar-active {
+  background: var(--color-blue);
+  box-shadow: 0 -2px 8px rgba(0, 123, 255, 0.3);
+}
+.spark-bar-muted {
+  background: color-mix(in srgb, var(--color-blue) 35%, var(--color-bg-alt));
+}
+
+/* ---------- Strength/Weakness items ---------- */
+.sw-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background 0.2s;
+  gap: 8px;
+}
+.sw-item:hover {
+  background: var(--color-bg-alt);
+}
+
+/* ---------- Section Label ---------- */
+.section-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
