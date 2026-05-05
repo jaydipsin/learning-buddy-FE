@@ -13,7 +13,6 @@ export class App {
   protected readonly title = signal('learning-buddy');
   private readonly appStore = inject(appStore);
   constructor() {
-    // need to implement furthoer
-    // this.appStore.loadUserData();
+     this.appStore.loadUserData();
   }
 }

@@ -8,3 +8,9 @@ export interface Iregistrationpayload {
   avatarUrl?: string;
   role: 'admin' | 'teacher' | 'student' | 'parent';
 }
+
+
+export interface ILoginPayload {
+  email: string;
+  password: string;
+}

@@ -18,11 +18,11 @@ export const appStore = signalStore(
   withState(initialAppState),
   withComputed(() => ({})),
   withMethods((store, appService = inject(AppService)) => ({
-    loadUserData: rxMethod<string>(
+    loadUserData: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((userId) =>
-          appService.getUserData(userId).pipe(
+        switchMap(() =>
+          appService.getUserData().pipe(
             tapResponse({
               next: (user) =>
                 patchState(store, { appData: { userDetails: user }, isLoading: false }),

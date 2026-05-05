@@ -12,13 +12,22 @@ export interface IAppData {
 export interface IUserProfile {
   id: string;
   email: string;
-  name: string;
-  avatarUrl?: string;
-  roles: string[];
-  preferences: {
-    theme: 'light' | 'dark';
-    lang: string;
-  };
+  userName: string;
+  organizationName: string;
+  parentNumber: string;
+  role: 'admin' | 'teacher' | 'student' | 'parent';
+  themePreference: 'light' | 'dark';
+  course: {
+    id: string;
+    name: string;
+    isCurrentlyActive: boolean;
+    subjects: {
+      id: string;
+      name: string;
+    }[];
+  }[];
+  streak: number;
+  isPremium: boolean;
 }
 
 
@@ -27,4 +36,12 @@ export interface IUserProfile {
 export interface ILocalStorageData {
   userData: IUserProfile | null;
   accessToken: string | null;
+}
+
+
+export enum Role {
+  Admin = 'Admin',
+  Teacher = 'Teacher',  
+  Student = 'Student',
+  Parent = 'Parent',
 }
