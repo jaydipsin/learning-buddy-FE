@@ -1,29 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Iregistrationpayload } from '../interface';
+import { ILoginPayload, Iregistrationpayload } from '../interface';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor() {}
-  register(payload: Iregistrationpayload): Observable<void> {
+  constructor(private http: HttpClient) { }
+  register(payload: Iregistrationpayload): Observable<{ message: string }> {
     // Implement registration logic here, e.g., call API, handle response, etc.
-    return new Observable<void>((observer) => {
-      // Simulate API call
-      setTimeout(() => {
-        observer.next();
-        observer.complete();
-      }, 1000);
-    });
+    return this.http.post<{ message: string }>(BASE_BACKEND_URL + "/auth/register", payload);
   }
-  login(username: string, password: string): Observable<void> {
+  login(payload: ILoginPayload): Observable<{ message: string }> {
     // Implement login logic here, e.g., call API, handle response, etc.
-    return new Observable<void>((observer) => {
-      // Simulate API call
-      setTimeout(() => {
-        observer.next();
-        observer.complete();
-      }, 1000);
-    });
+    return this.http.post<{ message: string }>(BASE_BACKEND_URL + "/auth/login", payload);
   }
   logout(): void {
     // Implement logout logic here, e.g., clear tokens, reset state, etc.
