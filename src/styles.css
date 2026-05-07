@@ -1,5 +1,6 @@
 /* styles.css */
 @import 'tailwindcss';
+@import './theme/toast.css';
 
 @layer base {
   :root {
@@ -10,6 +11,7 @@
     --color-blue: #007bff;         /* Your Standard Blue */
     --color-blue-hover: #0056b3;   /* Button Hover State */
     --color-border: #e4e4e7;       /* Soft Borders */
+    --color-error: #dc2626;          /* Error Red */
   }
 
   /* When body has .dark class */

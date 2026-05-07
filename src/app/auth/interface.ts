@@ -1,3 +1,5 @@
+import { IUserProfile } from "../shared/types/global.interface";
+
 export interface Iregistrationpayload {
   email: string;
   username: string;
@@ -13,4 +15,13 @@ export interface Iregistrationpayload {
 export interface ILoginPayload {
   email: string;
   password: string;
+}
+
+
+export interface IAuthResponse {
+  message: string;
+  data: {
+    accessToken: string;
+    userData: IUserProfile;
+  };
 }

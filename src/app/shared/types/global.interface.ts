@@ -33,9 +33,10 @@ export interface IUserProfile {
 
 // Local storage interface 
 
-export interface ILocalStorageData {
+export interface IStateData {
   userData: IUserProfile | null;
   accessToken: string | null;
+  themePreference: 'light' | 'dark';
 }
 
 
