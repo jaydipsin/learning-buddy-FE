@@ -1,0 +1,68 @@
+/* Global Overrides for Soft UI */
+#toast-container > .ngx-toastr {
+  /* Height Reduction & Sizing */
+  min-height: 48px;         /* Reduced height */
+  padding: 10px 12px 10px 48px !important; /* Compact padding */
+  width: 300px !important;  /* Slimmer width */
+  
+  /* Soft Styling */
+  border-radius: 12px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+  opacity: 1 !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  background-image: none !important; /* Removes default bulky icons */
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Custom Soft Colors (Pastels) */
+.toast-success {
+  background-color: #f0fdf4 !important; /* Very soft green */
+  color: #166534 !important;            /* Dark green text */
+  border: 1px solid #bbf7d0 !important;
+}
+
+.toast-error {
+  background-color: #fef2f2 !important; /* Very soft red */
+  color: #991b1b !important;            /* Dark red text */
+  border: 1px solid #fecaca !important;
+}
+
+.toast-info {
+  background-color: #f0f9ff !important; /* Very soft blue */
+  color: #075985 !important;
+  border: 1px solid #bae6fd !important;
+}
+
+/* Soft Progress Bar */
+.toast-progress {
+  height: 2px !important;
+  bottom: 0;
+  background-color: currentColor !important;
+  opacity: 0.1 !important;
+}
+.ngx-toastr::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.toast-success::before {
+  /* You can use a simple SVG or Unicode checkmark */
+  content: '✓'; 
+  font-size: 18px;
+  color: #22c55e;
+}
+
+.toast-error::before {
+  content: '✕';
+  font-size: 16px;
+  color: #ef4444;
+}

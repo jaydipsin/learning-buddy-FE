@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ILocalStorageData } from '../types/global.interface';
+import { IStateData } from '../types/global.interface';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {
@@ -11,16 +11,24 @@ export class LocalStorageService {
     return this.storageKey;
   }
 
-  saveUserData(appData: ILocalStorageData): void {
+  saveUserData(appData: Partial<IStateData>): void {
     localStorage.setItem(this.storageKey, JSON.stringify(appData));
   }
 
-  getUserData(): ILocalStorageData | null {
+  getUserData(): IStateData | null {
     const userData = localStorage.getItem(this.storageKey);
     return userData ? JSON.parse(userData) : null;
   }
 
   clearUserData(): void {
     localStorage.removeItem(this.storageKey);
+  }
+
+  saveThemePreference(themePreference: 'light' | 'dark'): void {
+    const userData = this.getUserData();
+    if (userData) {
+      userData.themePreference = themePreference;
+      this.saveUserData(userData);
+    }
   }
 }

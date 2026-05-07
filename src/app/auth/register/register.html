@@ -78,7 +78,6 @@
   <div
     class="w-full lg:w-[30%] min-h-screen bg-[var(--color-bg)] flex flex-col justify-center items-center p-6 sm:p-10 border-l border-[var(--color-border)] shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] z-20">
     <div class="w-full max-w-[360px]">
-
       <div class="lg:hidden flex items-center justify-center gap-2 mb-10">
         <div class="w-10 h-10 bg-[var(--color-blue)] rounded-xl flex items-center justify-center">
           <span class="text-white font-black text-lg">LB</span>
@@ -105,8 +104,6 @@
       </div>
       }
 
-
-
       @if (isLogin) {
       <form [formGroup]="loginForm" class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
         <div>
@@ -114,6 +111,14 @@
             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Email</label>
           <input formControlName="email" type="email" placeholder="student@example.com"
             class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+          @if (
+          loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+          ) {
+          <div
+            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1 animate-in fade-in slide-in-from-top-1">
+            Please enter a valid email address
+          </div>
+          }
         </div>
         <div>
           <div class="flex justify-between items-center mb-2 ml-1">
@@ -123,11 +128,18 @@
           </div>
           <input formControlName="password" type="password" placeholder="••••••••"
             class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+          @if (
+          loginForm.get('password')?.invalid && loginForm.get('password')?.touched
+          ) {
+          <div
+            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1 animate-in fade-in slide-in-from-top-1">
+            Please enter a valid password
+          </div>
+          }
         </div>
       </form>
-      }
 
-      @else {
+      } @else {
       <form [formGroup]="registerForm" class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
         @if (currentStep === 1) {
         <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -157,8 +169,11 @@
             <input formControlName="confirmPassword" type="password" placeholder="••••••••"
               class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
           </div>
-          @if(registerForm.get('password')?.value !== registerForm.get('confirmPassword')?.value &&
-          registerForm.get('confirmPassword')?.touched){
+          @if (
+          registerForm.get('password')?.value !==
+          registerForm.get('confirmPassword')?.value &&
+          registerForm.get('confirmPassword')?.touched
+          ) {
           <div class="text-xs font-bold text-[var(--color-error)] uppercase tracking-wider mb-2 ml-1">
             Passwords do not match
           </div>
@@ -169,13 +184,12 @@
             <select formControlName="role"
               class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none appearance-none">
               <option value="">Choose Role...</option>
-              <option [value]="roles.Student">{{roles.Student}}</option>
-              <option [value]="roles.Parent">{{roles.Parent}}</option>
-              <option [value]="roles.Teacher">{{roles.Teacher}}</option>
-              <option [value]="roles.Admin">{{roles.Admin}}</option>
+              <option [value]="roles.Student">{{ roles.Student }}</option>
+              <option [value]="roles.Parent">{{ roles.Parent }}</option>
+              <option [value]="roles.Teacher">{{ roles.Teacher }}</option>
+              <option [value]="roles.Admin">{{ roles.Admin }}</option>
             </select>
           </div>
-
         </div>
         }
 
@@ -191,12 +205,13 @@
             <option value="med">Medical Entrance</option>
             <option value="upsc">Civil Services</option>
           </select>
-          <p class="text-[10px] text-[var(--color-text-muted)] italic px-1">You can add more subjects later in your
-            dashboard.</p>
+          <p class="text-[10px] text-[var(--color-text-muted)] italic px-1">
+            You can add more subjects later in your dashboard.
+          </p>
         </div>
         }
 
-        @if (currentStep === 3 && role === roles.Student ) {
+        @if (currentStep === 3 && role === roles.Student) {
         <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
           <div>
             <label
@@ -227,13 +242,13 @@
 
         <button type="button" (click)="handleNext()"
           class="flex-[2] py-3.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 transition-all active:scale-[0.98]">
-          {{ isLogin ? 'Sign In' : (currentStep === 3 ? 'Finish & Start' : 'Next Step') }}
+          {{ isLogin ? 'Sign In' : currentStep === 3 ? 'Finish & Start' : 'Next Step' }}
         </button>
       </div>
 
       <div class="mt-8 text-center">
         <p class="text-sm font-medium text-[var(--color-text-muted)]">
-          {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+          {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
           <button type="button" (click)="toggleAuthMode()"
             class="font-bold text-[var(--color-blue)] hover:underline ml-1">
             {{ isLogin ? 'Sign up' : 'Log in' }}
