@@ -6,12 +6,14 @@ import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../interface
 import { pipe, switchMap, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { ToastrService } from 'ngx-toastr';
-import { IStateData } from '../../shared/types/global.interface';
+import { IStateData, Role } from '../../shared/types/global.interface';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
+import { Router } from '@angular/router';
 
 
 export interface AuthState extends IStateData {
   isLoading: boolean;
+  courses: any[];
 }
 
 const initialState: AuthState = {
@@ -19,6 +21,7 @@ const initialState: AuthState = {
   userData: null,
   themePreference: 'light',
   isLoading: false,
+  courses: [],
 };
 
 export const authStore = signalStore(
@@ -38,6 +41,25 @@ export const authStore = signalStore(
     }
   })),
 
+  withMethods((store, router = inject(Router)) => ({
+    redirectToDashboard: () => {
+      const userData = store.userData();
+      if (userData) {
+        const role = userData.role.toLowerCase();
+        if (role === Role.Student.toLowerCase()) {
+          router.navigateByUrl(`/student/dashboard`);
+        } else if (role === Role.Teacher.toLowerCase()) {
+          router.navigateByUrl(`/teacher/dashboard`);
+        } else if (role === Role.Admin.toLowerCase()) {
+          router.navigateByUrl(`/admin/dashboard`);
+        } else if (role === Role.Parent.toLowerCase()) {
+          router.navigateByUrl(`/parent/dashboard`);
+        }
+      }
+    },
+
+  })),
+
   withMethods((store, authService = inject(AuthService), toastr = inject(ToastrService)) => ({
     register: rxMethod<Iregistrationpayload>(
       pipe(
@@ -49,6 +71,7 @@ export const authStore = signalStore(
                 toastr.success(res?.message || "Registration successfull", 'Success');
                 patchState(store, { isLoading: false, accessToken: res.data.accessToken, userData: res.data.userData })
                 store.setStorage();
+                store.redirectToDashboard();
               },
               error: (err: any) => {
                 toastr.error(err?.error?.message || 'Registration failed. Please try again.', 'Error');
@@ -61,6 +84,28 @@ export const authStore = signalStore(
         ),
       ),
     ),
+
+    getAllCourses: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap(() =>
+          authService.getAllCourses().pipe(
+            tapResponse({
+              next: (res: { message: string, courses: any[] }) => {
+                console.log(res);
+
+                patchState(store, { courses: res.courses })
+              },
+              error: (err: any) => {
+                toastr.error(err?.error?.message || 'Courses fetch failed. Please try again.', 'Error');
+              }
+            }),
+          ),
+        ),
+      ),
+    ),
+
+
     login: rxMethod<ILoginPayload>(
       pipe(
         tap(() => patchState(store, { isLoading: true })),
@@ -74,6 +119,7 @@ export const authStore = signalStore(
                   userData: res.data.userData
                 });
                 store.setStorage()
+
                 toastr.success(res?.message || "Login successfull", 'Success');
               },
               error: (err: any) => {

@@ -16,8 +16,13 @@ export class LocalStorageService {
   }
 
   getUserData(): IStateData | null {
-    const userData = localStorage.getItem(this.storageKey);
-    return userData ? JSON.parse(userData) : null;
+    try {
+      const userData = localStorage.getItem(this.storageKey);
+      if (!userData || userData === 'undefined' || userData === 'null') return null;
+      return JSON.parse(userData);
+    } catch (e) {
+      return null;
+    }
   }
 
   clearUserData(): void {
