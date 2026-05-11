@@ -10,14 +10,14 @@ export class AuthFormService {
 
     createRegisterForm(): FormGroup {
         return this.fb.group({
-            userName: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
-            confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
+            userName: ['test1', Validators.required],
+            email: ['test1@gmail.com', [Validators.required, Validators.email]],
+            password: ['1234Qwer!', [Validators.required, Validators.minLength(6)]],
+            confirmPassword: ['1234Qwer!', [Validators.required, Validators.minLength(6)]],
             role: [Role.Student, Validators.required],
             parentEmail: [''],
             organizationName: [''],
-            course: [''],
+            course: this.fb.array([]),
         });
     }
 

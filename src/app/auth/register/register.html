@@ -94,7 +94,7 @@
         </p>
       </div>
 
-      @if (!isLogin && role === roles.Student) {
+      @if (!isLogin && role === roles.Student.toLowerCase()) {
       <div class="flex items-center gap-2 mb-8">
         @for (step of [1, 2, 3]; track step) {
         <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
@@ -184,34 +184,40 @@
             <select formControlName="role"
               class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none appearance-none">
               <option value="">Choose Role...</option>
-              <option [value]="roles.Student">{{ roles.Student }}</option>
-              <option [value]="roles.Parent">{{ roles.Parent }}</option>
-              <option [value]="roles.Teacher">{{ roles.Teacher }}</option>
-              <option [value]="roles.Admin">{{ roles.Admin }}</option>
+              <option [value]="roles.Student.toLowerCase()">{{ roles.Student }}</option>
+              <option [value]="roles.Parent.toLowerCase()">{{ roles.Parent }}</option>
+              <option [value]="roles.Teacher.toLowerCase()">{{ roles.Teacher }}</option>
+              <option [value]="roles.Admin.toLowerCase()">{{ roles.Admin }}</option>
             </select>
           </div>
         </div>
         }
 
-        @if (currentStep === 2 && role === roles.Student) {
+        @if (currentStep === 2 && role === roles.Student.toLowerCase()) {
         <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
           <label
             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Select
             Your Course</label>
-          <select formControlName="course"
-            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none appearance-none">
-            <option value="">Choose a path...</option>
-            <option value="eng">Engineering Entrance</option>
-            <option value="med">Medical Entrance</option>
-            <option value="upsc">Civil Services</option>
-          </select>
+          <div class="flex flex-wrap gap-2">
+            @for(course of courses(); track course._id){
+            <button type="button" 
+              (click)="toggleCourse(course._id)"
+              [class.bg-[var(--color-blue)]]="isCourseSelected(course._id)"
+              [class.text-white]="isCourseSelected(course._id)"
+              [class.bg-[var(--color-bg-alt)]]="!isCourseSelected(course._id)"
+              [class.text-[var(--color-text)]]="!isCourseSelected(course._id)"
+              class="px-4 py-2 cursor-pointer rounded-xl text-sm font-medium transition-all border border-transparent hover:border-[var(--color-border)] outline-none focus:ring-2 focus:ring-[var(--color-blue)]">
+              {{course.name}}
+            </button>
+            }
+          </div>
           <p class="text-[10px] text-[var(--color-text-muted)] italic px-1">
             You can add more subjects later in your dashboard.
           </p>
         </div>
         }
 
-        @if (currentStep === 3 && role === roles.Student) {
+        @if (currentStep === 3 && role === roles.Student.toLowerCase()) {
         <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
           <div>
             <label

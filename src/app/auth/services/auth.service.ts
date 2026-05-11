@@ -18,4 +18,10 @@ export class AuthService {
   logout(): void {
     // Implement logout logic here, e.g., clear tokens, reset state, etc.
   }
+
+
+  // Need to change api calling place this
+  getAllCourses(): Observable<{ message: string, courses: any[] }> {
+    return this.http.get<{ message: string, courses: any[] }>(BASE_BACKEND_URL + "/api/learning-buddy/courses");
+  }
 }
