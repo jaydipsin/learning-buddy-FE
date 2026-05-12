@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, restrictLoginGuard } from './shared/gurd/auth.guard';
+import { authGuard, restrictLoginGuard } from './core/gurd/auth.guard';
 
 export const routes: Routes = [
   {
@@ -9,13 +9,13 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
-    loadComponent: () => import('./auth/register/register').then((c) => c.Register),
+    loadComponent: () => import('./features/auth/component/register').then((c) => c.Register),
     title: 'Register',
     canActivate: [restrictLoginGuard]
   },
   {
     path: 'student/dashboard',
-    loadComponent: () => import('./dashboard/dashboard').then((c) => c.Dashboard),
+    loadComponent: () => import('./features/dashboard/component/dashboard').then((c) => c.Dashboard),
     title: 'Dashboard',
     canActivate: [authGuard]
   },

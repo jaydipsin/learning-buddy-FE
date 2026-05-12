@@ -1,13 +1,13 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../interface';
+import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../../../shared/models/auth.interface';
 import { pipe, switchMap, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { ToastrService } from 'ngx-toastr';
-import { IStateData, Role } from '../../shared/types/global.interface';
-import { LocalStorageService } from '../../shared/services/local-storage.service';
+import { IStateData, Role } from '../../../shared/models/global.interface';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { Router } from '@angular/router';
 
 

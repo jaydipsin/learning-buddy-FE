@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IUserProfile } from '../types/global.interface';
+import { IUserProfile } from '../../shared/models/global.interface';
 import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';
 
 @Injectable({ providedIn: 'root' })

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../interface';
+import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../../shared/models/auth.interface';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';

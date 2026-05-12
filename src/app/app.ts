@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {  appStore } from './store/app.store';
+import { appStore } from './core/store/app.store';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +13,6 @@ export class App {
   protected readonly title = signal('learning-buddy');
   private readonly appStore = inject(appStore);
   constructor() {
-     this.appStore.loadUserData();
+    this.appStore.loadUserData();
   }
 }
