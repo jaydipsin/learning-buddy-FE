@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Role } from "../../shared/types/global.interface";
+import { Role } from "../../shared/models/global.interface";
 
 @Injectable({
     providedIn: 'root'

@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, OnInit, signal, Signal } from '@angular/core';
-import { AuthFormService } from '../services/auth.form.service';
+import { AuthFormService } from '../../../core/services/auth.form.service';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
-import { Role } from '../../shared/types/global.interface';
+import { Role } from '../../../shared/models/global.interface';
 import { authStore } from '../store/auth.store';
 import { JsonPipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';

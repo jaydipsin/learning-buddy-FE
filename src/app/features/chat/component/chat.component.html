@@ -1,0 +1,78 @@
+
+        <div class="chat-panel">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="flex items-center gap-2.5">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-[var(--color-blue)] flex items-center justify-center shadow-sm shadow-[var(--color-blue)]/30">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold">Study Assistant</div>
+                        <div class="flex items-center gap-1 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="text-[9px] font-bold text-green-500 uppercase tracking-wider">Online</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-body">
+                @for (msg of chatMessages; track $index) {
+                @if (msg.from === 'ai') {
+                <div class="flex items-start gap-2">
+                    <div
+                        class="w-5 h-5 rounded-full bg-[var(--color-blue)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="chat-bubble-ai">{{ msg.text }}</div>
+                </div>
+                } @else {
+                <div class="flex justify-end">
+                    <div class="chat-bubble-user">{{ msg.text }}</div>
+                </div>
+                }
+                }
+            </div>
+
+            <!-- Suggested quick actions -->
+            <div class="px-3 pb-2">
+                <div class="flex gap-1.5 overflow-x-auto pb-1">
+                    <button
+                        class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                        Explain my weak areas
+                    </button>
+                    <button
+                        class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                        Create a quiz
+                    </button>
+                    <button
+                        class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] transition-all text-[var(--color-text-muted)]">
+                        Study plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-area">
+                <div class="relative">
+                    <input type="text" [(ngModel)]="chatMessage" (keyup.enter)="sendMessage()"
+                        placeholder="Ask anything about your tests..." class="chat-input">
+                    <button (click)="sendMessage()" class="chat-send-btn">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+

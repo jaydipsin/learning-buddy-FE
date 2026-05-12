@@ -1,4 +1,4 @@
-import { IUserProfile } from "../shared/types/global.interface";
+import { IUserProfile } from "./global.interface";
 
 export interface Iregistrationpayload {
   email: string;

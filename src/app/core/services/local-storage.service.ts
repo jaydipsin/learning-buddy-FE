@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IStateData } from '../types/global.interface';
+import { IStateData } from '../../shared/models/global.interface';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {

@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
-import { AuthService } from "../auth/services/auth.service";
+import { AuthService } from "../services/auth.service";
 import { inject } from "@angular/core";
-import { authStore } from "../auth/store/auth.store";
+import { authStore } from "../../features/auth/store/auth.store";
 import { catchError, of, throwError } from "rxjs";
 
 export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next) => {
@@ -28,7 +28,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
                 return of()
             }
 
-            if(error.status === 403 && isRefresh){
+            if (error.status === 403 && isRefresh) {
                 authStoreInstance.clearUserData();
                 return throwError(() => error);
             }

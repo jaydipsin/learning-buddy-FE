@@ -1,7 +1,7 @@
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { GlobalAppState } from '../shared/types/global.interface';
+import { GlobalAppState } from '../../shared/models/global.interface';
 import { computed, inject } from '@angular/core';
-import { AppService } from '../shared/services/app.service';
+import { AppService } from '../services/app.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
 import { pipe, switchMap, tap } from 'rxjs';
