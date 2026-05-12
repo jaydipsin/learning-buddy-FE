@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChatComponent } from "../../chat/component/chat.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ChatComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
   isDarkMode = false;
   activeTimeTab: 'section' | 'question' = 'section';
-  chatMessage = '';
-  isChatExpanded = false;
 
   latestTest = {
     name: 'Full Mock Test #7',
@@ -80,11 +79,6 @@ export class Dashboard {
     { icon: '🎯', title: '18 questions were left blank', description: 'Push attempt rate past 95% with better time management.', action: 'Strategy', actionType: 'info' },
   ];
 
-  chatMessages = [
-    { from: 'ai', text: 'I noticed your Organic Chemistry accuracy dropped to 38%. Want me to create a focused quiz on reaction mechanisms?' },
-    { from: 'user', text: 'Yes please, focus on named reactions and reagents' },
-    { from: 'ai', text: 'Got it! I\'ll prepare a 15-question quiz on Named Reactions — Grignard, Wittig, Aldol, and Cannizzaro. Ready in a moment.' },
-  ];
 
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
@@ -95,20 +89,7 @@ export class Dashboard {
     this.activeTimeTab = tab;
   }
 
-  toggleChat() {
-    this.isChatExpanded = !this.isChatExpanded;
-  }
-
-  sendMessage() {
-    if (this.chatMessage.trim()) {
-      this.chatMessages.push({ from: 'user', text: this.chatMessage.trim() });
-      this.chatMessage = '';
-      // Simulate AI response
-      setTimeout(() => {
-        this.chatMessages.push({ from: 'ai', text: 'I\'ll analyze that and get back to you with a personalized plan.' });
-      }, 800);
-    }
-  }
+  // Chat related methods removed as they are moved to ChatComponent
 
   getScoreColor(pct: number): string {
     if (pct >= 75) return 'text-green-500';
