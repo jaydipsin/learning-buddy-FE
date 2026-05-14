@@ -23,8 +23,8 @@
 
             <!-- Chat Messages -->
             <div class="chat-body">
-                @for (msg of chatMessages; track $index) {
-                @if (msg.from === 'ai') {
+                @for (msg of chatStore.chatHistory(); track $index) {
+                @if (msg.from === 'assistant') {
                 <div class="flex items-start gap-2">
                     <div
                         class="w-5 h-5 rounded-full bg-[var(--color-blue)] flex items-center justify-center flex-shrink-0 mt-0.5">

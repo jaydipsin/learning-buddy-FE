@@ -26,22 +26,27 @@ export const ChatStore = signalStore(
             })
 
             try {
-                await chatService.aiChatApi(message, (chunks: string) => {
-                    const chatHistory = [...store.chatHistory()];
-                    const lastIndex = chatHistory.length - 1;
+                chatService.aiChatApi(message, (chunk: string) => {
+                    setTimeout(() => {
+                        patchState(store, (state) => {
+                            const currentHistory = [...state.chatHistory];
+                            const lastIndex = currentHistory.length - 1;
 
-                    chatHistory[lastIndex] = {
-                        ...chatHistory[lastIndex],
-                        text: chatHistory[lastIndex].text + chunks
-                    };
+                            currentHistory[lastIndex] = {
+                                ...currentHistory[lastIndex],
+                                text: currentHistory[lastIndex].text + (chunk !== 'undefined' ? chunk : '')
+                            };
 
-                    patchState(store, { chatHistory });
+                            return { chatHistory: currentHistory };
+                        });
+                    }, 0);
                 })
             } catch (error: any) {
                 patchState(store, { error: error?.message || "Something went wrong" });
             } finally {
                 patchState(store, { loading: false })
             }
-        }
+        },
+
     }))
 )
