@@ -3,7 +3,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../../../shared/models/auth.interface';
-import { pipe, switchMap, tap } from 'rxjs';
+import { exhaustMap, pipe, switchMap, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { ToastrService } from 'ngx-toastr';
 import { IStateData, Role } from '../../../shared/models/global.interface';
@@ -56,6 +56,10 @@ export const authStore = signalStore(
           router.navigateByUrl(`/parent/dashboard`);
         }
       }
+    },
+
+    redirectToLogin: () => {
+      router.navigateByUrl('/login');
     },
 
   })),
@@ -133,6 +137,57 @@ export const authStore = signalStore(
         ),
       ),
     ),
+
+
+    logOut: rxMethod<void>(
+      pipe(
+        exhaustMap(() =>
+          authService.logout().pipe(
+            tapResponse({
+              next: () => {
+                patchState(store, {
+                  isLoading: false,
+                  accessToken: null,
+                  userData: null,
+                });
+                store.clearUserData()
+                store.redirectToLogin();
+              },
+              error: (err: any) => {
+                toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
+                patchState(store, {
+                  isLoading: false,
+                });
+              },
+            })
+          )
+        )
+      )
+    ),
+
+    renewAccessToken: rxMethod<void>(
+      pipe(
+        exhaustMap(() =>
+          authService.refreshToken().pipe(
+            tapResponse({
+              next: (res: { data: { accessToken: string }, message: string }) => {
+                patchState(store, {
+                  isLoading: false,
+                  accessToken: res.data.accessToken,
+                });
+                store.setStorage()
+              },
+              error: (err: any) => {
+                toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
+                patchState(store, {
+                  isLoading: false,
+                });
+              },
+            })
+          )
+        )
+      )
+    )
 
   })),
 

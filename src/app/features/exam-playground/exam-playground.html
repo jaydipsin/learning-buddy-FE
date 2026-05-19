@@ -1,0 +1,168 @@
+<div class="app-shell">
+  <!-- ═══ HEADER ═══ -->
+  <header class="app-header">
+    <div>
+      <div class="header-title">JEE Advanced Mock #7</div>
+      <div class="header-sub">Section: Physics — Multiple Choice</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div class="timer-display" id="timer">02:43:18</div>
+      <button class="header-icon-btn" title="Calculator">⊞</button>
+      <button class="header-icon-btn" title="Summary">Σ</button>
+    </div>
+  </header>
+
+  <!-- ═══ CONTENT ═══ -->
+  <div class="content-area">
+    <!-- ── LEFT: Question Panel ── -->
+    <div class="q-panel">
+      <div class="q-card" id="question-card">
+        <!-- animated wrapper -->
+        <div id="question-content-wrapper">
+          <!-- QUESTION BODY -->
+          <div class="q-body" id="q-body">
+            <div class="q-header">
+              <span class="q-number" id="q-number">Question <span id="q-num-text">14</span></span>
+              <div class="badge-row">
+                <span class="badge badge-green">+4 Correct</span>
+                <span class="badge badge-red">−1 Incorrect</span>
+              </div>
+            </div>
+            <p class="q-text" id="q-text"></p>
+            <div class="diagram-box" id="diagram-box">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+              </svg>
+              Diagram / Equation visualizer space
+            </div>
+          </div>
+          <!-- /q-body -->
+
+          <!-- OPTIONS -->
+          <div class="options-grid" id="options-grid"></div>
+        </div>
+        <!-- /question-content-wrapper -->
+      </div>
+      <!-- /q-card -->
+
+      <!-- FOOTER NAV -->
+      <div class="q-footer">
+        <button class="btn btn-outline" id="btn-mark" onclick="markForReview()">
+          <svg
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+          Mark for Review &amp; Next
+        </button>
+        <div style="display: flex; gap: 8px">
+          <button class="btn btn-ghost" onclick="clearResponse()">Clear Response</button>
+          <button class="btn btn-primary" onclick="saveAndNext()">
+            Save &amp; Next
+            <svg
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              viewBox="0 0 24 24"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /q-panel -->
+
+    <!-- ── RIGHT: Sidebar ── -->
+    <aside class="sidebar">
+      <!-- Subject Tabs -->
+      <div class="tabs-row">
+        <button class="tab active" onclick="switchSubject('Physics', this)">Physics</button>
+        <button class="tab" onclick="switchSubject('Chemistry', this)">Chemistry</button>
+        <button class="tab" onclick="switchSubject('Maths', this)">Maths</button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <!-- Legend -->
+        <div style="margin-bottom: 14px">
+          <div class="sidebar-section-title" style="margin-bottom: 10px">Status</div>
+          <div class="legend-grid">
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--color-answered)"></div>
+              <span>Answered <span class="legend-count" id="count-answered">12</span></span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--color-not-answered)"></div>
+              <span>Not Answered <span class="legend-count" id="count-not-answered">3</span></span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--color-marked)"></div>
+              <span>Marked <span class="legend-count" id="count-marked">2</span></span>
+            </div>
+            <div class="legend-item">
+              <div
+                class="legend-dot"
+                style="background: white; border: 2px solid var(--color-border-strong)"
+              ></div>
+              <span>Not Visited <span class="legend-count" id="count-not-visited">8</span></span>
+            </div>
+          </div>
+          <!-- Progress -->
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-fill" style="width: 48%"></div>
+          </div>
+        </div>
+
+        <!-- Question Grid -->
+        <div>
+          <div class="sidebar-section-title">Physics Questions</div>
+          <div class="q-grid" id="q-grid"></div>
+        </div>
+
+        <!-- AI Buddy -->
+        <div class="ai-buddy-card">
+          <div class="ai-buddy-header">
+            <div class="ai-avatar">🤖</div>
+            <div>
+              <div class="ai-name">AI Buddy</div>
+              <div class="ai-status" id="ai-status-text">
+                Stuck on Q<span id="ai-q-num">14</span>?
+              </div>
+            </div>
+          </div>
+          <button class="btn-hint">
+            <svg
+              width="13"
+              height="13"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4M12 16h.01" />
+            </svg>
+            Request Hint <span style="opacity: 0.75; font-size: 11px">(Costs 1 token)</span>
+          </button>
+        </div>
+      </div>
+      <!-- /sidebar-scroll -->
+    </aside>
+  </div>
+  <!-- /content-area -->
+</div>

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, effect, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, effect, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ChatStore } from "../store/chat.store";
 import { ChatService } from "../service/chat.service";
@@ -12,22 +12,18 @@ import { ChatService } from "../service/chat.service";
     imports: [CommonModule, FormsModule]
 })
 export class ChatComponent {
-
+    private cdr = inject(ChangeDetectorRef);
     chatStore = inject(ChatStore);
     chatService = inject(ChatService);
 
 
     chatMessage: string = '';
-    chatMessages: any[] = [];
+
 
     constructor() {
-        effect(() => {
-            this.chatMessages = this.chatStore.chatHistory();
-            console.log(this.chatMessages);
-        })
+     
     }
-
-    sendMessage() {
+    async sendMessage() {
         if (this.chatMessage.trim()) {
             const message = this.chatMessage;
             this.chatMessage = '';

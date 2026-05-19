@@ -3,7 +3,7 @@ import { IStateData } from '../../shared/models/global.interface';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {
-  constructor() {}
+  constructor() { }
 
   private storageKey = 'learningBuddyUserData';
 
@@ -12,7 +12,7 @@ export class LocalStorageService {
   }
 
   saveUserData(appData: Partial<IStateData>): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(appData));
+    localStorage.setItem(this.storageKey, JSON.stringify({ ...this.getUserData() || {}, ...appData }));
   }
 
   getUserData(): IStateData | null {

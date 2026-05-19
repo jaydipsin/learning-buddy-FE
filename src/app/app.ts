@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { appStore } from './core/store/app.store';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,11 @@ import { appStore } from './core/store/app.store';
   styleUrl: './app.css',
   providers: [appStore],
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('learning-buddy');
   private readonly appStore = inject(appStore);
-  constructor() {
-    this.appStore.loadUserData();
+
+  ngOnInit() {
+
   }
 }
