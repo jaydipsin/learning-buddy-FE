@@ -73,7 +73,7 @@ const handle401Req = (
     return authService.refreshToken().pipe(
       switchMap((res) => {
         isRefreshing = false;
-        console.log("From interceptors res: ", res);
+        console.log('From interceptors res: ', res);
         const newToken = res.data.accessToken;
 
         if (!newToken) {
@@ -116,4 +116,3 @@ const handle401Req = (
     );
   }
 };
-
