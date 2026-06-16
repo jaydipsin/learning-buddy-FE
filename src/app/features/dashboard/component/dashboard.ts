@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatComponent } from "../../chat/component/chat.component";
+import { HeaderComponent } from '../../../shared/components/header/header';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, ChatComponent],
+  imports: [CommonModule, FormsModule, ChatComponent, HeaderComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

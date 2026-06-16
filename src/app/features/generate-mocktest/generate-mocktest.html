@@ -1,0 +1,418 @@
+<div class="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] font-sans antialiased transition-colors duration-300 flex flex-col justify-between">
+  
+  <div>
+
+    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+      
+      @if (isLaunching) {
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white select-none animate-fade-in">
+          <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full bg-[var(--color-blue)]/10 blur-xl animate-pulse"></div>
+            <svg class="animate-spin w-full h-full text-[var(--color-blue)]" viewBox="0 0 24 24">
+              <circle class="opacity-10" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <div class="absolute font-black text-sm">
+              {{ launchProgress }}%
+            </div>
+          </div>
+          <h2 class="text-xl font-bold tracking-tight mb-2">Assembling Your Practice Session...</h2>
+          <p class="text-xs text-zinc-400 font-medium">Curating questions from weaker areas & PYQs</p>
+        </div>
+      }
+
+      <div class="flex items-center gap-4 mb-8 anim-1">
+        <button class="w-10 h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/20 hover:bg-[var(--color-bg-alt)] flex items-center justify-center transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+        </button>
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Create Mock Test</h2>
+          <p class="text-xs text-[var(--color-text-muted)] mt-0.5 font-medium">Configure your mock test and start your preparation</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        
+        <div class="lg:col-span-3 space-y-6">
+          
+          <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-2">
+            <div class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+              <div>
+                <h3 class="text-base font-bold tracking-tight">Select Test Type</h3>
+                <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Choose the type of mock test you want to create</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              
+              <div (click)="setTestType('full'); includePyqs = true"
+                   [class.border-[var(--color-blue)]]="testType === 'full' && includePyqs"
+                   [class.ring-1]="testType === 'full' && includePyqs"
+                   [class.ring-[var(--color-blue)]]="testType === 'full' && includePyqs"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
+                <div>
+                  <div class="w-9 h-9 rounded-lg bg-[var(--color-blue)]/5 flex items-center justify-center text-[var(--color-blue)] mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                  </div>
+                  <h4 class="text-sm font-bold tracking-tight">PYQ Test</h4>
+                  <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Practice with Previous Year Questions</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="testType === 'full' && includePyqs"
+                     [class.bg-[var(--color-blue)]]="testType === 'full' && includePyqs">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div (click)="setTestType('full'); includePyqs = false"
+                   [class.border-[var(--color-blue)]]="testType === 'full' && !includePyqs"
+                   [class.ring-1]="testType === 'full' && !includePyqs"
+                   [class.ring-[var(--color-blue)]]="testType === 'full' && !includePyqs"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
+                <div>
+                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[var(--color-blue)] transition-colors mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                  </div>
+                  <h4 class="text-sm font-bold tracking-tight">Full Mock Test</h4>
+                  <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Complete mock test with all subjects</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="testType === 'full' && !includePyqs"
+                     [class.bg-[var(--color-blue)]]="testType === 'full' && !includePyqs">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div (click)="setTestType('subject')"
+                   [class.border-[var(--color-blue)]]="testType === 'subject'"
+                   [class.ring-1]="testType === 'subject'"
+                   [class.ring-[var(--color-blue)]]="testType === 'subject'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
+                <div>
+                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[var(--color-blue)] transition-colors mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                  </div>
+                  <h4 class="text-sm font-bold tracking-tight">Subject Test</h4>
+                  <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Test specific subjects of your choice</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="testType === 'subject'"
+                     [class.bg-[var(--color-blue)]]="testType === 'subject'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] opacity-60 cursor-not-allowed relative group flex flex-col justify-between min-h-[140px] select-none">
+                <div>
+                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-500 mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    </svg>
+                  </div>
+                  <h4 class="text-sm font-bold tracking-tight text-zinc-400">Custom Test</h4>
+                  <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Create your own test configuration</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-700 flex items-center justify-center"></div>
+              </div>
+
+            </div>
+          </section>
+
+          <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-3">
+            <div class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+              <div>
+                <h3 class="text-base font-bold tracking-tight">Select Difficulty Level</h3>
+                <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Choose the difficulty level for your test</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              
+              <div (click)="setDifficulty('easy')"
+                   [class.border-[var(--color-blue)]]="difficulty === 'easy'"
+                   [class.ring-1]="difficulty === 'easy'"
+                   [class.ring-[var(--color-blue)]]="difficulty === 'easy'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                <div>
+                  <div class="text-emerald-500 font-bold text-xs flex items-center gap-1 mb-2">
+                    <span class="text-sm">●</span> Easy
+                  </div>
+                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Basic level questions</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="difficulty === 'easy'"
+                     [class.bg-[var(--color-blue)]]="difficulty === 'easy'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div (click)="setDifficulty('medium')"
+                   [class.border-[var(--color-blue)]]="difficulty === 'medium'"
+                   [class.ring-1]="difficulty === 'medium'"
+                   [class.ring-[var(--color-blue)]]="difficulty === 'medium'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                <div>
+                  <div class="text-amber-500 font-bold text-xs flex items-center gap-1 mb-2">
+                    <span class="text-sm">▲</span> Moderate
+                  </div>
+                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Standard level questions</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="difficulty === 'medium'"
+                     [class.bg-[var(--color-blue)]]="difficulty === 'medium'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div (click)="setDifficulty('hard')"
+                   [class.border-[var(--color-blue)]]="difficulty === 'hard'"
+                   [class.ring-1]="difficulty === 'hard'"
+                   [class.ring-[var(--color-blue)]]="difficulty === 'hard'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                <div>
+                  <div class="text-rose-500 font-bold text-xs flex items-center gap-1 mb-2">
+                    <span class="text-sm">■</span> Difficult
+                  </div>
+                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Advanced level questions</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="difficulty === 'hard'"
+                     [class.bg-[var(--color-blue)]]="difficulty === 'hard'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+              <div (click)="setDifficulty('adaptive')"
+                   [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
+                   [class.ring-1]="difficulty === 'adaptive'"
+                   [class.ring-[var(--color-blue)]]="difficulty === 'adaptive'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                <div>
+                  <div class="text-purple-500 font-bold text-xs flex items-center gap-1 mb-2">
+                    <span class="text-sm">⚡</span> Adaptive
+                  </div>
+                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Mixed difficulty questions</p>
+                </div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
+                     [class.bg-[var(--color-blue)]]="difficulty === 'adaptive'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-[var(--color-blue)]/5 border border-[var(--color-blue)]/10 text-[var(--color-blue)] flex items-center gap-2 text-xs font-medium">
+              <span>ⓘ</span>
+              <span>Difficulty level will be applied to all questions in your test</span>
+            </div>
+          </section>
+
+          <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-4">
+            <div class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+              <div>
+                <h3 class="text-base font-bold tracking-tight">Test Configuration</h3>
+                <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Set up the test parameters</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              
+              <div class="space-y-2">
+                <label class="text-xs font-bold text-[var(--color-text-muted)]">Number of Questions</label>
+                <div class="relative">
+                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                    <option>{{ totalQuestions }} Questions</option>
+                  </select>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-xs font-bold text-[var(--color-text-muted)]">Duration</label>
+                <div class="relative">
+                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                    <option>{{ timeLimit }} Minutes</option>
+                  </select>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">🕒</div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-xs font-bold text-[var(--color-text-muted)]">Marking Scheme</label>
+                <div class="relative">
+                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                    <option>+4 for correct, -1 for wrong</option>
+                  </select>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
+                </div>
+              </div>
+
+            </div>
+
+            @if (testType === 'subject') {
+              <div class="pt-4 border-t border-[var(--color-border)] space-y-3 animate-fade-in">
+                <label class="text-xs font-black uppercase tracking-wider text-[var(--color-text-muted)]">Select Custom Active Subjects</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  @for (sub of subjects; track sub.id) {
+                    <div (click)="toggleSubject(sub)"
+                         [class.border-[var(--color-blue)]]="sub.checked"
+                         [class.bg-[var(--color-blue)]]="sub.checked"
+                         class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer select-none transition-all">
+                      <div class="w-4 h-4 rounded border flex items-center justify-center"
+                           [class.bg-[var(--color-blue)]]="sub.checked"
+                           [class.border-[var(--color-blue)]]="sub.checked"
+                           [class.border-zinc-600]="!sub.checked">
+                        @if (sub.checked) {
+                          <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        }
+                      </div>
+                      <span class="text-sm font-semibold">{{ sub.icon }} {{ sub.name }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold">Include Solutions</span>
+                <span class="text-[11px] text-[var(--color-text-muted)] font-medium">(Show solutions after test completion)</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" checked class="sr-only peer">
+                <div class="w-10 h-5.5 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-blue)]"></div>
+              </label>
+            </div>
+          </section>
+
+          <div class="flex items-center justify-end gap-4 pt-4 anim-5">
+            <button class="px-5 py-3 rounded-xl text-sm font-bold border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)]/50 transition-colors cursor-pointer">
+              Cancel
+            </button>
+            <button (click)="startMockTest()"
+                    class="px-6 py-3 rounded-xl text-sm font-bold bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white flex items-center gap-2 shadow-md shadow-[var(--color-blue)]/10 transition-transform active:scale-98 cursor-pointer">
+              <span>Create Mock Test</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="lg:col-span-1 space-y-6 anim-6 lg:sticky lg:top-[20px]">
+          
+          <div class="border border-[var(--color-border)] rounded-2xl bg-[var(--color-bg-alt)]/5 p-5 space-y-4">
+            <div class="flex items-center gap-2 border-b border-[var(--color-border)] pb-3">
+              <span class="text-sm">📋</span>
+              <h3 class="text-sm font-bold tracking-tight">Test Summary</h3>
+            </div>
+            
+            <div class="space-y-3 text-xs font-medium">
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Test Type</span>
+                <span class="font-bold uppercase text-[var(--color-blue)] text-[11px]">
+                  {{ testType === 'full' ? (includePyqs ? 'PYQ Test' : 'Full Mock') : 'Subject-Wise' }}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Difficulty</span>
+                <span class="font-bold uppercase text-[11px]">{{ difficulty }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Questions</span>
+                <span class="font-bold">{{ totalQuestions }} Qs</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Duration</span>
+                <span class="font-bold">{{ timeLimit }} Minutes</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Subjects</span>
+                <span class="font-bold text-right max-w-[120px] truncate">
+                  {{ testType === 'full' ? 'Core Layout' : 'Configured' }}
+                </span>
+              </div>
+              
+              <div class="h-px bg-[var(--color-border)] my-2"></div>
+              
+              <div class="flex justify-between items-baseline">
+                <span class="text-[var(--color-text-muted)] font-semibold">Total Marks</span>
+                <span class="text-sm font-black">{{ totalQuestions * 4 }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--color-text-muted)]">Negative Marking</span>
+                <span class="text-rose-500 font-bold text-[11px]">Applicable</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-[var(--color-border)] rounded-2xl bg-[var(--color-bg-alt)]/5 p-5 space-y-4">
+            <div class="flex items-center gap-2 border-b border-[var(--color-border)] pb-3">
+              <span class="text-sm text-[var(--color-blue)]">ℹ️</span>
+              <h3 class="text-sm font-bold tracking-tight">Information</h3>
+            </div>
+            
+            <div class="space-y-3 text-[11px] leading-relaxed text-[var(--color-text-muted)] font-medium">
+              <div class="flex items-start gap-2">
+                <span class="text-[var(--color-blue)] mt-0.5">●</span>
+                <p><strong class="text-[var(--color-text)]">PYQ Test:</strong> Context questions extracted out of official historical testing databases.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-[var(--color-blue)] mt-0.5">●</span>
+                <p><strong class="text-[var(--color-text)]">Full Mock Test:</strong> Complete comprehensive standard model containing optimized distribution properties.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-[var(--color-blue)] mt-0.5">●</span>
+                <p><strong class="text-[var(--color-text)]">Subject Test:</strong> Isolate weak areas dynamically to secure key metric points.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-[var(--color-blue)] mt-0.5">●</span>
+                <p>All structured parameters map onto your blueprint syllabus matrix tracking vectors.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-[var(--color-border)] rounded-2xl bg-[var(--color-bg-alt)]/5 p-5 space-y-4">
+            <div class="flex items-center gap-2 border-b border-[var(--color-border)] pb-3">
+              <span class="text-sm text-amber-500">💡</span>
+              <h3 class="text-sm font-bold tracking-tight">Tips</h3>
+            </div>
+            
+            <div class="space-y-3 text-[11px] leading-relaxed text-[var(--color-text-muted)] font-medium">
+              <div class="flex items-start gap-2">
+                <span>🔧</span>
+                <p>Start with specific historical sets to monitor core distribution patterns accurately.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <span>📈</span>
+                <p>Run routine sessions at standard full duration values to test velocity bounds.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <span>🎯</span>
+                <p>Analyze performance output variations immediately inside your analytics workspace.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+
+</div>

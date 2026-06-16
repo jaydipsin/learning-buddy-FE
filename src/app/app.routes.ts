@@ -1,28 +1,42 @@
 import { Routes } from '@angular/router';
 import { authGuard, restrictLoginGuard } from './core/gurd/auth.guard';
+import { Layout } from './features/layout/layout';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'student/dashboard',
-    pathMatch: 'full'
+    component: Layout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        redirectTo: 'student/dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'student/dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/component/dashboard').then((c) => c.Dashboard),
+        title: 'Dashboard',
+      },
+      {
+        path: 'student/mock-test',
+        loadComponent: () =>
+          import('./features/generate-mocktest/generate-mocktest').then((c) => c.GenerateMockTest),
+        title: 'Generate Mock Test',
+      },
+    ],
   },
+
   {
     path: 'auth',
     loadComponent: () => import('./features/auth/component/register').then((c) => c.Register),
     title: 'Register',
-    canActivate: [restrictLoginGuard]
+    canActivate: [restrictLoginGuard],
   },
-  {
-    path: 'student/dashboard',
-    loadComponent: () => import('./features/dashboard/component/dashboard').then((c) => c.Dashboard),
-    title: 'Dashboard',
-    canActivate: [authGuard]
-  },
+
   {
     path: '**',
     redirectTo: 'auth',
-    pathMatch: 'full',
-    title: '404'
-  }
+  },
 ];

@@ -1,0 +1,265 @@
+/* Steps labels and typography */
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.step-label h3 {
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--color-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* Selectable Cards (Test Type) */
+.active-card {
+  border-color: var(--color-blue) !important;
+  box-shadow: 0 8px 32px rgba(0, 123, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(-1px);
+}
+
+/* Subject pills selection */
+.subject-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.subject-pill:hover:not(.disabled-pill) {
+  border-color: var(--color-blue);
+  background: var(--color-bg-alt);
+  transform: translateY(-1px);
+}
+
+.checked-pill {
+  border-color: var(--color-blue) !important;
+  background-color: color-mix(in srgb, var(--color-blue) 4%, var(--color-bg)) !important;
+}
+
+.disabled-pill {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+
+.checkbox-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.checked-pill .checkbox-box {
+  border-color: var(--color-blue);
+  background-color: var(--color-blue);
+}
+
+.disabled-pill .checkbox-box {
+  background-color: var(--color-bg-alt);
+  border-color: var(--color-border);
+}
+
+/* Toggle Switch styling */
+.switch-container {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch-container input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-border);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+input:checked + .switch-slider {
+  background-color: var(--color-blue);
+}
+
+input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+
+/* Dual Range Slider styling */
+.dual-range-slider {
+  padding: 10px 0;
+}
+
+.slider-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--color-blue);
+  border-radius: 4px;
+  height: 6px;
+}
+
+.range-wrapper {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  height: 6px;
+}
+
+.slider-input {
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  top: 0;
+  left: 0;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Webkit browser slider style */
+.slider-input::-webkit-slider-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--color-blue);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+  transition: transform 0.1s ease;
+}
+.slider-input::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.slider-input::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+/* Mozilla browser slider style */
+.slider-input::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--color-blue);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+  transition: transform 0.1s ease;
+}
+.slider-input::-moz-range-thumb:hover {
+  transform: scale(1.12);
+}
+
+/* Segmented Control styling */
+.segmented-control {
+  display: flex;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.segment-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  text-align: center;
+}
+
+.segment-btn:hover {
+  color: var(--color-text);
+}
+
+.active-segment {
+  background: var(--color-bg);
+  color: var(--color-blue) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Section Disabled transition styling */
+.section-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.section-disabled .step-number {
+  background-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.section-disabled h3 {
+  color: var(--color-text-muted);
+}
+
+/* Launching animation styles */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* Footer layout text decorations */
+.text-decoration-none {
+  text-decoration: none;
+}

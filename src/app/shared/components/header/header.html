@@ -1,0 +1,65 @@
+<header class="sticky top-0 z-40 backdrop-blur-md bg-[var(--color-bg)]/80 border-b border-[var(--color-border)] transition-colors duration-300">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
+    
+    <!-- Logo -->
+    <a routerLink="/student/dashboard" class="flex items-center gap-2.5 group text-decoration-none">
+      <div class="w-9 h-9 bg-[var(--color-blue)] rounded-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+        <span class="text-white font-bold text-xs tracking-wider">LB</span>
+      </div>
+      <h1 class="text-base font-extrabold tracking-tight text-[var(--color-blue)] hover:opacity-90 transition-opacity">Learning Buddy</h1>
+    </a>
+
+    <!-- Navigation Links -->
+    <nav class="hidden md:flex items-center gap-8">
+      <a routerLink="/student/dashboard" 
+         routerLinkActive="active-tab" 
+         [routerLinkActiveOptions]="{exact: true}"
+         class="nav-link">Dashboard</a>
+      <a routerLink="/student/mock-test" 
+         routerLinkActive="active-tab" 
+         class="nav-link">Tests</a>
+      <a (click)="comingSoon('Analysis')" class="nav-link cursor-pointer">Analysis</a>
+      <a (click)="comingSoon('AI Buddy')" class="nav-link cursor-pointer">AI Buddy</a>
+    </nav>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <!-- Streak -->
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-bg-alt)] border border-[var(--color-border)] shadow-xs">
+        <span class="text-sm">🔥</span>
+        <span class="font-bold text-xs">12</span>
+      </div>
+
+      <!-- Theme Toggle -->
+      <button (click)="toggleTheme()"
+              class="w-9 h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] hover:border-[var(--color-blue)] hover:text-[var(--color-blue)] flex items-center justify-center transition-all duration-200 active:scale-95 text-sm shadow-xs cursor-pointer"
+              [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+        {{ isDarkMode ? '☀️' : '🌙' }}
+      </button>
+
+      <!-- Profile Dropdown Container -->
+      <div class="relative">
+        <button (click)="toggleProfileMenu()"
+                class="w-9 h-9 rounded-lg border border-[var(--color-border)] overflow-hidden hover:border-[var(--color-blue)] transition-colors duration-200 focus:outline-none cursor-pointer flex items-center justify-center">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile"
+               class="w-full h-full object-cover">
+        </button>
+
+        <!-- Dropdown Menu -->
+        @if (isProfileMenuOpen) {
+          <div class="absolute right-0 mt-2 w-48 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] shadow-lg py-2 z-50 animate-scale-in">
+            <div class="px-4 py-2 border-b border-[var(--color-border)] mb-1">
+              <p class="text-xs text-[var(--color-text-muted)] font-medium">Signed in as</p>
+              <p class="text-sm font-bold truncate">Felix the Buddy</p>
+            </div>
+            <a routerLink="/student/dashboard" (click)="isProfileMenuOpen = false" class="dropdown-item">Dashboard</a>
+            <a routerLink="/student/mock-test" (click)="isProfileMenuOpen = false" class="dropdown-item">Practice Tests</a>
+            <div class="h-px bg-[var(--color-border)] my-1"></div>
+            <button (click)="comingSoon('Profile Settings')" class="dropdown-item w-full text-left bg-transparent border-0 cursor-pointer">Profile Settings</button>
+            <button (click)="comingSoon('Logout')" class="dropdown-item w-full text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 bg-transparent border-0 cursor-pointer">Sign Out</button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</header>
