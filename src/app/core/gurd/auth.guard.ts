@@ -25,7 +25,8 @@ export const restrictLoginGuard: CanActivateFn = (
     const userDetails = localStorageService.getUserData();
 
     if (userDetails && userDetails.accessToken) {
-        return router.parseUrl('/student/dashboard');
+        const role = userDetails.userData?.role?.toLowerCase() || 'student';
+        return router.parseUrl(`/${role}/dashboard`);
     }
     return true;
 }

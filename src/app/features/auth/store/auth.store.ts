@@ -2,14 +2,18 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { IAuthResponse, ILoginPayload, Iregistrationpayload } from '../../../shared/models/auth.interface';
+import {
+  IAuthResponse,
+  ILoginPayload,
+  IRegisterResponse,
+  Iregistrationpayload,
+} from '../../../shared/models/auth.interface';
 import { exhaustMap, pipe, switchMap, tap } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { ToastrService } from 'ngx-toastr';
 import { IStateData, Role } from '../../../shared/models/global.interface';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { Router } from '@angular/router';
-
 
 export interface AuthState extends IStateData {
   isLoading: boolean;
@@ -32,13 +36,29 @@ export const authStore = signalStore(
     setStorage: () => {
       localStorage.saveUserData({ userData: store.userData(), accessToken: store.accessToken() });
     },
+    setUnverifiedUserStorage: () => {
+      localStorage.saveUserData({
+        userData: store.userData(),
+        accessToken: null,
+        userVerified: false,
+      });
+    },
     clearUserData: () => {
       localStorage.clearUserData();
       patchState(store, {
         accessToken: null,
         userData: null,
-      })
-    }
+      });
+    },
+    loadStorage: () => {
+      const userDetails = localStorage.getUserData();
+      if (userDetails && !userDetails.accessToken && userDetails.userData) {
+        patchState(store, {
+          userData: userDetails.userData,
+          accessToken: null,
+        });
+      }
+    },
   })),
 
   withMethods((store, router = inject(Router)) => ({
@@ -61,7 +81,6 @@ export const authStore = signalStore(
     redirectToLogin: () => {
       router.navigateByUrl('/login');
     },
-
   })),
 
   withMethods((store, authService = inject(AuthService), toastr = inject(ToastrService)) => ({
@@ -71,18 +90,23 @@ export const authStore = signalStore(
         switchMap((payload) =>
           authService.register(payload).pipe(
             tapResponse({
-              next: (res: IAuthResponse) => {
-                toastr.success(res?.message || "Registration successfull", 'Success');
-                patchState(store, { isLoading: false, accessToken: res.data.accessToken, userData: res.data.userData })
-                store.setStorage();
-                store.redirectToDashboard();
-              },
-              error: (err: any) => {
-                toastr.error(err?.error?.message || 'Registration failed. Please try again.', 'Error');
+              next: (res: IRegisterResponse) => {
+                toastr.success(res?.message || 'Registration successfull', 'Success');
                 patchState(store, {
                   isLoading: false,
-                })
-              }
+                  userData: res.data.userData,
+                });
+                store.setUnverifiedUserStorage();
+              },
+              error: (err: any) => {
+                toastr.error(
+                  err?.error?.message || 'Registration failed. Please try again.',
+                  'Error',
+                );
+                patchState(store, {
+                  isLoading: false,
+                });
+              },
             }),
           ),
         ),
@@ -95,20 +119,22 @@ export const authStore = signalStore(
         switchMap(() =>
           authService.getAllCourses().pipe(
             tapResponse({
-              next: (res: { message: string, courses: any[] }) => {
+              next: (res: { message: string; courses: any[] }) => {
                 console.log(res);
-
-                patchState(store, { courses: res.courses })
+                store.setStorage();
+                patchState(store, { courses: res.courses });
               },
               error: (err: any) => {
-                toastr.error(err?.error?.message || 'Courses fetch failed. Please try again.', 'Error');
-              }
+                toastr.error(
+                  err?.error?.message || 'Courses fetch failed. Please try again.',
+                  'Error',
+                );
+              },
             }),
           ),
         ),
       ),
     ),
-
 
     login: rxMethod<ILoginPayload>(
       pipe(
@@ -119,12 +145,17 @@ export const authStore = signalStore(
               next: (res: IAuthResponse) => {
                 patchState(store, {
                   isLoading: false,
-                  accessToken: res.data.accessToken,
-                  userData: res.data.userData
+                  accessToken: res.data.accessToken || null,
+                  userData: res.data.userData,
                 });
-                store.setStorage()
-
-                toastr.success(res?.message || "Login successfull", 'Success');
+                if (!res.data.accessToken) {
+                  store.setUnverifiedUserStorage();
+                  toastr.info(res?.message || 'Please verify your email address.', 'Info');
+                } else {
+                  store.setStorage();
+                  toastr.success(res?.message || 'Login successfull', 'Success');
+                  store.redirectToDashboard();
+                }
               },
               error: (err: any) => {
                 toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
@@ -137,7 +168,6 @@ export const authStore = signalStore(
         ),
       ),
     ),
-
 
     logOut: rxMethod<void>(
       pipe(
@@ -150,7 +180,7 @@ export const authStore = signalStore(
                   accessToken: null,
                   userData: null,
                 });
-                store.clearUserData()
+                store.clearUserData();
                 store.redirectToLogin();
               },
               error: (err: any) => {
@@ -159,10 +189,44 @@ export const authStore = signalStore(
                   isLoading: false,
                 });
               },
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    verifyOtp: rxMethod<{ email: string; otp: string }>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        exhaustMap((payload) =>
+          authService.verifyOtp(payload.email, payload.otp).pipe(
+            tapResponse({
+              next: (res: IAuthResponse) => {
+                const currentUserData = store.userData();
+                const updatedUserData = currentUserData ? { ...currentUserData, isUserVerified: true } : null;
+                patchState(store, {
+                  isLoading: false,
+                  accessToken: res.data.accessToken || null,
+                  userData: updatedUserData,
+                  userVerified: true,
+                });
+                store.setStorage();
+                toastr.success(res?.message || 'OTP verified successfully', 'Success');
+                store.redirectToDashboard();
+              },
+              error: (err: any) => {
+                toastr.error(
+                  err?.error?.message || 'OTP verification failed. Please try again.',
+                  'Error',
+                );
+                patchState(store, {
+                  isLoading: false,
+                });
+              },
+            }),
+          ),
+        ),
+      ),
     ),
 
     renewAccessToken: rxMethod<void>(
@@ -170,12 +234,12 @@ export const authStore = signalStore(
         exhaustMap(() =>
           authService.refreshToken().pipe(
             tapResponse({
-              next: (res: { data: { accessToken: string }, message: string }) => {
+              next: (res: { data: { accessToken: string }; message: string }) => {
                 patchState(store, {
                   isLoading: false,
                   accessToken: res.data.accessToken,
                 });
-                store.setStorage()
+                store.setStorage();
               },
               error: (err: any) => {
                 toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
@@ -183,13 +247,10 @@ export const authStore = signalStore(
                   isLoading: false,
                 });
               },
-            })
-          )
-        )
-      )
-    )
-
+            }),
+          ),
+        ),
+      ),
+    ),
   })),
-
-
 );

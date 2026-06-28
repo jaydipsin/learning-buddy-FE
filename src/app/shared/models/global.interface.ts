@@ -15,6 +15,8 @@ export interface IUserProfile {
   userName: string;
   organizationName: string;
   parentNumber: string;
+  studentEmail?: string;
+  organizationEmail?: string;
   role: 'admin' | 'teacher' | 'student' | 'parent';
   themePreference: 'light' | 'dark';
   course: {
@@ -30,19 +32,18 @@ export interface IUserProfile {
   isPremium: boolean;
 }
 
-
-// Local storage interface 
+// Local storage interface
 
 export interface IStateData {
   userData: IUserProfile | null;
   accessToken: string | null;
+  userVerified?: boolean;
   themePreference: 'light' | 'dark';
 }
 
-
 export enum Role {
   Admin = 'Admin',
-  Teacher = 'Teacher',  
+  Teacher = 'Teacher',
   Student = 'Student',
   Parent = 'Parent',
 }

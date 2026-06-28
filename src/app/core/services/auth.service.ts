@@ -23,8 +23,14 @@ export class AuthService {
     return this.http.post(BASE_BACKEND_URL + '/auth/logout', {});
   }
 
-  refreshToken(): Observable<{ data: { accessToken: string }, message: string }> {
-    return this.http.get<{ data: { accessToken: string }, message: string }>(BASE_BACKEND_URL + '/auth/refresh');
+  verifyOtp(email: string, otp: string): Observable<IAuthResponse> {
+    return this.http.post<IAuthResponse>(BASE_BACKEND_URL + '/auth/verify-otp', { email, otp });
+  }
+
+  refreshToken(): Observable<{ data: { accessToken: string }; message: string }> {
+    return this.http.get<{ data: { accessToken: string }; message: string }>(
+      BASE_BACKEND_URL + '/auth/refresh',
+    );
   }
 
   // Need to change api calling place this
