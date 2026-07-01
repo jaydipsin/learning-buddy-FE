@@ -34,12 +34,12 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               
-              <div (click)="setTestType('full'); includePyqs = true"
-                   [class.border-[var(--color-blue)]]="testType === 'full' && includePyqs"
-                   [class.ring-1]="testType === 'full' && includePyqs"
-                   [class.ring-[var(--color-blue)]]="testType === 'full' && includePyqs"
+              <div (click)="setTestType('pyq')"
+                   [class.border-[var(--color-blue)]]="testType === 'pyq'"
+                   [class.ring-1]="testType === 'pyq'"
+                   [class.ring-[var(--color-blue)]]="testType === 'pyq'"
                    class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
                 <div>
                   <div class="w-9 h-9 rounded-lg bg-[var(--color-blue)]/5 flex items-center justify-center text-[var(--color-blue)] mb-4">
@@ -51,29 +51,8 @@
                   <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Practice with Previous Year Questions</p>
                 </div>
                 <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
-                     [class.border-[var(--color-blue)]]="testType === 'full' && includePyqs"
-                     [class.bg-[var(--color-blue)]]="testType === 'full' && includePyqs">
-                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                </div>
-              </div>
-
-              <div (click)="setTestType('full'); includePyqs = false"
-                   [class.border-[var(--color-blue)]]="testType === 'full' && !includePyqs"
-                   [class.ring-1]="testType === 'full' && !includePyqs"
-                   [class.ring-[var(--color-blue)]]="testType === 'full' && !includePyqs"
-                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
-                <div>
-                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[var(--color-blue)] transition-colors mb-4">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                    </svg>
-                  </div>
-                  <h4 class="text-sm font-bold tracking-tight">Full Mock Test</h4>
-                  <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Complete mock test with all subjects</p>
-                </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
-                     [class.border-[var(--color-blue)]]="testType === 'full' && !includePyqs"
-                     [class.bg-[var(--color-blue)]]="testType === 'full' && !includePyqs">
+                     [class.border-[var(--color-blue)]]="testType === 'pyq'"
+                     [class.bg-[var(--color-blue)]]="testType === 'pyq'">
                   <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
                 </div>
               </div>
@@ -99,193 +78,236 @@
                 </div>
               </div>
 
-              <div class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] opacity-60 cursor-not-allowed relative group flex flex-col justify-between min-h-[140px] select-none">
+              <div (click)="setTestType('custom')"
+                   [class.border-[var(--color-blue)]]="testType === 'custom'"
+                   [class.ring-1]="testType === 'custom'"
+                   [class.ring-[var(--color-blue)]]="testType === 'custom'"
+                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative group flex flex-col justify-between min-h-[140px] select-none transition-all duration-200">
                 <div>
-                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-500 mb-4">
+                  <div class="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-[var(--color-blue)] transition-colors mb-4">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                     </svg>
                   </div>
-                  <h4 class="text-sm font-bold tracking-tight text-zinc-400">Custom Test</h4>
+                  <h4 class="text-sm font-bold tracking-tight">Custom Test</h4>
                   <p class="text-[11px] text-[var(--color-text-muted)] mt-1.5 leading-relaxed">Create your own test configuration</p>
                 </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-700 flex items-center justify-center"></div>
+                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                     [class.border-[var(--color-blue)]]="testType === 'custom'"
+                     [class.bg-[var(--color-blue)]]="testType === 'custom'">
+                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                </div>
               </div>
 
             </div>
           </section>
 
-          <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-3">
-            <div class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
-              <div>
-                <h3 class="text-base font-bold tracking-tight">Select Difficulty Level</h3>
-                <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Choose the difficulty level for your test</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              
-              <div (click)="setDifficulty('easy')"
-                   [class.border-[var(--color-blue)]]="difficulty === 'easy'"
-                   [class.ring-1]="difficulty === 'easy'"
-                   [class.ring-[var(--color-blue)]]="difficulty === 'easy'"
-                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+          @if (testType === 'pyq') {
+            <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-3">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
                 <div>
-                  <div class="text-emerald-500 font-bold text-xs flex items-center gap-1 mb-2">
-                    <span class="text-sm">●</span> Easy
-                  </div>
-                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Basic level questions</p>
+                  <h3 class="text-base font-bold tracking-tight">Select PYQ Years</h3>
+                  <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Choose the previous year question papers to include (you can choose multiple)</p>
                 </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+              </div>
+
+              <div class="flex flex-wrap gap-2 pt-2">
+                @for (year of availableYears; track year) {
+                  <button
+                    type="button"
+                    (click)="toggleYear(year)"
+                    [class.bg-[var(--color-blue)]]="selectedYears.includes(year)"
+                    [class.text-white]="selectedYears.includes(year)"
+                    [class.bg-[var(--color-bg-alt)]]="!selectedYears.includes(year)"
+                    [class.text-[var(--color-text)]]="!selectedYears.includes(year)"
+                    [class.border-[var(--color-blue)]]="selectedYears.includes(year)"
+                    class="px-4 py-2 cursor-pointer rounded-xl text-sm font-semibold transition-all border border-transparent hover:border-[var(--color-border)] outline-none focus:ring-2 focus:ring-[var(--color-blue)] select-none shadow-sm"
+                  >
+                    {{ year }}
+                  </button>
+                }
+              </div>
+            </section>
+          }
+
+          @if (testType === 'custom') {
+            <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-3">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                <div>
+                  <h3 class="text-base font-bold tracking-tight">Select Difficulty Level</h3>
+                  <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Choose the difficulty level for your test</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                
+                <div (click)="setDifficulty('easy')"
                      [class.border-[var(--color-blue)]]="difficulty === 'easy'"
-                     [class.bg-[var(--color-blue)]]="difficulty === 'easy'">
-                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                </div>
-              </div>
-
-              <div (click)="setDifficulty('medium')"
-                   [class.border-[var(--color-blue)]]="difficulty === 'medium'"
-                   [class.ring-1]="difficulty === 'medium'"
-                   [class.ring-[var(--color-blue)]]="difficulty === 'medium'"
-                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
-                <div>
-                  <div class="text-amber-500 font-bold text-xs flex items-center gap-1 mb-2">
-                    <span class="text-sm">▲</span> Moderate
-                  </div>
-                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Standard level questions</p>
-                </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
-                     [class.border-[var(--color-blue)]]="difficulty === 'medium'"
-                     [class.bg-[var(--color-blue)]]="difficulty === 'medium'">
-                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                </div>
-              </div>
-
-              <div (click)="setDifficulty('hard')"
-                   [class.border-[var(--color-blue)]]="difficulty === 'hard'"
-                   [class.ring-1]="difficulty === 'hard'"
-                   [class.ring-[var(--color-blue)]]="difficulty === 'hard'"
-                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
-                <div>
-                  <div class="text-rose-500 font-bold text-xs flex items-center gap-1 mb-2">
-                    <span class="text-sm">■</span> Difficult
-                  </div>
-                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Advanced level questions</p>
-                </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
-                     [class.border-[var(--color-blue)]]="difficulty === 'hard'"
-                     [class.bg-[var(--color-blue)]]="difficulty === 'hard'">
-                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                </div>
-              </div>
-
-              <div (click)="setDifficulty('adaptive')"
-                   [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
-                   [class.ring-1]="difficulty === 'adaptive'"
-                   [class.ring-[var(--color-blue)]]="difficulty === 'adaptive'"
-                   class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
-                <div>
-                  <div class="text-purple-500 font-bold text-xs flex items-center gap-1 mb-2">
-                    <span class="text-sm">⚡</span> Adaptive
-                  </div>
-                  <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Mixed difficulty questions</p>
-                </div>
-                <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
-                     [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
-                     [class.bg-[var(--color-blue)]]="difficulty === 'adaptive'">
-                  <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="p-3.5 rounded-xl bg-[var(--color-blue)]/5 border border-[var(--color-blue)]/10 text-[var(--color-blue)] flex items-center gap-2 text-xs font-medium">
-              <span>ⓘ</span>
-              <span>Difficulty level will be applied to all questions in your test</span>
-            </div>
-          </section>
-
-          <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-4">
-            <div class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
-              <div>
-                <h3 class="text-base font-bold tracking-tight">Test Configuration</h3>
-                <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Set up the test parameters</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              
-              <div class="space-y-2">
-                <label class="text-xs font-bold text-[var(--color-text-muted)]">Number of Questions</label>
-                <div class="relative">
-                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
-                    <option>{{ totalQuestions }} Questions</option>
-                  </select>
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <label class="text-xs font-bold text-[var(--color-text-muted)]">Duration</label>
-                <div class="relative">
-                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
-                    <option>{{ timeLimit }} Minutes</option>
-                  </select>
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">🕒</div>
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <label class="text-xs font-bold text-[var(--color-text-muted)]">Marking Scheme</label>
-                <div class="relative">
-                  <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
-                    <option>+4 for correct, -1 for wrong</option>
-                  </select>
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
-                </div>
-              </div>
-
-            </div>
-
-            @if (testType === 'subject') {
-              <div class="pt-4 border-t border-[var(--color-border)] space-y-3 animate-fade-in">
-                <label class="text-xs font-black uppercase tracking-wider text-[var(--color-text-muted)]">Select Custom Active Subjects</label>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  @for (sub of subjects; track sub.id) {
-                    <div (click)="toggleSubject(sub)"
-                         [class.border-[var(--color-blue)]]="sub.checked"
-                         [class.bg-[var(--color-blue)]]="sub.checked"
-                         class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer select-none transition-all">
-                      <div class="w-4 h-4 rounded border flex items-center justify-center"
-                           [class.bg-[var(--color-blue)]]="sub.checked"
-                           [class.border-[var(--color-blue)]]="sub.checked"
-                           [class.border-zinc-600]="!sub.checked">
-                        @if (sub.checked) {
-                          <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                          </svg>
-                        }
-                      </div>
-                      <span class="text-sm font-semibold">{{ sub.icon }} {{ sub.name }}</span>
+                     [class.ring-1]="difficulty === 'easy'"
+                     [class.ring-[var(--color-blue)]]="difficulty === 'easy'"
+                     class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                  <div>
+                    <div class="text-emerald-500 font-bold text-xs flex items-center gap-1 mb-2">
+                      <span class="text-sm">●</span> Easy
                     </div>
-                  }
+                    <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Basic level questions</p>
+                  </div>
+                  <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                       [class.border-[var(--color-blue)]]="difficulty === 'easy'"
+                       [class.bg-[var(--color-blue)]]="difficulty === 'easy'">
+                    <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                  </div>
+                </div>
+
+                <div (click)="setDifficulty('medium')"
+                     [class.border-[var(--color-blue)]]="difficulty === 'medium'"
+                     [class.ring-1]="difficulty === 'medium'"
+                     [class.ring-[var(--color-blue)]]="difficulty === 'medium'"
+                     class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                  <div>
+                    <div class="text-amber-500 font-bold text-xs flex items-center gap-1 mb-2">
+                      <span class="text-sm">▲</span> Moderate
+                    </div>
+                    <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Standard level questions</p>
+                  </div>
+                  <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                       [class.border-[var(--color-blue)]]="difficulty === 'medium'"
+                       [class.bg-[var(--color-blue)]]="difficulty === 'medium'">
+                    <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                  </div>
+                </div>
+
+                <div (click)="setDifficulty('hard')"
+                     [class.border-[var(--color-blue)]]="difficulty === 'hard'"
+                     [class.ring-1]="difficulty === 'hard'"
+                     [class.ring-[var(--color-blue)]]="difficulty === 'hard'"
+                     class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                  <div>
+                    <div class="text-rose-500 font-bold text-xs flex items-center gap-1 mb-2">
+                      <span class="text-sm">■</span> Difficult
+                    </div>
+                    <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Advanced level questions</p>
+                  </div>
+                  <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                       [class.border-[var(--color-blue)]]="difficulty === 'hard'"
+                       [class.bg-[var(--color-blue)]]="difficulty === 'hard'">
+                    <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                  </div>
+                </div>
+
+                <div (click)="setDifficulty('adaptive')"
+                     [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
+                     [class.ring-1]="difficulty === 'adaptive'"
+                     [class.ring-[var(--color-blue)]]="difficulty === 'adaptive'"
+                     class="p-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer relative flex flex-col justify-between min-h-[110px] select-none transition-all duration-200">
+                  <div>
+                    <div class="text-purple-500 font-bold text-xs flex items-center gap-1 mb-2">
+                      <span class="text-sm">⚡</span> Adaptive
+                    </div>
+                    <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">Mixed difficulty questions</p>
+                  </div>
+                  <div class="absolute top-4 right-4 w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center"
+                       [class.border-[var(--color-blue)]]="difficulty === 'adaptive'"
+                       [class.bg-[var(--color-blue)]]="difficulty === 'adaptive'">
+                    <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-[var(--color-blue)]/5 border border-[var(--color-blue)]/10 text-[var(--color-blue)] flex items-center gap-2 text-xs font-medium">
+                <span>ⓘ</span>
+                <span>Difficulty level will be applied to all questions in your test</span>
+              </div>
+            </section>
+          }
+
+          @if (testType === 'subject' || testType === 'custom') {
+            <section class="p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-alt)]/10 space-y-6 anim-4">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-[var(--color-blue)] text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {{ testType === 'custom' ? '3' : '2' }}
+                </span>
+                <div>
+                  <h3 class="text-base font-bold tracking-tight">Test Configuration</h3>
+                  <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Set up the test parameters</p>
                 </div>
               </div>
-            }
 
-            <div class="pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold">Include Solutions</span>
-                <span class="text-[11px] text-[var(--color-text-muted)] font-medium">(Show solutions after test completion)</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-[var(--color-text-muted)]">Number of Questions</label>
+                  <div class="relative">
+                    <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                      <option>{{ totalQuestions }} Questions</option>
+                    </select>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-[var(--color-text-muted)]">Duration</label>
+                  <div class="relative">
+                    <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                      <option>{{ timeLimit }} Minutes</option>
+                    </select>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">🕒</div>
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-[var(--color-text-muted)]">Marking Scheme</label>
+                  <div class="relative">
+                    <select class="w-full bg-[var(--color-bg)] text-sm border border-[var(--color-border)] rounded-xl py-3 px-4 outline-none appearance-none font-semibold cursor-pointer focus:border-[var(--color-blue)]">
+                      <option>+4 for correct, -1 for wrong</option>
+                    </select>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none text-xs">▼</div>
+                  </div>
+                </div>
+
               </div>
-              <label class="relative inline-flex items-center cursor-pointer select-none">
-                <input type="checkbox" checked class="sr-only peer">
-                <div class="w-10 h-5.5 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-blue)]"></div>
-              </label>
-            </div>
-          </section>
+
+              @if (testType === 'subject' || testType === 'custom') {
+                <div class="pt-4 border-t border-[var(--color-border)] space-y-3 animate-fade-in">
+                  <label class="text-xs font-black uppercase tracking-wider text-[var(--color-text-muted)]">Select Custom Active Subjects</label>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @for (sub of subjects; track sub.id) {
+                      <div (click)="toggleSubject(sub)"
+                           [class.border-[var(--color-blue)]]="sub.checked"
+                           [class.bg-[var(--color-blue)]]="sub.checked"
+                           class="flex items-center gap-2.5 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer select-none transition-all">
+                        <div class="w-4 h-4 rounded border flex items-center justify-center"
+                             [class.bg-[var(--color-blue)]]="sub.checked"
+                             [class.border-[var(--color-blue)]]="sub.checked"
+                             [class.border-zinc-600]="!sub.checked">
+                          @if (sub.checked) {
+                            <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                          }
+                        </div>
+                        <span class="text-sm font-semibold">{{ sub.icon }} {{ sub.name }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold">Include Solutions</span>
+                  <span class="text-[11px] text-[var(--color-text-muted)] font-medium">(Show solutions after test completion)</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                  <input type="checkbox" checked class="sr-only peer">
+                  <div class="w-10 h-5.5 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-blue)]"></div>
+                </label>
+              </div>
+            </section>
+          }
 
           <div class="flex items-center justify-end gap-4 pt-4 anim-5">
             <button class="px-5 py-3 rounded-xl text-sm font-bold border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)]/50 transition-colors cursor-pointer">
@@ -312,13 +334,15 @@
               <div class="flex justify-between">
                 <span class="text-[var(--color-text-muted)]">Test Type</span>
                 <span class="font-bold uppercase text-[var(--color-blue)] text-[11px]">
-                  {{ testType === 'full' ? (includePyqs ? 'PYQ Test' : 'Full Mock') : 'Subject-Wise' }}
+                  {{ testType === 'pyq' ? 'PYQ Test' : (testType === 'subject' ? 'Subject-Wise' : 'Custom Test') }}
                 </span>
               </div>
-              <div class="flex justify-between">
-                <span class="text-[var(--color-text-muted)]">Difficulty</span>
-                <span class="font-bold uppercase text-[11px]">{{ difficulty }}</span>
-              </div>
+              @if (testType === 'custom') {
+                <div class="flex justify-between">
+                  <span class="text-[var(--color-text-muted)]">Difficulty</span>
+                  <span class="font-bold uppercase text-[11px]">{{ difficulty }}</span>
+                </div>
+              }
               <div class="flex justify-between">
                 <span class="text-[var(--color-text-muted)]">Questions</span>
                 <span class="font-bold">{{ totalQuestions }} Qs</span>
@@ -327,12 +351,21 @@
                 <span class="text-[var(--color-text-muted)]">Duration</span>
                 <span class="font-bold">{{ timeLimit }} Minutes</span>
               </div>
-              <div class="flex justify-between">
-                <span class="text-[var(--color-text-muted)]">Subjects</span>
-                <span class="font-bold text-right max-w-[120px] truncate">
-                  {{ testType === 'full' ? 'Core Layout' : 'Configured' }}
-                </span>
-              </div>
+              @if (testType === 'pyq') {
+                <div class="flex justify-between">
+                  <span class="text-[var(--color-text-muted)]">PYQ Years</span>
+                  <span class="font-bold text-right max-w-[120px] truncate" [title]="selectedYears.join(', ')">
+                    {{ selectedYears.join(', ') || 'None' }}
+                  </span>
+                </div>
+              } @else {
+                <div class="flex justify-between">
+                  <span class="text-[var(--color-text-muted)]">Subjects</span>
+                  <span class="font-bold text-right max-w-[120px] truncate" [title]="getSelectedSubjects()">
+                    {{ getSelectedSubjects() }}
+                  </span>
+                </div>
+              }
               
               <div class="h-px bg-[var(--color-border)] my-2"></div>
               
@@ -360,7 +393,7 @@
               </div>
               <div class="flex items-start gap-2">
                 <span class="text-[var(--color-blue)] mt-0.5">●</span>
-                <p><strong class="text-[var(--color-text)]">Full Mock Test:</strong> Complete comprehensive standard model containing optimized distribution properties.</p>
+                <p><strong class="text-[var(--color-text)]">Custom Test:</strong> Fully configure parameters and difficulty levels matching your strategy.</p>
               </div>
               <div class="flex items-start gap-2">
                 <span class="text-[var(--color-blue)] mt-0.5">●</span>

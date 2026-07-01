@@ -17,7 +17,6 @@ import { ToastrService } from 'ngx-toastr';
   imports: [ReactiveFormsModule, JsonPipe, FormsModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
-  providers: [authStore],
 })
 export class Register implements OnInit {
   isDarkMode = false;

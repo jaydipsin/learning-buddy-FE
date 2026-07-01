@@ -1,16 +1,15 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { LocalStorageService } from "../../core/services/local-storage.service";
+import { authStore } from "../../features/auth/store/auth.store";
 
 export const authGuard: CanActivateFn = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
 ) => {
-    const localStorageService = inject(LocalStorageService);
+    const store = inject(authStore);
     const router = inject(Router);
-    const userDetails = localStorageService.getUserData();
 
-    if (userDetails && userDetails.accessToken) {
+    if (store.accessToken()) {
         return true;
     }
     return router.parseUrl('/auth');
@@ -20,12 +19,11 @@ export const restrictLoginGuard: CanActivateFn = (
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
 ) => {
-    const localStorageService = inject(LocalStorageService);
+    const store = inject(authStore);
     const router = inject(Router);
-    const userDetails = localStorageService.getUserData();
 
-    if (userDetails && userDetails.accessToken) {
-        const role = userDetails.userData?.role?.toLowerCase() || 'student';
+    if (store.accessToken()) {
+        const role = store.userData()?.role?.toLowerCase() || 'student';
         return router.parseUrl(`/${role}/dashboard`);
     }
     return true;

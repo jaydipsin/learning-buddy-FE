@@ -2,7 +2,6 @@ export type GlobalAppState = {
   isLoading: boolean;
   error: string | null;
   appData: IAppData | null;
-  isAuthenticated: boolean;
 };
 
 export interface IAppData {
@@ -37,7 +36,6 @@ export interface IUserProfile {
 export interface IStateData {
   userData: IUserProfile | null;
   accessToken: string | null;
-  userVerified?: boolean;
   themePreference: 'light' | 'dark';
 }
 

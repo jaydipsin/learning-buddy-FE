@@ -1,4 +1,4 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { AuthService } from '../../../core/services/auth.service';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { IStateData, Role } from '../../../shared/models/global.interface';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { Router } from '@angular/router';
+import { withDevtools } from '../../../core/store/devtools';
 
 export interface AuthState extends IStateData {
   isLoading: boolean;
@@ -30,6 +31,7 @@ const initialState: AuthState = {
 
 export const authStore = signalStore(
   { providedIn: 'root' },
+  withDevtools('authStore'),
   withState(initialState),
 
   withMethods((store, localStorage = inject(LocalStorageService)) => ({
@@ -40,7 +42,6 @@ export const authStore = signalStore(
       localStorage.saveUserData({
         userData: store.userData(),
         accessToken: null,
-        userVerified: false,
       });
     },
     clearUserData: () => {
@@ -52,10 +53,10 @@ export const authStore = signalStore(
     },
     loadStorage: () => {
       const userDetails = localStorage.getUserData();
-      if (userDetails && !userDetails.accessToken && userDetails.userData) {
+      if (userDetails && userDetails.accessToken && userDetails.userData) {
         patchState(store, {
-          userData: userDetails.userData,
-          accessToken: null,
+          userData: userDetails.userData || null,
+          accessToken: userDetails.accessToken || null,
         });
       }
     },
@@ -121,8 +122,8 @@ export const authStore = signalStore(
             tapResponse({
               next: (res: { message: string; courses: any[] }) => {
                 console.log(res);
-                store.setStorage();
                 patchState(store, { courses: res.courses });
+                store.setStorage();
               },
               error: (err: any) => {
                 toastr.error(
@@ -148,6 +149,7 @@ export const authStore = signalStore(
                   accessToken: res.data.accessToken || null,
                   userData: res.data.userData,
                 });
+                console.log("RES : ", res)
                 if (!res.data.accessToken) {
                   store.setUnverifiedUserStorage();
                   toastr.info(res?.message || 'Please verify your email address.', 'Info');
@@ -208,7 +210,6 @@ export const authStore = signalStore(
                   isLoading: false,
                   accessToken: res.data.accessToken || null,
                   userData: updatedUserData,
-                  userVerified: true,
                 });
                 store.setStorage();
                 toastr.success(res?.message || 'OTP verified successfully', 'Success');
@@ -253,4 +254,10 @@ export const authStore = signalStore(
       ),
     ),
   })),
+
+  withHooks({
+    onInit(store) {
+      store.loadStorage();
+    }
+  })
 );

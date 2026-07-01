@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../shared/components/header/header';
 import { ToastrService } from 'ngx-toastr';
+import { HeaderComponent } from '../../shared/components/header/header';
+import { appStore } from '../../core/store/app.store';
 
 interface SubjectOption {
   id: string;
@@ -14,15 +14,16 @@ interface SubjectOption {
 @Component({
   selector: 'app-generate-mocktest',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent],
   templateUrl: './generate-mocktest.html',
   styleUrl: './generate-mocktest.css',
 })
-export class GenerateMockTest {
+export class GenerateMockTest implements OnInit {
   private toastr = inject(ToastrService);
 
-  testType: 'full' | 'subject' = 'full';
-  
+  testType: 'pyq' | 'subject' | 'custom' = 'pyq';
+  activeCourseId: string | null = null
+
   subjects: SubjectOption[] = [
     { id: 'physics', name: 'Physics', icon: '⚛️', checked: true },
     { id: 'chemistry', name: 'Chemistry', icon: '🧪', checked: true },
@@ -31,33 +32,37 @@ export class GenerateMockTest {
   ];
 
   includePyqs = true;
-  startYear = 2018;
-  endYear = 2024;
   difficulty: 'easy' | 'medium' | 'hard' | 'adaptive' = 'easy';
 
-  // For year range slider
-  minAvailableYear = 2015;
-  maxAvailableYear = 2026;
+  availableYears: number[] = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+  selectedYears: number[] = [2024];
 
   // Simulation states
   isLaunching = false;
   launchProgress = 0;
+  readonly store = inject(appStore)
 
-  setTestType(type: 'full' | 'subject') {
+  ngOnInit(): void {
+    console.log("User Course:  ", this.store.appData())
+  }
+
+  setTestType(type: 'pyq' | 'subject' | 'custom') {
     this.testType = type;
-    if (type === 'full') {
-      // For Full Mock, reset to Physics, Chemistry, Math checked
+    if (type === 'pyq') {
+      // For PYQ Mock, reset to Physics, Chemistry, Math checked
       this.subjects.forEach(sub => {
         sub.checked = sub.id !== 'biology';
       });
+      this.includePyqs = true;
     } else {
+      this.includePyqs = false;
     }
   }
 
   toggleSubject(sub: SubjectOption) {
-    if (this.testType === 'full') return; // Subject selection is disabled for Full Mock
+    if (this.testType === 'pyq') return; // Subject selection is disabled for PYQ Test
     sub.checked = !sub.checked;
-    
+
     const checkedCount = this.subjects.filter(s => s.checked).length;
     if (checkedCount === 0) {
       // Force at least one checked
@@ -65,20 +70,21 @@ export class GenerateMockTest {
     }
   }
 
+  toggleYear(year: number) {
+    if (this.selectedYears.includes(year)) {
+      this.selectedYears = this.selectedYears.filter(y => y !== year);
+    } else {
+      this.selectedYears.push(year);
+    }
+  }
+
   setDifficulty(level: 'easy' | 'medium' | 'hard' | 'adaptive') {
     this.difficulty = level;
-    let desc = '';
-    switch (level) {
-      case 'easy': desc = 'Questions tailored to solidify fundamentals.'; break;
-      case 'medium': desc = 'Balanced standard exam level questions.'; break;
-      case 'hard': desc = 'Challenging questions to test top rank readiness.'; break;
-      case 'adaptive': desc = 'Difficulty scales dynamically based on your answers!'; break;
-    }
   }
 
   // Dynamic calculations based on choices
   get totalQuestions(): number {
-    if (this.testType === 'full') {
+    if (this.testType === 'pyq') {
       return 90; // Fixed size mock
     } else {
       const activeSubjects = this.subjects.filter(s => s.checked).length;
@@ -87,7 +93,7 @@ export class GenerateMockTest {
   }
 
   get timeLimit(): number {
-    if (this.testType === 'full') {
+    if (this.testType === 'pyq') {
       return 180; // 180 Mins
     } else {
       const activeSubjects = this.subjects.filter(s => s.checked).length;
@@ -96,7 +102,7 @@ export class GenerateMockTest {
   }
 
   get attemptMode(): string {
-    return this.difficulty === 'adaptive' ? 'ADAPTIVE' : 'SIMULATED';
+    return this.testType === 'custom' && this.difficulty === 'adaptive' ? 'ADAPTIVE' : 'SIMULATED';
   }
 
   get estimatedPercentileRange(): string {
@@ -104,18 +110,24 @@ export class GenerateMockTest {
     let baseMax = 90;
 
     // Adjust based on difficulty
-    if (this.difficulty === 'easy') {
-      baseMin = 85;
-      baseMax = 92;
-    } else if (this.difficulty === 'medium') {
+    if (this.testType === 'custom') {
+      if (this.difficulty === 'easy') {
+        baseMin = 85;
+        baseMax = 92;
+      } else if (this.difficulty === 'medium') {
+        baseMin = 78;
+        baseMax = 86;
+      } else if (this.difficulty === 'hard') {
+        baseMin = 70;
+        baseMax = 80;
+      } else if (this.difficulty === 'adaptive') {
+        baseMin = 82;
+        baseMax = 90;
+      }
+    } else {
+      // For PYQ/Subject Tests (default difficulty)
       baseMin = 78;
       baseMax = 86;
-    } else if (this.difficulty === 'hard') {
-      baseMin = 70;
-      baseMax = 80;
-    } else if (this.difficulty === 'adaptive') {
-      baseMin = 82;
-      baseMax = 90;
     }
 
     // Adjust based on subject mix
@@ -128,26 +140,51 @@ export class GenerateMockTest {
     return `${baseMin}-${baseMax}%`;
   }
 
-  // Handle year range slider changes
-  onYearSliderChange(event: any, field: 'start' | 'end') {
-    const value = parseInt(event.target.value, 10);
-    if (field === 'start') {
-      this.startYear = Math.min(value, this.endYear);
-    } else {
-      this.endYear = Math.max(value, this.startYear);
-    }
+  getSelectedSubjects(): string {
+    const checked = this.subjects.filter(s => s.checked).map(s => s.name);
+    return checked.length > 0 ? checked.join(', ') : 'None';
   }
 
   startMockTest() {
-    const checkedCount = this.subjects.filter(s => s.checked).length;
-    if (checkedCount === 0) {
-      this.toastr.error('Please select at least one subject to generate the test.', 'Error');
-      return;
+    if (this.testType === 'pyq') {
+      if (this.selectedYears.length === 0) {
+        this.toastr.error('Please select at least one PYQ year to generate the test.', 'Error');
+        return;
+      }
+    } else {
+      const checkedCount = this.subjects.filter(s => s.checked).length;
+      if (checkedCount === 0) {
+        this.toastr.error('Please select at least one subject to generate the test.', 'Error');
+        return;
+      }
+    }
+
+    let payload = {}
+
+    if (this.testType === 'pyq') {
+      payload = {
+        type: this.testType,
+        pyqYears: this.selectedYears,
+      }
+    } else if (this.testType === 'subject') {
+      payload = {
+        type: this.testType,
+        subjects: this.subjects,
+        pyqYears: this.selectedYears
+      }
+    } else if (this.testType === 'custom') {
+      payload = {
+        type: this.testType,
+        subjects: this.subjects,
+        difficulty: this.difficulty,
+      }
     }
 
     this.isLaunching = true;
     this.launchProgress = 0;
-    
+
+    console.log("Payload : ", payload)
+
     // Simulate loading progress
     const interval = setInterval(() => {
       this.launchProgress += 10;
