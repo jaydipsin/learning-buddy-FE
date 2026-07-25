@@ -11,6 +11,7 @@ import { Role } from '../../../shared/models/global.interface';
 import { authStore } from '../store/auth.store';
 import { JsonPipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -28,6 +29,7 @@ export class Register implements OnInit {
   store = inject(authStore);
   authFormService = inject(AuthFormService);
   toastr = inject(ToastrService);
+  route = inject(ActivatedRoute);
   otp = signal<{ [key: number]: string }>({
     0: '',
     1: '',
@@ -36,7 +38,7 @@ export class Register implements OnInit {
     4: '',
     5: '',
   });
-  currentStep = signal(4);
+  currentStep = signal(1);
 
   constructor() {
     effect(() => {
@@ -57,6 +59,19 @@ export class Register implements OnInit {
     this.registerForm = this.authFormService.createRegisterForm();
     this.loginForm = this.authFormService.createLoginForm();
     this.store.loadStorage();
+
+    // Check for query parameters from social login redirect
+    this.route.queryParams.subscribe((params) => {
+      const token = params['token'];
+      if (token) {
+        this.store.loginWithToken(token);
+      }
+      const error = params['error'];
+      console.log('error: ', !!error);
+      // if (!!error) {
+      //   this.toastr.error(error.replace(/_/g, ' '), 'Authentication Error');
+      // }
+    });
   }
 
   get role(): string {
@@ -152,7 +167,7 @@ export class Register implements OnInit {
     }
   }
 
-  handleBack(){
+  handleBack() {
     if (this.currentStep() === 4) {
       this.store.clearUserData();
       this.currentStep.set(1);
@@ -295,9 +310,6 @@ export class Register implements OnInit {
     if (this.isLogin) {
       if (this.loginForm.valid) {
         this.store.login(this.loginForm.value);
-        if (this.store.userData() && this.store.accessToken()) {
-          this.currentStep.set(4);
-        }
       } else {
         this.loginForm.markAllAsTouched();
       }
@@ -315,17 +327,18 @@ export class Register implements OnInit {
         } else {
           // Parent and Teacher/Org register immediately on Step 1
           const formData = { ...this.registerForm.value };
-          
+          formData.role = formData.role.toLowerCase();
+
           if (this.role === this.roles.Parent.toLowerCase()) {
             // Generate a valid unique parent email from mobile number
             const cleanPhone = (formData.parentNumber || '').replace(/[^0-9]/g, '');
             formData.email = `${cleanPhone}@parent.learningbuddy.com`;
           }
-          
+
           // Generate default passwords
           formData.password = 'viewonly123!';
           formData.confirmPassword = 'viewonly123!';
-          
+
           this.store.register(formData);
           return;
         }
@@ -343,8 +356,13 @@ export class Register implements OnInit {
           return;
         }
         const formData = { ...this.registerForm.value };
+        formData.role = formData.role.toLowerCase();
         this.store.register(formData);
       }
     }
+  }
+
+  loginWithGoogle() {
+    window.location.href = 'http://localhost:4000/auth/google';
   }
 }

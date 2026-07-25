@@ -10,7 +10,7 @@ import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   register(payload: Iregistrationpayload): Observable<IAuthResponse> {
     // Implement registration logic here, e.g., call API, handle response, etc.
     return this.http.post<IAuthResponse>(BASE_BACKEND_URL + '/auth/register', payload);
@@ -30,6 +30,12 @@ export class AuthService {
   refreshToken(): Observable<{ data: { accessToken: string }; message: string }> {
     return this.http.get<{ data: { accessToken: string }; message: string }>(
       BASE_BACKEND_URL + '/auth/refresh',
+    );
+  }
+
+  getProfile(): Observable<{ message: string; data: { userData: any } }> {
+    return this.http.get<{ message: string; data: { userData: any } }>(
+      BASE_BACKEND_URL + '/api/user/profile',
     );
   }
 

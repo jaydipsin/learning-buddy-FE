@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = (
     const store = inject(authStore);
     const router = inject(Router);
 
-    if (store.accessToken()) {
+    if (store.accessToken() && store.userData()?.role) {
         return true;
     }
     return router.parseUrl('/auth');
@@ -23,8 +23,10 @@ export const restrictLoginGuard: CanActivateFn = (
     const router = inject(Router);
 
     if (store.accessToken()) {
-        const role = store.userData()?.role?.toLowerCase() || 'student';
-        return router.parseUrl(`/${role}/dashboard`);
+        const role = store.userData()?.role;
+        if (role) {
+            return router.parseUrl(`/${role.toLowerCase()}/dashboard`);
+        }
     }
     return true;
 }

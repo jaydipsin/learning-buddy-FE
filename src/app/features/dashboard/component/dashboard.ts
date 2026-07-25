@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatComponent } from "../../chat/component/chat.component";
 import { HeaderComponent } from '../../../shared/components/header/header';
+import { dashboardStore } from '../store/dashboard.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +11,16 @@ import { HeaderComponent } from '../../../shared/components/header/header';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
+
+  dashboardStore = inject(dashboardStore)
+
+  constructor() { }
+
+  ngOnInit() {
+    this.dashboardStore.getDashboardData()
+  }
+
   isDarkMode = false;
   activeTimeTab: 'section' | 'question' = 'section';
 

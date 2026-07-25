@@ -66,15 +66,20 @@ export const authStore = signalStore(
     redirectToDashboard: () => {
       const userData = store.userData();
       if (userData) {
-        const role = userData.role.toLowerCase();
-        if (role === Role.Student.toLowerCase()) {
-          router.navigateByUrl(`/student/dashboard`);
-        } else if (role === Role.Teacher.toLowerCase()) {
-          router.navigateByUrl(`/teacher/dashboard`);
-        } else if (role === Role.Admin.toLowerCase()) {
-          router.navigateByUrl(`/admin/dashboard`);
-        } else if (role === Role.Parent.toLowerCase()) {
-          router.navigateByUrl(`/parent/dashboard`);
+        const role = userData.role;
+        if (role) {
+          const roleLower = role.toLowerCase();
+          if (roleLower === Role.Student.toLowerCase()) {
+            router.navigateByUrl(`/student/dashboard`);
+          } else if (roleLower === Role.Teacher.toLowerCase()) {
+            router.navigateByUrl(`/teacher/dashboard`);
+          } else if (roleLower === Role.Admin.toLowerCase()) {
+            router.navigateByUrl(`/admin/dashboard`);
+          } else if (roleLower === Role.Parent.toLowerCase()) {
+            router.navigateByUrl(`/parent/dashboard`);
+          }
+        } else {
+          router.navigateByUrl('/auth');
         }
       }
     },
@@ -161,6 +166,67 @@ export const authStore = signalStore(
               },
               error: (err: any) => {
                 toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
+                patchState(store, {
+                  isLoading: false,
+                });
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    loginWithToken: rxMethod<string>(
+      pipe(
+        tap((token) => {
+          patchState(store, { isLoading: true, accessToken: token });
+        }),
+        switchMap(() =>
+          authService.getProfile().pipe(
+            tapResponse({
+              next: (res) => {
+                patchState(store, {
+                  isLoading: false,
+                  userData: res.data.userData,
+                });
+                store.setStorage();
+                toastr.success(res?.message || 'Login successful', 'Success');
+                store.redirectToDashboard();
+              },
+              error: (err: any) => {
+                toastr.error(err?.error?.message || 'Failed to retrieve profile details.', 'Error');
+                patchState(store, {
+                  isLoading: false,
+                  accessToken: null,
+                  userData: null,
+                });
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    completeProfile: rxMethod<any>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap((payload) =>
+          authService.completeProfile(payload).pipe(
+            tapResponse({
+              next: (res: IAuthResponse) => {
+                patchState(store, {
+                  isLoading: false,
+                  userData: res.data.userData,
+                });
+                store.setStorage();
+                toastr.success(res?.message || 'Profile completed successfully', 'Success');
+                store.redirectToDashboard();
+              },
+              error: (err: any) => {
+                toastr.error(
+                  err?.error?.message || 'Failed to complete profile. Please try again.',
+                  'Error',
+                );
                 patchState(store, {
                   isLoading: false,
                 });
