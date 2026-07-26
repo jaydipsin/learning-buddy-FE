@@ -1,4 +1,4 @@
-import { IUserProfile } from "./global.interface";
+import { IUserProfile, Role } from "./global.interface";
 
 export interface Iregistrationpayload {
   email: string;
@@ -8,7 +8,7 @@ export interface Iregistrationpayload {
   organizationName?: string;
   parentNumber?: string;
   avatarUrl?: string;
-  role: 'admin' | 'teacher' | 'student' | 'parent';
+  role: Role;
 }
 
 

@@ -53,7 +53,7 @@ export const authStore = signalStore(
     },
     loadStorage: () => {
       const userDetails = localStorage.getUserData();
-      if (userDetails && userDetails.accessToken && userDetails.userData) {
+      if (userDetails && (userDetails.accessToken || userDetails.userData)) {
         patchState(store, {
           userData: userDetails.userData || null,
           accessToken: userDetails.accessToken || null,
@@ -79,7 +79,7 @@ export const authStore = signalStore(
             router.navigateByUrl(`/parent/dashboard`);
           }
         } else {
-          router.navigateByUrl('/auth');
+          router.navigateByUrl('/complete-profile');
         }
       }
     },
@@ -199,6 +199,31 @@ export const authStore = signalStore(
                   isLoading: false,
                   accessToken: null,
                   userData: null,
+                });
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+
+    fetchProfile: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap(() =>
+          authService.getProfile().pipe(
+            tapResponse({
+              next: (res) => {
+                patchState(store, {
+                  isLoading: false,
+                  userData: res.data.userData,
+                });
+                store.setStorage();
+              },
+              error: (err: any) => {
+                toastr.error(err?.error?.message || 'Failed to retrieve profile details.', 'Error');
+                patchState(store, {
+                  isLoading: false,
                 });
               },
             }),

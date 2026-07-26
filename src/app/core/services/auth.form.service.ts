@@ -23,6 +23,14 @@ export class AuthFormService {
     });
   }
 
+  createCompleteProfileForm(): FormGroup {
+    const form = this.createRegisterForm();
+    form.removeControl('password');
+    form.removeControl('confirmPassword');
+    form.removeControl('email')
+    return form;
+  }
+
   createOtpForm(): FormGroup {
     return this.fb.group({
       email: ['', [Validators.required, Validators.email]],

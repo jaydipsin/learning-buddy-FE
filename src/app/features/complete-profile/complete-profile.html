@@ -1,0 +1,380 @@
+<div
+    class="h-screen w-full flex flex-col lg:flex-row bg-[var(--color-bg)] text-[var(--color-text)] font-sans transition-colors duration-300">
+    <!-- Theme Toggle -->
+    <div class="absolute top-6 right-6 z-50">
+        <button (click)="toggleTheme()"
+            class="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-alt)] text-[var(--color-text)] hover:opacity-80 transition-all font-medium text-xs sm:text-sm focus:ring-2 focus:ring-[var(--color-blue)] focus:outline-none shadow-sm cursor-pointer">
+            @if (isDarkMode) {
+            <span>☀️ Light</span>
+            } @else {
+            <span>🌙 Dark</span>
+            }
+        </button>
+    </div>
+
+    <!-- Left Illustration/Brand Pane -->
+    <div
+        class="w-full lg:w-[70%] bg-gradient-to-br from-[var(--color-bg-alt)] to-[var(--color-bg)] p-8 lg:p-16 xl:p-20 flex flex-col justify-between relative overflow-hidden">
+        <!-- Background glow decorative circles -->
+        <div
+            class="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-[var(--color-blue)] rounded-full mix-blend-multiply opacity-5 filter blur-[120px] animate-pulse">
+        </div>
+        <div
+            class="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[var(--color-blue)] rounded-full mix-blend-multiply opacity-5 filter blur-[100px] animate-pulse">
+        </div>
+
+        <!-- Header Logo -->
+        <div class="relative z-10 flex items-center gap-3 mb-12">
+            <div
+                class="w-12 h-12 bg-[var(--color-blue)] rounded-xl flex items-center justify-center shadow-lg shadow-[var(--color-blue)]/20">
+                <span class="text-white font-black text-xl tracking-tighter">LB</span>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight">Learning Buddy</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-10 max-w-4xl">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-6 tracking-tight">
+                Personalize your <span class="text-[var(--color-blue)]">learning experience.</span>
+            </h2>
+            <p class="text-[var(--color-text-muted)] text-lg md:text-xl mb-12 max-w-2xl leading-relaxed font-medium">
+                Tell us a bit about yourself so we can tailor practice tests, dashboard insights, and course
+                recommendations specifically for you.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <!-- Feature Item 1 -->
+                <div
+                    class="bg-[var(--color-bg)] border border-[var(--color-border)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <div
+                        class="w-10 h-10 bg-[var(--color-bg-alt)] rounded-lg flex items-center justify-center mb-4 text-[var(--color-blue)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Tailored Dashboards</h3>
+                    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                        See analytics and performance milestones configured specifically for your study requirements.
+                    </p>
+                </div>
+
+                <!-- Feature Item 2 -->
+                <div
+                    class="bg-[var(--color-bg)] border border-[var(--color-border)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <div
+                        class="w-10 h-10 bg-[var(--color-bg-alt)] rounded-lg flex items-center justify-center mb-4 text-[var(--color-blue)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Connected Accounts</h3>
+                    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                        Easily link students, parents, and teachers to share progress, assignments, and test schedules.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Copyright -->
+        <div class="relative z-10 mt-12 text-[var(--color-text-muted)] text-sm font-medium">
+            &copy; 2026 Learning Buddy Platform
+        </div>
+    </div>
+
+    <!-- Right Form Pane -->
+    <div
+        class="w-full lg:w-[30%] min-h-screen bg-[var(--color-bg)] flex flex-col justify-center items-center p-6 sm:p-10 border-l border-[var(--color-border)] shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] z-20">
+        <div class="w-full max-w-[360px]">
+            <!-- Brand Logo Header for Mobile (lg hidden) -->
+            <div class="lg:hidden flex items-center justify-center gap-2 mb-10">
+                <div class="w-10 h-10 bg-[var(--color-blue)] rounded-xl flex items-center justify-center">
+                    <span class="text-white font-black text-lg">LB</span>
+                </div>
+                <h1 class="text-2xl font-extrabold">Learning Buddy</h1>
+            </div>
+
+            <!-- Title Header -->
+            <div class="mb-8 text-left">
+                <h2 class="text-3xl font-bold tracking-tight">Complete Profile</h2>
+                <p class="text-sm text-[var(--color-text-muted)] mt-2 font-medium">
+                    Set up your details to access the full features.
+                </p>
+            </div>
+
+            <!-- Step Stepper Progress Bar -->
+            <div class="flex items-center gap-2 mb-8">
+                @for (step of [1, 2, 3]; track step) {
+                <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
+                    [class.bg-[var(--color-blue)]]="currentStep() >= step"
+                    [class.bg-[var(--color-border)]]="currentStep() < step"></div>
+                }
+            </div>
+
+            <!-- Form Container -->
+            <form [formGroup]="completeProfileForm" class="space-y-4 animate-step-enter">
+                <!-- STEP 1: Basic Identity & Avatar -->
+                @if (currentStep() === 1) {
+                <div class="space-y-5">
+                    <!-- New UI Element: Avatar Selector -->
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
+                            Choose an Avatar
+                        </label>
+                        <div class="avatar-grid">
+                            @for (avatar of ['🦊', '🦁', '🐼', '🐨', '🦄', '🤖', '🧑‍🚀', '👾']; track avatar) {
+                            <button type="button" (click)="selectAvatar(avatar)"
+                                [class.selected]="selectedAvatar() === avatar" class="avatar-item focus:outline-none">
+                                {{ avatar }}
+                            </button>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Role Selector -->
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Select Your Role
+                        </label>
+                        <div class="segment-container">
+                            <button type="button" (click)="setRole(roles.Student.toLowerCase())"
+                                [class.active]="role === roles.Student.toLowerCase()" class="segment-item">
+                                {{ roles.Student }}
+                            </button>
+                            <button type="button" (click)="setRole(roles.Teacher.toLowerCase())"
+                                [class.active]="role === roles.Teacher.toLowerCase()" class="segment-item">
+                                {{ roles.Teacher }}
+                            </button>
+                            <button type="button" (click)="setRole(roles.Parent.toLowerCase())"
+                                [class.active]="role === roles.Parent.toLowerCase()" class="segment-item">
+                                {{ roles.Parent }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Display/User Name Input -->
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            User name
+                        </label>
+                        <input formControlName="userName" type="text"
+                            [placeholder]="role === roles.Parent.toLowerCase() ? 'Parent Name' : (role === roles.Teacher.toLowerCase() ? 'School / Institution Name' : 'John Doe')"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none transition-all" />
+                        @if (completeProfileForm.get('userName')?.invalid &&
+                        completeProfileForm.get('userName')?.touched) {
+                        <div
+                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
+                            Name is required
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+
+                <!-- STEP 2: Role Specific Details -->
+                @if (currentStep() === 2) {
+                <div class="space-y-4">
+                    <!-- Student Specific Fields -->
+                    @if (role === roles.Student.toLowerCase()) {
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            School / Coaching Name (Optional)
+                        </label>
+                        <input formControlName="organizationName" type="text" placeholder="e.g. Oakridge High School"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Parent's Contact Number (Optional)
+                        </label>
+                        <input formControlName="parentNumber" type="text" placeholder="e.g. +1234567890"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                        @if (completeProfileForm.get('parentNumber')?.invalid &&
+                        completeProfileForm.get('parentNumber')?.touched) {
+                        <div
+                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
+                            Please enter a valid mobile number
+                        </div>
+                        }
+                    </div>
+                    }
+
+                    <!-- Parent Specific Fields -->
+                    @if (role === roles.Parent.toLowerCase()) {
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Parent's Mobile Number
+                        </label>
+                        <input formControlName="parentNumber" type="text" placeholder="Enter your mobile number"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                        @if (completeProfileForm.get('parentNumber')?.invalid &&
+                        completeProfileForm.get('parentNumber')?.touched) {
+                        <div
+                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
+                            Mobile number is required
+                        </div>
+                        }
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Student's Email Address
+                        </label>
+                        <input formControlName="studentEmail" type="email" placeholder="student@example.com"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                        @if (completeProfileForm.get('studentEmail')?.invalid &&
+                        completeProfileForm.get('studentEmail')?.touched) {
+                        <div
+                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
+                            Please enter a valid student email
+                        </div>
+                        }
+                    </div>
+                    }
+
+                    <!-- Teacher Specific Fields -->
+                    @if (role === roles.Teacher.toLowerCase()) {
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Organization / School Name
+                        </label>
+                        <input formControlName="organizationName" type="text" placeholder="e.g. Springfield High"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Organization Email
+                        </label>
+                        <input formControlName="organizationEmail" type="email" placeholder="org@example.com"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                        @if (completeProfileForm.get('organizationEmail')?.invalid &&
+                        completeProfileForm.get('organizationEmail')?.touched) {
+                        <div
+                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
+                            Please enter a valid organization email
+                        </div>
+                        }
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
+                            Linked Student's Email (Optional)
+                        </label>
+                        <input formControlName="studentEmail" type="email" placeholder="student@example.com"
+                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- STEP 3: Interests & Target Courses (Or goals for parent/teacher) -->
+                @if (currentStep() === 3) {
+                <div class="space-y-5">
+                    <!-- Student/Teacher Course Choice Grid -->
+                    @if (role === roles.Student.toLowerCase() || role === roles.Teacher.toLowerCase()) {
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
+                            Select Target Courses
+                        </label>
+                        <div class="course-card-grid">
+                            @for (course of courses(); track course._id) {
+                            <button type="button" (click)="toggleCourse(course._id)"
+                                [class.selected]="isCourseSelected(course._id)"
+                                class="course-card group focus:outline-none">
+                                <div class="course-card-check">
+                                    @if (isCourseSelected(course._id)) {
+                                    <span class="text-[10px] font-black">✓</span>
+                                    }
+                                </div>
+                                <div class="course-card-icon">
+                                    @switch (course.name.toLowerCase()) {
+                                    @case ('math') { 📐 }
+                                    @case ('mathematics') { 📐 }
+                                    @case ('science') { ⚛️ }
+                                    @case ('physics') { ⚛️ }
+                                    @case ('chemistry') { ⚛️ }
+                                    @case ('biology') { 🧬 }
+                                    @case ('history') { 📚 }
+                                    @case ('english') { 📚 }
+                                    @default { 📖 }
+                                    }
+                                </div>
+                                <h4
+                                    class="text-sm font-bold text-[var(--color-text)] leading-tight group-hover:text-[var(--color-blue)]">
+                                    {{ course.name }}
+                                </h4>
+                                <p class="text-[10px] text-[var(--color-text-muted)] leading-normal line-clamp-2">
+                                    {{ course.description || 'Full length syllabus training & mock exams.' }}
+                                </p>
+                            </button>
+                            }
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Dedicated hours goal selector (New UI Element) -->
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
+                            Weekly Goal Commitment
+                        </label>
+                        <div class="commitment-container">
+                            @for (goal of [
+                            { label: 'Casual', hours: '2h', desc: 'Light practice' },
+                            { label: 'Focused', hours: '5h', desc: 'Active prep' },
+                            { label: 'Intense', hours: '10h+', desc: 'Exam ready' }
+                            ]; track goal.label) {
+                            <button type="button" (click)="setCommitment(goal.hours)"
+                                [class.active]="selectedCommitment() === goal.hours"
+                                class="commitment-card group focus:outline-none flex flex-col items-center gap-1">
+                                <span
+                                    class="text-xs font-bold text-[var(--color-text)] group-hover:text-[var(--color-blue)]">
+                                    {{ goal.label }}
+                                </span>
+                                <span class="text-lg font-black text-[var(--color-blue)]">
+                                    {{ goal.hours }}
+                                </span>
+                                <span class="text-[8px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                                    / week
+                                </span>
+                            </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                }
+            </form>
+
+            <!-- Navigation buttons -->
+            <div class="flex gap-3 pt-6">
+                @if (currentStep() > 1) {
+                <button type="button" (click)="handleBack()"
+                    class="flex-1 py-3.5 border border-[var(--color-border)] text-[var(--color-text)] font-bold rounded-xl hover:bg-[var(--color-bg-alt)] transition-all cursor-pointer">
+                    Back
+                </button>
+                }
+
+                <button type="button" (click)="handleNext()"
+                    class="flex-[2] py-3.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 transition-all active:scale-[0.98] cursor-pointer">
+                    {{ currentStep() === 3 ? 'Complete Setup' : 'Next Step' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

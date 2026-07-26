@@ -16,7 +16,7 @@ export interface IUserProfile {
   parentNumber: string;
   studentEmail?: string;
   organizationEmail?: string;
-  role: 'admin' | 'teacher' | 'student' | 'parent';
+  role: Role;
   themePreference: 'light' | 'dark';
   course: {
     id: string;

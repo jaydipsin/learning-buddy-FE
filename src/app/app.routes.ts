@@ -59,11 +59,15 @@ export const routes: Routes = [
 
   {
     path: 'auth',
-    loadComponent: () => import('./features/auth/component/register').then((c) => c.Register),
-    title: 'Register',
+    loadChildren: () => import('./features/auth/auth.routes').then(r => r.AUTH_ROUTES),
     canActivate: [restrictLoginGuard],
   },
-
+  {
+    path: 'complete-profile',
+    title: 'Complete Profile',
+    // canActivate: [authGuard],
+    loadComponent: () => import('./features/complete-profile/complete-profile').then(m => m.CompleteProfile)
+  },
   {
     path: '**',
     redirectTo: 'auth',

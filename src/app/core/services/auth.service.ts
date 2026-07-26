@@ -45,4 +45,8 @@ export class AuthService {
       BASE_BACKEND_URL + '/api/learning-buddy/courses',
     );
   }
+
+  completeProfile(payload: any): Observable<IAuthResponse> {
+    return this.http.put<IAuthResponse>(BASE_BACKEND_URL + '/api/complete-profile', payload);
+  }
 }
