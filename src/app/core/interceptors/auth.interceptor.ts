@@ -27,15 +27,15 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   // 1. Attach token to initial request
   let authReq = req;
 
-  if (isAuthApiRequest || isRefresh) {
-    authReq = req.clone({
+  if (req.url.includes('/auth/')) {
+    authReq = authReq.clone({
       withCredentials: true,
     });
   }
 
   const token = authStoreInstance.accessToken();
   if (token) {
-    authReq = req.clone({
+    authReq = authReq.clone({
       setHeaders: { Authorization: `Bearer ${token}` },
     });
   }
@@ -98,7 +98,9 @@ const handle401Req = (
         isRefreshing = false;
         accessToken$.next(null);
         store.clearUserData();
-        localStorageService.clearUserData();
+        authService.logout().subscribe(() => {
+          store.redirectToLogin();
+        });
         return throwError(() => refreshErr);
       }),
     );

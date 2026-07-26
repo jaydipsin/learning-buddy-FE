@@ -2,7 +2,6 @@ export type GlobalAppState = {
   isLoading: boolean;
   error: string | null;
   appData: IAppData | null;
-  isAuthenticated: boolean;
 };
 
 export interface IAppData {
@@ -15,7 +14,9 @@ export interface IUserProfile {
   userName: string;
   organizationName: string;
   parentNumber: string;
-  role: 'admin' | 'teacher' | 'student' | 'parent';
+  studentEmail?: string;
+  organizationEmail?: string;
+  role: Role;
   themePreference: 'light' | 'dark';
   course: {
     id: string;
@@ -30,8 +31,7 @@ export interface IUserProfile {
   isPremium: boolean;
 }
 
-
-// Local storage interface 
+// Local storage interface
 
 export interface IStateData {
   userData: IUserProfile | null;
@@ -39,10 +39,9 @@ export interface IStateData {
   themePreference: 'light' | 'dark';
 }
 
-
 export enum Role {
   Admin = 'Admin',
-  Teacher = 'Teacher',  
+  Teacher = 'Teacher',
   Student = 'Student',
   Parent = 'Parent',
 }
