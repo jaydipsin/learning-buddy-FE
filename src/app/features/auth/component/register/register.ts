@@ -24,7 +24,6 @@ export class Register implements OnInit {
   isLogin = true;
   registerForm!: FormGroup;
   loginForm!: FormGroup;
-  roles = Role;
   courses = signal<any[] | null | undefined>(null);
   store = inject(authStore);
   authFormService = inject(AuthFormService);
@@ -68,22 +67,7 @@ export class Register implements OnInit {
       }
       const error = params['error'];
       console.log('error: ', !!error);
-      // if (!!error) {
-      //   this.toastr.error(error.replace(/_/g, ' '), 'Authentication Error');
-      // }
     });
-  }
-
-  get role(): string {
-    const formRole = this.registerForm?.get('role')?.value;
-    if (formRole) {
-      return formRole.toLowerCase();
-    }
-    return this.store.userData()?.role?.toLowerCase() || '';
-  }
-
-  setRole(selectedRole: string) {
-    this.registerForm.get('role')?.setValue(selectedRole);
   }
 
   get courseFormArray(): FormArray {
@@ -185,20 +169,12 @@ export class Register implements OnInit {
     const payload = {
       email: userData.email,
       userName: userData.userName,
-      organizationName: userData.organizationName || '',
-      parentNumber: userData.parentNumber || '',
-      studentEmail: this.registerForm.get('studentEmail')?.value || userData.studentEmail || '',
-      organizationEmail: this.registerForm.get('organizationEmail')?.value || userData.organizationEmail || '',
       course: this.registerForm.get('course')?.value || userData.course || [],
       role: userData.role,
       password: this.registerForm.get('password')?.value || this.loginForm.get('password')?.value || 'viewonly123!',
       confirmPassword: this.registerForm.get('confirmPassword')?.value || this.loginForm.get('password')?.value || 'viewonly123!',
     };
     this.store.register(payload);
-  }
-
-  onSubmit() {
-    // Deprecated in favor of handleNext
   }
 
   handleOtpVerification() {
@@ -236,13 +212,7 @@ export class Register implements OnInit {
   }
 
   isStep1Valid(): boolean {
-    const controls = ['userName', 'role'];
-    if (this.role !== this.roles.Parent.toLowerCase()) {
-      controls.push('email');
-    }
-    if (this.role === this.roles.Student.toLowerCase()) {
-      controls.push('password', 'confirmPassword', 'organizationEmail');
-    }
+    const controls = ['userName', 'email', 'password', 'confirmPassword'];
     let isValid = true;
     controls.forEach((control) => {
       this.registerForm.get(control)?.markAsTouched();
@@ -251,31 +221,11 @@ export class Register implements OnInit {
       }
     });
 
-    if (this.role === this.roles.Parent.toLowerCase()) {
-      const parentNumberControl = this.registerForm.get('parentNumber');
-      parentNumberControl?.markAsTouched();
-      if (!parentNumberControl?.value) {
-        parentNumberControl?.setErrors({ required: true });
-        isValid = false;
-      }
-    }
-
-    if (this.role === this.roles.Parent.toLowerCase() || this.role === this.roles.Teacher.toLowerCase()) {
-      const studentEmailControl = this.registerForm.get('studentEmail');
-      studentEmailControl?.markAsTouched();
-      if (!studentEmailControl?.value || studentEmailControl.invalid) {
-        studentEmailControl?.setErrors({ required: true });
-        isValid = false;
-      }
-    }
-
-    if (this.role === this.roles.Student.toLowerCase()) {
-      if (
-        this.registerForm.get('password')?.value !== this.registerForm.get('confirmPassword')?.value
-      ) {
-        this.registerForm.get('confirmPassword')?.setErrors({ mismatch: true });
-        isValid = false;
-      }
+    if (
+      this.registerForm.get('password')?.value !== this.registerForm.get('confirmPassword')?.value
+    ) {
+      this.registerForm.get('confirmPassword')?.setErrors({ mismatch: true });
+      isValid = false;
     }
     return isValid;
   }
@@ -286,24 +236,6 @@ export class Register implements OnInit {
       return false;
     }
     return true;
-  }
-
-  isStep3Valid(): boolean {
-    let controls = ['organizationName'];
-    if (this.role === this.roles.Student.toLowerCase()) {
-      controls.push('parentNumber');
-    }
-    let isValid = true;
-    controls.forEach((control) => {
-      this.registerForm.get(control)?.markAsTouched();
-      if (this.registerForm.get(control)?.value === '') {
-        this.registerForm.removeControl(control);
-      }
-      if (this.registerForm.get(control)?.invalid) {
-        isValid = false;
-      }
-    });
-    return isValid;
   }
 
   handleNext() {
@@ -319,42 +251,13 @@ export class Register implements OnInit {
           this.toastr.error('Please fill all required fields correctly.');
           return;
         }
-
-        if (this.role === this.roles.Student.toLowerCase()) {
-          this.currentStep.set(2);
-          this.store.getAllCourses();
-          return;
-        } else {
-          // Parent and Teacher/Org register immediately on Step 1
-          const formData = { ...this.registerForm.value };
-          formData.role = formData.role.toLowerCase();
-
-          if (this.role === this.roles.Parent.toLowerCase()) {
-            // Generate a valid unique parent email from mobile number
-            const cleanPhone = (formData.parentNumber || '').replace(/[^0-9]/g, '');
-            formData.email = `${cleanPhone}@parent.learningbuddy.com`;
-          }
-
-          // Generate default passwords
-          formData.password = 'viewonly123!';
-          formData.confirmPassword = 'viewonly123!';
-
-          this.store.register(formData);
-          return;
-        }
+        this.currentStep.set(2);
+        this.store.getAllCourses();
+        return;
       }
 
       if (this.currentStep() === 2) {
         if (!this.isStep2Valid()) return;
-        this.currentStep.set(3);
-        return;
-      }
-
-      if (this.currentStep() === 3) {
-        if (!this.isStep3Valid()) {
-          this.toastr.error('Please fix the errors in the form.');
-          return;
-        }
         const formData = { ...this.registerForm.value };
         formData.role = formData.role.toLowerCase();
         this.store.register(formData);

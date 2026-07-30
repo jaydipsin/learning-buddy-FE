@@ -12,10 +12,6 @@ export interface IUserProfile {
   id: string;
   email: string;
   userName: string;
-  organizationName: string;
-  parentNumber: string;
-  studentEmail?: string;
-  organizationEmail?: string;
   role: Role;
   themePreference: 'light' | 'dark';
   course: {
@@ -40,8 +36,6 @@ export interface IStateData {
 }
 
 export enum Role {
-  Admin = 'Admin',
-  Teacher = 'Teacher',
-  Student = 'Student',
-  Parent = 'Parent',
+  Admin = 'ADMIN',
+  Student = 'STUDENT',
 }

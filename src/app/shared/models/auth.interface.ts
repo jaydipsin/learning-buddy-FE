@@ -5,9 +5,6 @@ export interface Iregistrationpayload {
   userName: string;
   password: string;
   course: string[];
-  organizationName?: string;
-  parentNumber?: string;
-  avatarUrl?: string;
   role: Role;
 }
 

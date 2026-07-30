@@ -68,15 +68,11 @@ export const authStore = signalStore(
       if (userData) {
         const role = userData.role;
         if (role) {
-          const roleLower = role.toLowerCase();
-          if (roleLower === Role.Student.toLowerCase()) {
-            router.navigateByUrl(`/student/dashboard`);
-          } else if (roleLower === Role.Teacher.toLowerCase()) {
-            router.navigateByUrl(`/teacher/dashboard`);
-          } else if (roleLower === Role.Admin.toLowerCase()) {
+          const roleUpper = role.toUpperCase();
+          if (roleUpper === Role.Admin.toUpperCase()) {
             router.navigateByUrl(`/admin/dashboard`);
-          } else if (roleLower === Role.Parent.toLowerCase()) {
-            router.navigateByUrl(`/parent/dashboard`);
+          } else {
+            router.navigateByUrl(`/student/dashboard`);
           }
         } else {
           router.navigateByUrl('/complete-profile');
