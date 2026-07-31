@@ -40,12 +40,6 @@ export const routes: Routes = [
     canActivate: [restrictLoginGuard],
   },
   {
-    path: 'complete-profile',
-    title: 'Complete Profile',
-    // canActivate: [authGuard],
-    loadComponent: () => import('./features/complete-profile/complete-profile').then(m => m.CompleteProfile)
-  },
-  {
     path: '**',
     redirectTo: 'auth',
   },

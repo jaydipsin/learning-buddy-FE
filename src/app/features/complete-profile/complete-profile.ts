@@ -118,11 +118,6 @@ export class CompleteProfile implements OnInit {
   }
 
   isStep2Valid(): boolean {
-    // Step 2 has optional organization name, always valid
-    return true;
-  }
-
-  isStep3Valid(): boolean {
     if (this.courseFormArray.length === 0) {
       this.toastr.warning('Please select at least one course before finishing.', 'Course Selection');
       return false;
@@ -148,19 +143,9 @@ export class CompleteProfile implements OnInit {
       return;
     }
 
-    // Step 2 check
+    // Step 2 check (Final step)
     if (this.currentStep() === 2) {
       if (!this.isStep2Valid()) {
-        this.toastr.error('Please correct the validation errors.', 'Validation Error');
-        return;
-      }
-      this.currentStep.set(3);
-      return;
-    }
-
-    // Step 3 check
-    if (this.currentStep() === 3) {
-      if (!this.isStep3Valid()) {
         return;
       }
       this.submitProfile();
@@ -171,6 +156,11 @@ export class CompleteProfile implements OnInit {
   submitProfile() {
     const userData = this.store.userData();
     const userId = userData?.id || (userData as any)?._id;
+
+    if (!userId) {
+      this.toastr.error('User ID not found. Please log in again.', 'Error');
+      return;
+    }
 
     const payload = {
       ...this.completeProfileForm.value,

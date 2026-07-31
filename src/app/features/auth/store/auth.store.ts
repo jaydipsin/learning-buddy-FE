@@ -75,7 +75,7 @@ export const authStore = signalStore(
             router.navigateByUrl(`/student/dashboard`);
           }
         } else {
-          router.navigateByUrl('/complete-profile');
+          router.navigateByUrl('/auth/complete-profile');
         }
       }
     },
@@ -234,10 +234,11 @@ export const authStore = signalStore(
         switchMap((payload) =>
           authService.completeProfile(payload).pipe(
             tapResponse({
-              next: (res: IAuthResponse) => {
+              next: (res: any) => {
+                const user = res.data?.userData || res.data;
                 patchState(store, {
                   isLoading: false,
-                  userData: res.data.userData,
+                  userData: user,
                 });
                 store.setStorage();
                 toastr.success(res?.message || 'Profile completed successfully', 'Success');
