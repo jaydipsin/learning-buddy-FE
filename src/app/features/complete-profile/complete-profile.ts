@@ -21,9 +21,8 @@ export class CompleteProfile implements OnInit {
   selectedAvatar = signal('🦊');
   selectedCommitment = signal('5h');
 
-  // Forms and Role configurations
+  // Forms
   completeProfileForm!: FormGroup;
-  roles = Role;
   courses = signal<any[] | null | undefined>(null);
 
   // Inject Dependencies
@@ -46,22 +45,6 @@ export class CompleteProfile implements OnInit {
       if (userData) {
         if (userData.userName && !this.completeProfileForm.get('userName')?.value) {
           this.completeProfileForm.get('userName')?.setValue(userData.userName);
-        }
-        if (userData.role) {
-          const roleLower = userData.role.toLowerCase();
-          this.completeProfileForm.get('role')?.setValue(roleLower);
-        }
-        if (userData.parentNumber && !this.completeProfileForm.get('parentNumber')?.value) {
-          this.completeProfileForm.get('parentNumber')?.setValue(userData.parentNumber);
-        }
-        if (userData.organizationName && !this.completeProfileForm.get('organizationName')?.value) {
-          this.completeProfileForm.get('organizationName')?.setValue(userData.organizationName);
-        }
-        if (userData.studentEmail && !this.completeProfileForm.get('studentEmail')?.value) {
-          this.completeProfileForm.get('studentEmail')?.setValue(userData.studentEmail);
-        }
-        if (userData.organizationEmail && !this.completeProfileForm.get('organizationEmail')?.value) {
-          this.completeProfileForm.get('organizationEmail')?.setValue(userData.organizationEmail);
         }
 
         // Populate course array
@@ -92,29 +75,14 @@ export class CompleteProfile implements OnInit {
     });
     // Initialize form controls
     this.completeProfileForm = this.authFormService.createCompleteProfileForm();
-
-    // Load existing storage data & fetch course list
-
   }
 
   // Getters
-  get role(): string {
-    const formRole = this.completeProfileForm?.get('role')?.value;
-    if (formRole) {
-      return formRole.toLowerCase();
-    }
-    return this.store.userData()?.role?.toLowerCase() || '';
-  }
-
   get courseFormArray(): FormArray {
     return this.completeProfileForm.get('course') as FormArray;
   }
 
   // Actions
-  setRole(selectedRole: string) {
-    this.completeProfileForm.get('role')?.setValue(selectedRole);
-  }
-
   selectAvatar(avatar: string) {
     this.selectedAvatar.set(avatar);
   }
@@ -150,39 +118,6 @@ export class CompleteProfile implements OnInit {
   }
 
   isStep2Valid(): boolean {
-    let isValid = true;
-    const currentRole = this.role;
-
-    if (currentRole === this.roles.Parent.toLowerCase()) {
-      const parentNumber = this.completeProfileForm.get('parentNumber');
-      const studentEmail = this.completeProfileForm.get('studentEmail');
-
-      parentNumber?.markAsTouched();
-      studentEmail?.markAsTouched();
-
-      if (parentNumber?.invalid) isValid = false;
-      if (studentEmail?.invalid || !studentEmail?.value) {
-        studentEmail?.setErrors({ required: true });
-        isValid = false;
-      }
-    } else if (currentRole === this.roles.Teacher.toLowerCase()) {
-      const orgName = this.completeProfileForm.get('organizationName');
-      const orgEmail = this.completeProfileForm.get('organizationEmail');
-
-      orgName?.markAsTouched();
-      orgEmail?.markAsTouched();
-
-      if (orgEmail?.invalid || !orgEmail?.value) {
-        orgEmail?.setErrors({ required: true });
-        isValid = false;
-      }
-    }
-
-    return isValid;
-  }
-
-  isStep3Valid(): boolean {
-    // If Student or Teacher, warn if no courses are selected but let them pass
     if (this.courseFormArray.length === 0) {
       this.toastr.warning('Please select at least one course before finishing.', 'Course Selection');
       return false;
@@ -208,26 +143,9 @@ export class CompleteProfile implements OnInit {
       return;
     }
 
-    // Step 2 check
+    // Step 2 check (Final step)
     if (this.currentStep() === 2) {
       if (!this.isStep2Valid()) {
-        this.toastr.error('Please correct the validation errors.', 'Validation Error');
-        return;
-      }
-
-      if (this.role === this.roles.Parent.toLowerCase()) {
-        // Parents do not have courses to select, complete here
-        this.submitProfile();
-      } else {
-        // Students and Teachers move to step 3
-        this.currentStep.set(3);
-      }
-      return;
-    }
-
-    // Step 3 check
-    if (this.currentStep() === 3) {
-      if (!this.isStep3Valid()) {
         return;
       }
       this.submitProfile();
@@ -236,25 +154,20 @@ export class CompleteProfile implements OnInit {
 
   // Submit complete profile form
   submitProfile() {
+    const userData = this.store.userData();
+    const userId = userData?.id || (userData as any)?._id;
+
+    if (!userId) {
+      this.toastr.error('User ID not found. Please log in again.', 'Error');
+      return;
+    }
+
     const payload = {
       ...this.completeProfileForm.value,
       avatar: this.selectedAvatar(),
-      id: this.store.userData()?.id,
-      // weeklyCommitment: this.selectedCommitment(),
-      role: this.role.toUpperCase(), // Match store expectations if needed
+      id: userId,
+      role: Role.Student.toUpperCase(),
     };
-
-    // Remove unused controls to keep payload clean
-    if (this.role === this.roles.Student.toLowerCase()) {
-      delete payload.organizationEmail;
-      delete payload.studentEmail;
-    } else if (this.role === this.roles.Parent.toLowerCase()) {
-      delete payload.organizationName;
-      delete payload.organizationEmail;
-      delete payload.course;
-    } else if (this.role === this.roles.Teacher.toLowerCase()) {
-      delete payload.parentNumber;
-    }
 
     this.store.completeProfile(payload);
   }

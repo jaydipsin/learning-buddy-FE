@@ -15,10 +15,6 @@ export class AuthFormService {
       password: ['1234Qwer!', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['1234Qwer!', [Validators.required, Validators.minLength(6)]],
       role: [Role.Student, Validators.required],
-      parentNumber: [''],
-      organizationName: [''],
-      studentEmail: ['', [Validators.email]],
-      organizationEmail: ['', [Validators.email]],
       course: this.fb.array([]),
     });
   }

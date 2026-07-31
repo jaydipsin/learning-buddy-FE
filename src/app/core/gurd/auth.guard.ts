@@ -25,7 +25,10 @@ export const restrictLoginGuard: CanActivateFn = (
     if (store.accessToken()) {
         const role = store.userData()?.role;
         if (role) {
-            return router.parseUrl(`/${role.toLowerCase()}/dashboard`);
+            if (role.toUpperCase() === 'ADMIN') {
+                return router.parseUrl('/admin/dashboard');
+            }
+            return router.parseUrl('/student/dashboard');
         }
     }
     return true;

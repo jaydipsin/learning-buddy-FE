@@ -53,16 +53,15 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               ></path>
             </svg>
           </div>
-          <h3 class="text-lg font-bold mb-2">Extensive Question Bank</h3>
+          <h3 class="text-lg font-bold mb-2">AI-Powered Analytics</h3>
           <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-            Access thousands of chapter-wise and full-length mock tests curated by top educators.
+            Get detailed performance breakdowns and personalized recommendations to improve your scores.
           </p>
         </div>
-
         <div
           class="bg-[var(--color-bg)] border border-[var(--color-border)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all"
         >
@@ -74,26 +73,16 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
-              ></path>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
               ></path>
             </svg>
           </div>
-          <h3 class="text-lg font-bold mb-2">Deep Performance Analytics</h3>
+          <h3 class="text-lg font-bold mb-2">Smart Mock Tests</h3>
           <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-            Get detailed insights into your time management, accuracy, and subject-wise proficiency.
+            Practice with intelligent tests tailored to your weak areas and exam patterns.
           </p>
         </div>
       </div>
-    </div>
-
-    <div class="relative z-10 mt-12 text-[var(--color-text-muted)] text-sm font-medium">
-      &copy; 2026 Learning Buddy Platform
     </div>
   </div>
 
@@ -117,9 +106,9 @@
         </p>
       </div>
 
-      @if (!isLogin && role === roles.Student.toLowerCase()) {
+      @if (!isLogin) {
         <div class="flex items-center gap-2 mb-8">
-          @for (step of [1, 2, 3]; track step) {
+          @for (step of [1, 2]; track step) {
             <div
               class="flex-1 h-1.5 rounded-full transition-all duration-300"
               [class.bg-[var(--color-blue)]]="currentStep() >= step"
@@ -188,144 +177,70 @@
         >
         
           @if (currentStep() === 1) {
-            <div class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Role</label>
-              <div class="segment-container">
-                <button type="button" (click)="setRole(roles.Student.toLowerCase())"
-                    [class.active]="role === roles.Student.toLowerCase()"
-                    class="segment-item"
-                  >
-                    {{ roles.Student }}
-                  </button>
-                  <button
-                    type="button"
-                    (click)="setRole(roles.Teacher.toLowerCase())"
-                    [class.active]="role === roles.Teacher.toLowerCase()"
-                    class="segment-item"
-                  >
-                    {{ roles.Teacher }}
-                  </button>
-                  <button
-                    type="button"
-                    (click)="setRole(roles.Parent.toLowerCase())"
-                    [class.active]="role === roles.Parent.toLowerCase()"
-                    class="segment-item"
-                  >
-                    {{ roles.Parent }}
-                  </button>
-                </div>
-              </div>
             <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
               <div>
                 <label
                   class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                  >{{ role === roles.Parent.toLowerCase() ? 'Parent Name' : (role === roles.Teacher.toLowerCase() ? 'Organization Name' : 'Full Name') }}</label
+                  >Full Name</label
                 >
                 <input
                   formControlName="userName"
                   type="text"
-                  [placeholder]="role === roles.Parent.toLowerCase() ? 'Parent Name' : (role === roles.Teacher.toLowerCase() ? 'Organization Name' : 'John Doe')"
+                  placeholder="John Doe"
                   class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
                 />
               </div>
-              @if (role === roles.Parent.toLowerCase()) {
-                <div>
-                  <label
-                    class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                    >Mobile Number</label
-                  >
-                  <input
-                    formControlName="parentNumber"
-                    type="text"
-                    placeholder="Enter your mobile number"
-                    class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                  />
-                  @if (registerForm.get('parentNumber')?.invalid && registerForm.get('parentNumber')?.touched) {
-                    <div
-                      class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1 animate-in fade-in slide-in-from-top-1"
-                    >
-                      Please enter a valid mobile number
-                    </div>
-                  }
+              <div>
+                <label
+                  class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
+                  >Email</label
+                >
+                <input
+                  formControlName="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
+                  >Password</label
+                >
+                <input
+                  formControlName="password"
+                  type="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
+                  >Confirm Password</label
+                >
+                <input
+                  formControlName="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
+                />
+              </div>
+              @if (
+                registerForm.get('password')?.value !==
+                  registerForm.get('confirmPassword')?.value &&
+                registerForm.get('confirmPassword')?.touched
+              ) {
+                <div
+                  class="text-xs font-bold text-[var(--color-error)] uppercase tracking-wider mb-2 ml-1"
+                >
+                  Passwords do not match
                 </div>
               }
-              @if (role !== roles.Parent.toLowerCase()) {
-                <div>
-                  <label
-                    class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                    >{{ role === roles.Teacher.toLowerCase() ? 'Organization Email' : 'Email' }}</label
-                  >
-                  <input
-                    formControlName="email"
-                    type="email"
-                    [placeholder]="role === roles.Teacher.toLowerCase() ? 'org@example.com' : 'john@example.com'"
-                    class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                  />
-                </div>
-              }
-              @if (role === roles.Parent.toLowerCase() || role === roles.Teacher.toLowerCase()) {
-                <div>
-                  <label
-                    class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                    >Student Email</label
-                  >
-                  <input
-                    formControlName="studentEmail"
-                    type="email"
-                    placeholder="student@example.com"
-                    class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                  />
-                  @if (registerForm.get('studentEmail')?.invalid && registerForm.get('studentEmail')?.touched) {
-                    <div
-                      class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1 animate-in fade-in slide-in-from-top-1"
-                    >
-                      Please enter a valid student email
-                    </div>
-                  }
-                </div>
-              }
-              @if (role === roles.Student.toLowerCase()) {
-                <div>
-                  <label
-                    class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                    >Password</label
-                  >
-                  <input
-                    formControlName="password"
-                    type="password"
-                    placeholder="••••••••"
-                    class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                  />
-                </div>
-                <div>
-                  <label
-                    class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                    >Confirm Password</label
-                  >
-                  <input
-                    formControlName="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                  />
-                </div>
-                @if (
-                  registerForm.get('password')?.value !==
-                    registerForm.get('confirmPassword')?.value &&
-                  registerForm.get('confirmPassword')?.touched
-                ) {
-                  <div
-                    class="text-xs font-bold text-[var(--color-error)] uppercase tracking-wider mb-2 ml-1"
-                  >
-                    Passwords do not match
-                  </div>
-                }
-              }
-     
             </div>
           }
 
-          @if (currentStep() === 2 && role === roles.Student.toLowerCase()) {
+          @if (currentStep() === 2) {
             <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
               <label
                 class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
@@ -351,40 +266,11 @@
               </p>
             </div>
           }
-
-          @if (currentStep() === 3 && role === roles.Student.toLowerCase()) {
-            <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div>
-                <label
-                  class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                  >Organization (Optional)</label
-                >
-                <input
-                  formControlName="organizationName"
-                  type="text"
-                  placeholder="School or Coaching Name"
-                  class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1"
-                  >Parent's Number (Optional)</label
-                >
-                <input
-                  formControlName="parentNumber"
-                  type="text"
-                  placeholder="Parent's Number"
-                  class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
-                />
-              </div>
-            </div>
-          }
         </form>
       }
 
       @if (currentStep() === 4) {
-        <!-- Create Six user input to verify the otp -->
+        <!-- OTP Verification -->
         <p class="text-[10px] text-[var(--color-text-muted)] italic px-1">
           Please enter the OTP sent to your email. The OTP is valid for 5 minutes.
         </p>
@@ -436,13 +322,7 @@
             (click)="handleNext()"
             class="flex-[2] py-3.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 transition-all active:scale-[0.98]"
           >
-            {{ 
-              isLogin ? 'Sign In' : 
-              (
-                currentStep() === 3 ? 'Finish & Start' : 
-                (currentStep() === 1 && role !== roles.Student.toLowerCase() ? 'Finish & Start' : 'Next Step')
-              ) 
-            }}
+            {{ isLogin ? 'Sign In' : (currentStep() === 2 ? 'Finish & Start' : 'Next Step') }}
           </button>
         } @else {
           <button

@@ -67,13 +67,13 @@
                         class="w-10 h-10 bg-[var(--color-bg-alt)] rounded-lg flex items-center justify-center mb-4 text-[var(--color-blue)]">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold mb-2">Connected Accounts</h3>
+                    <h3 class="text-lg font-bold mb-2">Track Your Progress</h3>
                     <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-                        Easily link students, parents, and teachers to share progress, assignments, and test schedules.
+                        Monitor your performance over time with detailed analytics and improvement tracking.
                     </p>
                 </div>
             </div>
@@ -107,7 +107,7 @@
 
             <!-- Step Stepper Progress Bar -->
             <div class="flex items-center gap-2 mb-8">
-                @for (step of [1, 2, 3]; track step) {
+                @for (step of [1, 2]; track step) {
                 <div class="flex-1 h-1.5 rounded-full transition-all duration-300"
                     [class.bg-[var(--color-blue)]]="currentStep() >= step"
                     [class.bg-[var(--color-border)]]="currentStep() < step"></div>
@@ -119,7 +119,7 @@
                 <!-- STEP 1: Basic Identity & Avatar -->
                 @if (currentStep() === 1) {
                 <div class="space-y-5">
-                    <!-- New UI Element: Avatar Selector -->
+                    <!-- Avatar Selector -->
                     <div>
                         <label
                             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
@@ -135,36 +135,13 @@
                         </div>
                     </div>
 
-                    <!-- Role Selector -->
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Select Your Role
-                        </label>
-                        <div class="segment-container">
-                            <button type="button" (click)="setRole(roles.Student.toLowerCase())"
-                                [class.active]="role === roles.Student.toLowerCase()" class="segment-item">
-                                {{ roles.Student }}
-                            </button>
-                            <button type="button" (click)="setRole(roles.Teacher.toLowerCase())"
-                                [class.active]="role === roles.Teacher.toLowerCase()" class="segment-item">
-                                {{ roles.Teacher }}
-                            </button>
-                            <button type="button" (click)="setRole(roles.Parent.toLowerCase())"
-                                [class.active]="role === roles.Parent.toLowerCase()" class="segment-item">
-                                {{ roles.Parent }}
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Display/User Name Input -->
                     <div>
                         <label
                             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            User name
+                            User Name
                         </label>
-                        <input formControlName="userName" type="text"
-                            [placeholder]="role === roles.Parent.toLowerCase() ? 'Parent Name' : (role === roles.Teacher.toLowerCase() ? 'School / Institution Name' : 'John Doe')"
+                        <input formControlName="userName" type="text" placeholder="John Doe"
                             class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none transition-all" />
                         @if (completeProfileForm.get('userName')?.invalid &&
                         completeProfileForm.get('userName')?.touched) {
@@ -177,116 +154,10 @@
                 </div>
                 }
 
-                <!-- STEP 2: Role Specific Details -->
+                <!-- STEP 2: Interests & Target Courses -->
                 @if (currentStep() === 2) {
-                <div class="space-y-4">
-                    <!-- Student Specific Fields -->
-                    @if (role === roles.Student.toLowerCase()) {
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            School / Coaching Name (Optional)
-                        </label>
-                        <input formControlName="organizationName" type="text" placeholder="e.g. Oakridge High School"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Parent's Contact Number (Optional)
-                        </label>
-                        <input formControlName="parentNumber" type="text" placeholder="e.g. +1234567890"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                        @if (completeProfileForm.get('parentNumber')?.invalid &&
-                        completeProfileForm.get('parentNumber')?.touched) {
-                        <div
-                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
-                            Please enter a valid mobile number
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Parent Specific Fields -->
-                    @if (role === roles.Parent.toLowerCase()) {
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Parent's Mobile Number
-                        </label>
-                        <input formControlName="parentNumber" type="text" placeholder="Enter your mobile number"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                        @if (completeProfileForm.get('parentNumber')?.invalid &&
-                        completeProfileForm.get('parentNumber')?.touched) {
-                        <div
-                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
-                            Mobile number is required
-                        </div>
-                        }
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Student's Email Address
-                        </label>
-                        <input formControlName="studentEmail" type="email" placeholder="student@example.com"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                        @if (completeProfileForm.get('studentEmail')?.invalid &&
-                        completeProfileForm.get('studentEmail')?.touched) {
-                        <div
-                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
-                            Please enter a valid student email
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Teacher Specific Fields -->
-                    @if (role === roles.Teacher.toLowerCase()) {
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Organization / School Name
-                        </label>
-                        <input formControlName="organizationName" type="text" placeholder="e.g. Springfield High"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Organization Email
-                        </label>
-                        <input formControlName="organizationEmail" type="email" placeholder="org@example.com"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                        @if (completeProfileForm.get('organizationEmail')?.invalid &&
-                        completeProfileForm.get('organizationEmail')?.touched) {
-                        <div
-                            class="text-[10px] font-bold text-[var(--color-error)] uppercase tracking-widest mt-2 ml-1">
-                            Please enter a valid organization email
-                        </div>
-                        }
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">
-                            Linked Student's Email (Optional)
-                        </label>
-                        <input formControlName="studentEmail" type="email" placeholder="student@example.com"
-                            class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none" />
-                    </div>
-                    }
-                </div>
-                }
-
-                <!-- STEP 3: Interests & Target Courses (Or goals for parent/teacher) -->
-                @if (currentStep() === 3) {
                 <div class="space-y-5">
-                    <!-- Student/Teacher Course Choice Grid -->
-                    @if (role === roles.Student.toLowerCase() || role === roles.Teacher.toLowerCase()) {
+                    <!-- Course Choice Grid -->
                     <div>
                         <label
                             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
@@ -326,9 +197,8 @@
                             }
                         </div>
                     </div>
-                    }
 
-                    <!-- Dedicated hours goal selector (New UI Element) -->
+                    <!-- Dedicated hours goal selector -->
                     <div>
                         <label
                             class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3 ml-1">
@@ -372,7 +242,7 @@
 
                 <button type="button" (click)="handleNext()"
                     class="flex-[2] py-3.5 bg-[var(--color-blue)] hover:bg-[var(--color-blue-hover)] text-white font-bold rounded-xl shadow-lg shadow-[var(--color-blue)]/20 transition-all active:scale-[0.98] cursor-pointer">
-                    {{ currentStep() === 3 ? 'Complete Setup' : 'Next Step' }}
+                    {{ currentStep() === 2 ? 'Complete Setup' : 'Next Step' }}
                 </button>
             </div>
         </div>
