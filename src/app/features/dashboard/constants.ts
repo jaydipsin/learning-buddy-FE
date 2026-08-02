@@ -1,6 +1,7 @@
 import { IDashboardInitialState } from "./interface";
 
 export const initialDashboardState: IDashboardInitialState = {
+    isLoading: false,
     userName: "",
     airRank: 0,
     lastMockTestDetails: {

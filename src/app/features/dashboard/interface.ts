@@ -1,7 +1,8 @@
 export interface IDashboardInitialState {
+  isLoading: boolean;
   userName: string;
   airRank: number; // AI-generated rank for the user based on their performance
-  lastMockTestDetails: ILastMockTestDetails;
+  lastMockTestDetails: ILastMockTestDetails | null;
   recommendations: {
     weakTopics: string[];
     suggestedResources: string[];
@@ -55,7 +56,8 @@ export interface ILastMockTestDetails {
     timeLimit: number; // in seconds
   };
   subjectWisePerformance: {
-    subject: string;
+    subjectName: string;
+    subjectId: string;
     score: number;
     marksObtained: number;
     // totalMarks: number;
