@@ -9,5 +9,10 @@ export const AUTH_ROUTES: Routes = [
         path: 'complete-profile',
         title: 'Complete Profile',
         loadComponent: () => import('../complete-profile/complete-profile').then(m => m.CompleteProfile)
+    },
+    {
+        path: 'reset-password',
+        title: 'Reset Password',
+        loadComponent: () => import('./component/reset-password/reset-password').then(m => m.ResetPassword)
     }
-]
+]

@@ -40,4 +40,18 @@ export class AuthFormService {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
+
+  createForgotPasswordForm(): FormGroup {
+    return this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
+  }
+
+  createResetPasswordForm(): FormGroup {
+    return this.fb.group({
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      confirmNewPassword: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
 }
+

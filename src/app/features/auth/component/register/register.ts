@@ -1,5 +1,7 @@
-import { Component, computed, effect, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { AuthFormService } from '../../../../core/services/auth.form.service';
+import { AuthService } from '../../../../core/services/auth.service';
+
 import {
   FormGroup,
   ReactiveFormsModule,
@@ -7,15 +9,16 @@ import {
   FormControl,
   FormsModule,
 } from '@angular/forms';
-import { Role } from '../../../../shared/models/global.interface';
 import { authStore } from '../../store/auth.store';
-import { JsonPipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 
+import { IonContent } from '@ionic/angular/standalone';
+import { BASE_BACKEND_URL } from '../../../../../enviroment/enviroment';
+
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, JsonPipe, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, IonContent],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -27,8 +30,12 @@ export class Register implements OnInit {
   courses = signal<any[] | null | undefined>(null);
   store = inject(authStore);
   authFormService = inject(AuthFormService);
+  authService = inject(AuthService);
   toastr = inject(ToastrService);
   route = inject(ActivatedRoute);
+  forgotPasswordForm!: FormGroup;
+  isForgotPassword = signal(false);
+  isForgotLoading = signal(false);
   otp = signal<{ [key: number]: string }>({
     0: '',
     1: '',
@@ -57,7 +64,9 @@ export class Register implements OnInit {
   ngOnInit(): void {
     this.registerForm = this.authFormService.createRegisterForm();
     this.loginForm = this.authFormService.createLoginForm();
+    this.forgotPasswordForm = this.authFormService.createForgotPasswordForm();
     this.store.loadStorage();
+
 
     // Check for query parameters from social login redirect
     this.route.queryParams.subscribe((params) => {
@@ -266,6 +275,37 @@ export class Register implements OnInit {
   }
 
   loginWithGoogle() {
-    window.location.href = 'http://localhost:4000/auth/google';
+    window.location.href = `${BASE_BACKEND_URL}/auth/google`;
+  }
+
+  openForgotPassword() {
+    this.isForgotPassword.set(true);
+  }
+
+  closeForgotPassword() {
+    this.isForgotPassword.set(false);
+  }
+
+  sendForgotPasswordLink() {
+    if (this.forgotPasswordForm.invalid) {
+      this.toastr.error('Please enter a valid email address.');
+      return;
+    }
+
+    const email = this.forgotPasswordForm.get('email')?.value;
+    this.isForgotLoading.set(true);
+
+    this.authService.forgotPassword(email).subscribe({
+      next: (res) => {
+        this.isForgotLoading.set(false);
+        this.toastr.success(res.message || 'Password reset link sent to your email.');
+        this.isForgotPassword.set(false);
+      },
+      error: (err) => {
+        this.isForgotLoading.set(false);
+        this.toastr.error(err?.error?.message || 'Failed to send reset link.');
+      },
+    });
   }
 }
+

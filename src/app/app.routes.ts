@@ -40,6 +40,18 @@ export const routes: Routes = [
     canActivate: [restrictLoginGuard],
   },
   {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/component/reset-password/reset-password').then((c) => c.ResetPassword),
+    title: 'Reset Password',
+  },
+  {
+    path: 'login',
+    redirectTo: 'auth',
+    pathMatch: 'full',
+  },
+
+  {
     path: '**',
     redirectTo: 'auth',
   },

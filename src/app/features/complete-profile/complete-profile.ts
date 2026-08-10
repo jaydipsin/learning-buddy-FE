@@ -7,9 +7,11 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 
+import { IonContent } from '@ionic/angular/standalone';
+
 @Component({
   selector: 'app-complete-profile',
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, IonContent],
   templateUrl: './complete-profile.html',
   styleUrl: './complete-profile.css',
 })

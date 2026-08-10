@@ -49,4 +49,16 @@ export class AuthService {
   completeProfile(payload: any): Observable<IAuthResponse> {
     return this.http.put<IAuthResponse>(BASE_BACKEND_URL + '/api/complete-profile', payload);
   }
+
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(BASE_BACKEND_URL + '/auth/forgot-password', { email });
+  }
+
+  resetPassword(token: string, newPassword: string, confirmNewPassword?: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${BASE_BACKEND_URL}/auth/reset-password/${token}`, {
+      newPassword,
+      confirmNewPassword,
+    });
+  }
 }
+

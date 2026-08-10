@@ -1,5 +1,6 @@
+<ion-content [fullscreen]="true">
 <div
-  class="h-screen w-full flex flex-col lg:flex-row bg-[var(--color-bg)] text-[var(--color-text)] font-sans transition-colors duration-300"
+  class="min-h-screen w-full flex flex-col lg:flex-row bg-[var(--color-bg)] text-[var(--color-text)] font-sans transition-colors duration-300"
 >
   <div class="absolute top-6 right-6 z-50">
     <button
@@ -118,7 +119,41 @@
         </div>
       }
 
-      @if (isLogin && currentStep() !== 4) {
+      @if (isForgotPassword()) {
+        <div class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+          <div class="mb-4 text-left">
+            <h2 class="text-2xl font-bold tracking-tight">Forgot Password</h2>
+            <p class="text-xs text-[var(--color-text-muted)] mt-1 font-medium">
+              Enter your email address to receive a password reset link.
+            </p>
+          </div>
+          <form [formGroup]="forgotPasswordForm" (ngSubmit)="sendForgotPasswordLink()" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2 ml-1">Email</label>
+              <input
+                formControlName="email"
+                type="email"
+                placeholder="email@example.com"
+                class="w-full px-4 py-3.5 rounded-xl bg-[var(--color-bg-alt)] border-none focus:ring-2 focus:ring-[var(--color-blue)] text-[var(--color-text)] outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              [disabled]="isForgotLoading() || forgotPasswordForm.invalid"
+              class="w-full py-3.5 bg-[var(--color-blue)] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-md disabled:opacity-50"
+            >
+              {{ isForgotLoading() ? 'Sending...' : 'Send Reset Link' }}
+            </button>
+            <button
+              type="button"
+              (click)="closeForgotPassword()"
+              class="w-full py-2 text-xs font-bold text-[var(--color-text-muted)] hover:underline text-center block"
+            >
+              Back to Login
+            </button>
+          </form>
+        </div>
+      } @else if (isLogin && currentStep() !== 4) {
         <form
           [formGroup]="loginForm"
           class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300"
@@ -151,8 +186,8 @@
                 class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider"
                 >Password</label
               >
-              <a href="#" class="text-xs font-bold text-[var(--color-blue)] hover:underline"
-                >Forgot?</a
+              <button type="button" (click)="openForgotPassword()" class="text-xs font-bold text-[var(--color-blue)] hover:underline"
+                >Forgot?</button
               >
             </div>
             <input
@@ -170,7 +205,8 @@
             }
           </div>
         </form>
-      } @else {
+      }
+ @else {
         <form
           [formGroup]="registerForm"
           class="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300"
@@ -384,3 +420,4 @@
     </div>
   </div>
 </div>
+</ion-content>

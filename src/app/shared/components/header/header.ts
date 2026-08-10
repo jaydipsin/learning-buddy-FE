@@ -2,11 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { IonHeader, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, IonHeader, IonToolbar],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })

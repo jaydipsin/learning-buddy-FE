@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "learning-buddy": {
+    "app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -57,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "learning-buddy:build:production"
+              "buildTarget": "app:build:production"
             },
             "development": {
-              "buildTarget": "learning-buddy:build:development"
+              "buildTarget": "app:build:development"
             }
           },
           "defaultConfiguration": "development"

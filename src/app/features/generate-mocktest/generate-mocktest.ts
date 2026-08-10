@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { HeaderComponent } from '../../shared/components/header/header';
 import { appStore } from '../../core/store/app.store';
 
 interface SubjectOption {
@@ -14,7 +13,7 @@ interface SubjectOption {
 @Component({
   selector: 'app-generate-mocktest',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule],
   templateUrl: './generate-mocktest.html',
   styleUrl: './generate-mocktest.css',
 })
