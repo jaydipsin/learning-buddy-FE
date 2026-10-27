@@ -1,0 +1,25 @@
+<div class="progress-bar-wrapper">
+  @if (showHeader && (label || valueLabel)) {
+    <div class="progress-bar-header">
+      @if (label) {
+        <span class="progress-bar-label">{{ label }}</span>
+      }
+      @if (valueLabel) {
+        <span class="progress-bar-value font-mono">{{ valueLabel }}</span>
+      } @else {
+        <span class="progress-bar-value font-mono">{{ normalizedValue }}%</span>
+      }
+    </div>
+  }
+
+  <div 
+    class="clean-progress-track"
+    [style.height.px]="height"
+    [style.background-color]="trackColor">
+    <div 
+      class="clean-progress-fill"
+      [style.width.%]="normalizedValue"
+      [style.background-color]="color">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div 
+  class="avatar-container"
+  [ngClass]="['avatar-size-' + size, isPremium ? 'avatar-premium' : '']"
+  [attr.title]="name">
+  
+  @if (imageUrl) {
+    <img [src]="imageUrl" [alt]="name" class="avatar-image" />
+  } @else {
+    <span class="avatar-initial">{{ initial() }}</span>
+  }
+
+  @if (isPremium) {
+    <span class="avatar-badge-star" title="Premium Scholar">★</span>
+  }
+</div>

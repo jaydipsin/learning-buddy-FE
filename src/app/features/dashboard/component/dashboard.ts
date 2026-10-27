@@ -1,148 +1,209 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ChatComponent } from "../../chat/component/chat.component";
-import { HeaderComponent } from '../../../shared/components/header/header';
+import { RouterModule } from '@angular/router';
 import { dashboardStore } from '../store/dashboard.store';
+import { appStore } from '../../../core/store/app.store';
+import {
+  StatCardComponent,
+  ProgressRingComponent,
+  ProgressBarComponent,
+  BadgeComponent,
+  SkeletonLoaderComponent,
+  EmptyStateComponent,
+} from '../../../shared/components/ui';
+import { TimeFormatPipe, OrdinalPipe } from '../../../shared/pipes';
+import { ChatComponent } from '../../chat/component/chat.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, ChatComponent, HeaderComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    StatCardComponent,
+    ProgressRingComponent,
+    ProgressBarComponent,
+    BadgeComponent,
+    SkeletonLoaderComponent,
+    ChatComponent,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
+  readonly dashboardStore = inject(dashboardStore);
+  readonly appStore = inject(appStore);
+  readonly Math = Math;
 
-  dashboardStore = inject(dashboardStore)
-
-  constructor() { }
-
-  ngOnInit() {
-    this.dashboardStore.getDashboardData()
+  ngOnInit(): void {
+    this.dashboardStore.getDashboardData();
   }
 
-  isDarkMode = false;
-  activeTimeTab: 'section' | 'question' = 'section';
+  readonly isLoading = computed(() => this.dashboardStore.isLoading());
 
-  latestTest = {
-    name: 'Full Mock Test #7',
-    date: 'Apr 15, 2026',
-    totalMarks: 720,
-    scored: 512,
-    percentage: 71.1,
-    percentile: 89.4,
-    rank: 1247,
-    totalStudents: 11832,
-    timeSpent: 168,
-    totalTime: 180,
-    correct: 128,
-    incorrect: 34,
-    skipped: 18,
-    totalQuestions: 180,
-  };
+  readonly userDisplayName = computed(() => {
+    return (
+      this.dashboardStore.userName() ||
+      this.appStore.appData()?.userDetails?.userName ||
+      'Candidate'
+    );
+  });
 
-  performanceTrend = [
-    { test: '#3', score: 58.2 },
-    { test: '#4', score: 62.5 },
-    { test: '#5', score: 65.0 },
-    { test: '#6', score: 68.3 },
-    { test: '#7', score: 71.1 },
-  ];
+  readonly hasTestData = computed(() => {
+    const details = this.dashboardStore.lastMockTestDetails();
+    const recent = this.dashboardStore.recentMockTests();
+    return (
+      (details && details.scoreDetails && details.scoreDetails.totalMarks > 0) ||
+      (recent && recent.length > 0)
+    );
+  });
 
-  subjects = [
-    { name: 'Physics', icon: '⚛️', correct: 42, incorrect: 12, skipped: 6, total: 60, accuracy: 70, avgTime: 1.8, targetAccuracy: 75 },
-    { name: 'Chemistry', icon: '🧪', correct: 38, incorrect: 14, skipped: 8, total: 60, accuracy: 63.3, avgTime: 2.1, targetAccuracy: 70 },
-    { name: 'Mathematics', icon: '📐', correct: 48, incorrect: 8, skipped: 4, total: 60, accuracy: 80, avgTime: 1.5, targetAccuracy: 80 },
-  ];
-
-  timeBySection = [
-    { section: 'Physics', spent: 58, allocated: 60, overUnder: -2 },
-    { section: 'Chemistry', spent: 65, allocated: 60, overUnder: 5 },
-    { section: 'Mathematics', spent: 45, allocated: 60, overUnder: -15 },
-  ];
-
-  strengths = [
-    { topic: 'Coordinate Geometry', subject: 'Mathematics', accuracy: 95, tests: 5 },
-    { topic: 'Mechanics — NLM', subject: 'Physics', accuracy: 88, tests: 4 },
-    { topic: 'Matrices & Determinants', subject: 'Mathematics', accuracy: 92, tests: 3 },
-    { topic: 'Electrostatics', subject: 'Physics', accuracy: 85, tests: 6 },
-  ];
-
-  weaknesses = [
-    { topic: 'Organic Chemistry — Reactions', subject: 'Chemistry', accuracy: 38, tests: 5, trend: 'declining' },
-    { topic: 'Thermodynamics', subject: 'Physics', accuracy: 42, tests: 4, trend: 'flat' },
-    { topic: 'Inorganic Chemistry', subject: 'Chemistry', accuracy: 45, tests: 6, trend: 'improving' },
-    { topic: 'Probability', subject: 'Mathematics', accuracy: 48, tests: 3, trend: 'flat' },
-  ];
-
-  recentTests = [
-    { name: 'Full Mock Test #7', date: 'Apr 15', score: 512, total: 720, percentage: 71.1, delta: 2.8, type: 'Full Mock' },
-    { name: 'Full Mock Test #6', date: 'Apr 12', score: 492, total: 720, percentage: 68.3, delta: 3.3, type: 'Full Mock' },
-    { name: 'Physics — Optics', date: 'Apr 10', score: 42, total: 60, percentage: 70.0, delta: -2.0, type: 'Subject' },
-    { name: 'Full Mock Test #5', date: 'Apr 8', score: 468, total: 720, percentage: 65.0, delta: 2.5, type: 'Full Mock' },
-    { name: 'Chemistry — Organic', date: 'Apr 6', score: 22, total: 60, percentage: 36.7, delta: -5.3, type: 'Subject' },
-  ];
-
-  insights = [
-    { icon: '🚨', title: 'Organic Chemistry needs immediate attention', description: 'Accuracy dropped from 43% to 38% over 3 tests. You\'re losing ~24 marks.', action: 'Start Practice', actionType: 'danger' },
-    { icon: '⏱️', title: 'Chemistry is eating your time', description: '2.1 min/q vs 1.0 target. This steals time from Math.', action: 'Time Drills', actionType: 'warning' },
-    { icon: '📈', title: 'Math is your strongest suit', description: '80% accuracy, fastest section. Maintain and protect this.', action: 'Keep Going', actionType: 'success' },
-    { icon: '🎯', title: '18 questions were left blank', description: 'Push attempt rate past 95% with better time management.', action: 'Strategy', actionType: 'info' },
-  ];
-
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    document.body.classList.toggle('dark', this.isDarkMode);
-  }
-
-  setTimeTab(tab: 'section' | 'question') {
-    this.activeTimeTab = tab;
-  }
-
-  // Chat related methods removed as they are moved to ChatComponent
-
-  getScoreColor(pct: number): string {
-    if (pct >= 75) return 'text-green-500';
-    if (pct >= 60) return 'text-amber-400';
-    return 'text-red-400';
-  }
-
-  getScoreBg(pct: number): string {
-    if (pct >= 75) return 'score-badge-green';
-    if (pct >= 60) return 'score-badge-amber';
-    return 'score-badge-red';
-  }
-
-  getBarColor(pct: number): string {
-    if (pct >= 75) return 'bar-green';
-    if (pct >= 60) return 'bar-amber';
-    return 'bar-red';
-  }
-
-  getTrendIcon(trend: string): string {
-    return trend === 'improving' ? '↗' : trend === 'declining' ? '↘' : '→';
-  }
-
-  getTrendClass(trend: string): string {
-    return trend === 'improving' ? 'trend-up' : trend === 'declining' ? 'trend-down' : 'trend-flat';
-  }
-
-  getInsightClass(type: string): string {
-    switch (type) {
-      case 'danger': return 'insight-danger';
-      case 'warning': return 'insight-warning';
-      case 'success': return 'insight-success';
-      default: return 'insight-info';
+  // Latest mock test metrics computed from real store or high-yield demo baseline
+  readonly latestScore = computed(() => {
+    const d = this.dashboardStore.lastMockTestDetails();
+    if (d && d.scoreDetails && d.scoreDetails.totalMarks > 0) {
+      const scored = Math.round(d.scoreDetails.marksObtained);
+      const total = d.scoreDetails.totalMarks;
+      const percentage = Math.round((scored / total) * 100);
+      return {
+        scored,
+        total,
+        percentage,
+        correct: d.questionAnalysis?.correctAnswers ?? 0,
+        wrong: d.questionAnalysis?.wrongAnswers ?? 0,
+      };
     }
-  }
+    return { scored: 512, total: 720, percentage: 71, correct: 128, wrong: 34 };
+  });
 
-  getActionClass(type: string): string {
-    switch (type) {
-      case 'danger': return 'action-btn-danger';
-      case 'warning': return 'action-btn-warning';
-      case 'success': return 'action-btn-success';
-      default: return 'action-btn-info';
+  readonly percentile = computed(() => {
+    const d = this.dashboardStore.lastMockTestDetails();
+    if (d?.scoreDetails?.percentile && d.scoreDetails.percentile > 0) {
+      return d.scoreDetails.percentile;
     }
-  }
+    return 89.4;
+  });
+
+  readonly airRank = computed(() => {
+    const r = this.dashboardStore.airRank();
+    if (r && r > 0) return r;
+    return 1247;
+  });
+
+  readonly timeVelocity = computed(() => {
+    const d = this.dashboardStore.lastMockTestDetails();
+    if (d?.attemptDetails && d.attemptDetails.timeLimit > 0) {
+      const spentMin = Math.round(d.attemptDetails.timeTaken / 60);
+      const totalMin = Math.round(d.attemptDetails.timeLimit / 60);
+      return { spentMin, totalMin };
+    }
+    return { spentMin: 168, totalMin: 180 };
+  });
+
+  readonly subjects = computed(() => {
+    const subList = this.dashboardStore.lastMockTestDetails()?.subjectWisePerformance;
+    if (subList && subList.length > 0) {
+      return subList.map((s) => ({
+        name: s.subjectName || 'Subject',
+        accuracy: Math.round(s.score || 0),
+        correct: Math.round(s.marksObtained / 4), // 4 marks per question standard
+        total: Math.round(s.idealTime / 30) || 45,
+        avgTime: (s.averageTimePerQuestion / 60).toFixed(1),
+        targetAccuracy: 75,
+      }));
+    }
+    // High-yield STEM defaults
+    return [
+      { name: 'Physics', accuracy: 70, correct: 42, total: 60, avgTime: '1.8', targetAccuracy: 75 },
+      { name: 'Chemistry', accuracy: 63, correct: 38, total: 60, avgTime: '2.1', targetAccuracy: 70 },
+      { name: 'Mathematics', accuracy: 80, correct: 48, total: 60, avgTime: '1.5', targetAccuracy: 80 },
+    ];
+  });
+
+  readonly strengths = computed(() => {
+    const list = this.dashboardStore.strengthAreas();
+    if (list && list.length > 0) {
+      return list.map((item) => ({
+        topic: item.topic,
+        subject: 'STEM High-Yield',
+        accuracy: item.score,
+      }));
+    }
+    return [
+      { topic: 'Coordinate Geometry', subject: 'Mathematics', accuracy: 95 },
+      { topic: 'Mechanics — Laws of Motion', subject: 'Physics', accuracy: 88 },
+      { topic: 'Matrices & Determinants', subject: 'Mathematics', accuracy: 92 },
+      { topic: 'Electrostatics', subject: 'Physics', accuracy: 85 },
+    ];
+  });
+
+  readonly weaknesses = computed(() => {
+    const list = this.dashboardStore.needsImprovementAreas();
+    if (list && list.length > 0) {
+      return list.map((item) => ({
+        topic: item.topic,
+        subject: item.subject || 'Chemistry',
+        accuracy: item.score,
+        trend: item.status === 'declined' ? 'declining' : item.status === 'improved' ? 'improving' : 'flat',
+      }));
+    }
+    return [
+      { topic: 'Organic Chemistry — Reactions', subject: 'Chemistry', accuracy: 38, trend: 'declining' },
+      { topic: 'Thermodynamics', subject: 'Physics', accuracy: 42, trend: 'flat' },
+      { topic: 'Inorganic Coordination', subject: 'Chemistry', accuracy: 45, trend: 'improving' },
+      { topic: 'Probability & Permutations', subject: 'Mathematics', accuracy: 48, trend: 'flat' },
+    ];
+  });
+
+  readonly recentTests = computed(() => {
+    const list = this.dashboardStore.recentMockTests();
+    if (list && list.length > 0) {
+      return list.map((t) => ({
+        name: t.mockTestLabel || 'Mock Test',
+        date: t.date ? new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Recent',
+        score: Math.round(t.score),
+        total: 100, // percentage based
+        delta: 2.5,
+        type: t.mockTestType || 'Mock',
+      }));
+    }
+    return [
+      { name: 'Full Mock Test #7', date: 'Apr 15', score: 512, total: 720, delta: 2.8, type: 'Full Mock' },
+      { name: 'Full Mock Test #6', date: 'Apr 12', score: 492, total: 720, delta: 3.3, type: 'Full Mock' },
+      { name: 'Physics — Optics Special', date: 'Apr 10', score: 42, total: 60, delta: -2.0, type: 'Subject' },
+      { name: 'Full Mock Test #5', date: 'Apr 08', score: 468, total: 720, delta: 2.5, type: 'Full Mock' },
+    ];
+  });
+
+  readonly insights = computed(() => {
+    const list = this.dashboardStore.whatToDoNext();
+    if (list && list.length > 0) {
+      return list.map((item, idx) => ({
+        title: item.action,
+        description: item.details,
+        action: item.tag || 'Start Practice',
+        actionType: idx === 0 ? 'danger' : 'info',
+      }));
+    }
+    return [
+      {
+        title: 'Organic Chemistry requires rapid drills',
+        description: 'Accuracy slipped from 43% to 38% across your last 3 attempts. Estimated mark leak: ~24 marks.',
+        action: 'Launch Drill',
+        actionType: 'danger',
+      },
+      {
+        title: 'Chemistry pace exceeds target benchmark',
+        description: '2.1 min/question vs 1.0 min ideal budget. This reduces buffer time for Mathematics.',
+        action: 'Time Sprints',
+        actionType: 'warning',
+      },
+      {
+        title: 'Mathematics accuracy remains elite',
+        description: '80% subject accuracy. Protect this score while targeting higher speed on questions 1-15.',
+        action: 'Maintain Lead',
+        actionType: 'success',
+      },
+    ];
+  });
 }

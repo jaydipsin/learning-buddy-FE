@@ -1,10 +1,22 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { HeaderComponent } from '../../shared/components/header/header';
 import { appStore } from '../../core/store/app.store';
+import {
+  MockTestGenerationJob,
+  MockTestGenerationService,
+} from './services/mock-test-generation.service';
+import {
+  BadgeComponent,
+  ChipSelectComponent,
+  ChipOption,
+  SegmentTabsComponent,
+  SegmentTab,
+  StatCardComponent,
+  ProgressBarComponent,
+} from '../../shared/components/ui';
 
-interface SubjectOption {
+export interface SubjectOption {
   id: string;
   name: string;
   icon: string;
@@ -14,187 +26,235 @@ interface SubjectOption {
 @Component({
   selector: 'app-generate-mocktest',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [
+    CommonModule,
+    BadgeComponent,
+    ChipSelectComponent,
+    SegmentTabsComponent,
+    ProgressBarComponent,
+  ],
   templateUrl: './generate-mocktest.html',
   styleUrl: './generate-mocktest.css',
 })
 export class GenerateMockTest implements OnInit {
   private toastr = inject(ToastrService);
+  private mockTestGeneration = inject(MockTestGenerationService);
+  readonly store = inject(appStore);
 
-  testType: 'pyq' | 'subject' | 'custom' = 'pyq';
-  activeCourseId: string | null = null
+  testType = signal<'pyq' | 'subject' | 'custom'>('pyq');
+  difficulty = signal<'easy' | 'medium' | 'hard' | 'adaptive'>('easy');
 
-  subjects: SubjectOption[] = [
+  readonly testTypeTabs: SegmentTab[] = [
+    { id: 'pyq', label: 'Past PYQ Paper', count: 8 },
+    { id: 'subject', label: 'Subject Drill', count: 3 },
+    { id: 'custom', label: 'AI Adaptive Drill' },
+  ];
+
+  subjects = signal<SubjectOption[]>([
     { id: 'physics', name: 'Physics', icon: '⚛️', checked: true },
     { id: 'chemistry', name: 'Chemistry', icon: '🧪', checked: true },
     { id: 'mathematics', name: 'Mathematics', icon: '📐', checked: true },
-    { id: 'biology', name: 'Biology', icon: '🧬', checked: false }
-  ];
+    { id: 'biology', name: 'Biology', icon: '🧬', checked: false },
+  ]);
 
-  includePyqs = true;
-  difficulty: 'easy' | 'medium' | 'hard' | 'adaptive' = 'easy';
+  readonly subjectChipOptions = computed<ChipOption[]>(() => {
+    return this.subjects().map((s) => ({
+      id: s.id,
+      label: s.name,
+      icon: s.icon,
+      badge: '30 Qs',
+    }));
+  });
+
+  readonly selectedSubjectIds = computed<(string | number)[]>(() => {
+    return this.subjects()
+      .filter((s) => s.checked)
+      .map((s) => s.id);
+  });
 
   availableYears: number[] = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
-  selectedYears: number[] = [2024];
+  selectedYears = signal<number[]>([2024]);
 
-  // Simulation states
+  readonly yearChipOptions = computed<ChipOption[]>(() => {
+    return this.availableYears.map((y) => ({
+      id: y,
+      label: `${y}`,
+    }));
+  });
+
+  readonly difficultyChipOptions: ChipOption[] = [
+    { id: 'easy', label: 'Easy (Confidence Sprint)' },
+    { id: 'medium', label: 'Medium (NTA Benchmark)' },
+    { id: 'hard', label: 'Hard (Top 1% Crucible)' },
+    { id: 'adaptive', label: 'Adaptive (Dynamic AI)' },
+  ];
+
   isLaunching = false;
   launchProgress = 0;
-  readonly store = inject(appStore)
+  generatedQuestionIds: string[] = [];
+  generationJobId: string | null = null;
+
+  get activeCourseId(): string | null {
+    const courses = this.store.appData()?.userDetails?.course;
+    if (!courses || courses.length === 0) return null;
+    const active = courses.find((c) => c.isCurrentlyActive);
+    return active ? active.id : courses[0].id;
+  }
 
   ngOnInit(): void {
-    console.log("User Course:  ", this.store.appData())
+    console.log('User Course Info:', this.store.appData());
   }
 
-  setTestType(type: 'pyq' | 'subject' | 'custom') {
-    this.testType = type;
-    if (type === 'pyq') {
-      // For PYQ Mock, reset to Physics, Chemistry, Math checked
-      this.subjects.forEach(sub => {
-        sub.checked = sub.id !== 'biology';
-      });
-      this.includePyqs = true;
-    } else {
-      this.includePyqs = false;
+  onTestTypeChange(type: string): void {
+    const t = type as 'pyq' | 'subject' | 'custom';
+    this.testType.set(t);
+
+    if (t === 'pyq') {
+      this.subjects.update((subs) =>
+        subs.map((sub) => ({ ...sub, checked: sub.id !== 'biology' }))
+      );
     }
   }
 
-  toggleSubject(sub: SubjectOption) {
-    if (this.testType === 'pyq') return; // Subject selection is disabled for PYQ Test
-    sub.checked = !sub.checked;
+  onSubjectSelectionChange(selectedIds: (string | number)[]): void {
+    if (this.testType() === 'pyq') return; // PYQ tests use standard syllabus
+    this.subjects.update((subs) =>
+      subs.map((sub) => ({
+        ...sub,
+        checked: selectedIds.includes(sub.id),
+      }))
+    );
+  }
 
-    const checkedCount = this.subjects.filter(s => s.checked).length;
-    if (checkedCount === 0) {
-      // Force at least one checked
-      sub.checked = true;
+  onYearSelectionChange(years: (string | number)[]): void {
+    this.selectedYears.set(years as number[]);
+  }
+
+  onDifficultySelectionChange(diffs: (string | number)[]): void {
+    if (diffs.length > 0) {
+      this.difficulty.set(diffs[0] as 'easy' | 'medium' | 'hard' | 'adaptive');
     }
   }
 
-  toggleYear(year: number) {
-    if (this.selectedYears.includes(year)) {
-      this.selectedYears = this.selectedYears.filter(y => y !== year);
-    } else {
-      this.selectedYears.push(year);
-    }
-  }
-
-  setDifficulty(level: 'easy' | 'medium' | 'hard' | 'adaptive') {
-    this.difficulty = level;
-  }
-
-  // Dynamic calculations based on choices
   get totalQuestions(): number {
-    if (this.testType === 'pyq') {
-      return 90; // Fixed size mock
-    } else {
-      const activeSubjects = this.subjects.filter(s => s.checked).length;
-      return activeSubjects * 30; // 30 questions per subject
+    if (this.testType() === 'pyq') {
+      return 90;
     }
+    const count = this.subjects().filter((s) => s.checked).length;
+    return count * 30;
   }
 
-  get timeLimit(): number {
-    if (this.testType === 'pyq') {
-      return 180; // 180 Mins
-    } else {
-      const activeSubjects = this.subjects.filter(s => s.checked).length;
-      return activeSubjects * 60; // 60 mins per subject
+  get timeLimitMinutes(): number {
+    if (this.testType() === 'pyq') {
+      return 180;
     }
+    const count = this.subjects().filter((s) => s.checked).length;
+    return count * 60;
   }
 
   get attemptMode(): string {
-    return this.testType === 'custom' && this.difficulty === 'adaptive' ? 'ADAPTIVE' : 'SIMULATED';
+    return this.testType() === 'custom' && this.difficulty() === 'adaptive'
+      ? 'ADAPTIVE AI'
+      : 'NTA SIMULATED';
   }
 
   get estimatedPercentileRange(): string {
-    let baseMin = 80;
-    let baseMax = 90;
-
-    // Adjust based on difficulty
-    if (this.testType === 'custom') {
-      if (this.difficulty === 'easy') {
-        baseMin = 85;
-        baseMax = 92;
-      } else if (this.difficulty === 'medium') {
-        baseMin = 78;
-        baseMax = 86;
-      } else if (this.difficulty === 'hard') {
-        baseMin = 70;
-        baseMax = 80;
-      } else if (this.difficulty === 'adaptive') {
-        baseMin = 82;
-        baseMax = 90;
-      }
-    } else {
-      // For PYQ/Subject Tests (default difficulty)
-      baseMin = 78;
-      baseMax = 86;
+    const t = this.testType();
+    const d = this.difficulty();
+    if (t === 'custom') {
+      if (d === 'easy') return '85 - 92%';
+      if (d === 'medium') return '78 - 86%';
+      if (d === 'hard') return '70 - 80%';
+      return '82 - 90%';
     }
-
-    // Adjust based on subject mix
-    const activeSubjects = this.subjects.filter(s => s.checked).length;
-    if (activeSubjects === 1) {
-      baseMin += 2;
-      baseMax += 2;
-    }
-
-    return `${baseMin}-${baseMax}%`;
+    return '78 - 86%';
   }
 
-  getSelectedSubjects(): string {
-    const checked = this.subjects.filter(s => s.checked).map(s => s.name);
+  getSelectedSubjectsSummary(): string {
+    const checked = this.subjects()
+      .filter((s) => s.checked)
+      .map((s) => s.name);
     return checked.length > 0 ? checked.join(', ') : 'None';
   }
 
-  startMockTest() {
-    if (this.testType === 'pyq') {
-      if (this.selectedYears.length === 0) {
-        this.toastr.error('Please select at least one PYQ year to generate the test.', 'Error');
-        return;
-      }
-    } else {
-      const checkedCount = this.subjects.filter(s => s.checked).length;
-      if (checkedCount === 0) {
-        this.toastr.error('Please select at least one subject to generate the test.', 'Error');
-        return;
-      }
+  startMockTest(): void {
+    if (this.testType() === 'pyq' && this.selectedYears().length === 0) {
+      this.toastr.error('Please select at least one PYQ year to generate the test.', 'Configuration Incomplete');
+      return;
     }
 
-    let payload = {}
+    const checkedCount = this.subjects().filter((s) => s.checked).length;
+    if (checkedCount === 0) {
+      this.toastr.error('Please select at least one subject to generate the test.', 'Configuration Incomplete');
+      return;
+    }
 
-    if (this.testType === 'pyq') {
-      payload = {
-        type: this.testType,
-        pyqYears: this.selectedYears,
-      }
-    } else if (this.testType === 'subject') {
-      payload = {
-        type: this.testType,
-        subjects: this.subjects,
-        pyqYears: this.selectedYears
-      }
-    } else if (this.testType === 'custom') {
-      payload = {
-        type: this.testType,
-        subjects: this.subjects,
-        difficulty: this.difficulty,
-      }
+    const courseId = this.activeCourseId;
+    if (!courseId) {
+      this.toastr.error('No active course found. Please complete your profile first.', 'Profile Required');
+      return;
+    }
+
+    const selectedSubjects = this.subjects()
+      .filter((s) => s.checked)
+      .map((s) => s.name);
+
+    const apiPayload = {
+      courseId,
+      isPublic: false,
+    } as {
+      courseId: string;
+      isPublic: boolean;
+      pyqYears?: number[];
+      subject?: string[];
+      difficulty?: 'easy' | 'medium' | 'hard' | 'adaptive';
+    };
+
+    if (this.testType() === 'pyq') {
+      apiPayload.pyqYears = this.selectedYears();
+    } else if (this.testType() === 'subject') {
+      apiPayload.subject = selectedSubjects;
+    } else if (this.testType() === 'custom') {
+      apiPayload.subject = selectedSubjects;
+      apiPayload.difficulty = this.difficulty();
     }
 
     this.isLaunching = true;
     this.launchProgress = 0;
 
-    console.log("Payload : ", payload)
+    void this.generateMockTest(apiPayload);
+  }
 
-    // Simulate loading progress
-    const interval = setInterval(() => {
-      this.launchProgress += 10;
-      if (this.launchProgress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          this.isLaunching = false;
-          this.toastr.success('Your personalized mock test is ready!', 'Test Started 🚀');
-        }, 500);
-      }
-    }, 150);
+  private async generateMockTest(payload: {
+    courseId: string;
+    isPublic: boolean;
+    pyqYears?: number[];
+    subject?: string[];
+    difficulty?: 'easy' | 'medium' | 'hard' | 'adaptive';
+  }): Promise<void> {
+    try {
+      const completedJob = await this.mockTestGeneration.generate(
+        payload,
+        (job: MockTestGenerationJob) => {
+          this.generationJobId = job.jobId;
+          this.launchProgress = job.progress;
+        },
+      );
+
+      this.generatedQuestionIds = completedJob.questionIds || [];
+      this.launchProgress = 100;
+      this.isLaunching = false;
+      this.toastr.success(
+        `${this.generatedQuestionIds.length} questions are ready.`,
+        'Simulation Launched',
+      );
+      console.log('Mock test generation completed:', completedJob);
+    } catch (error) {
+      this.isLaunching = false;
+      this.launchProgress = 0;
+      const message = error instanceof Error ? error.message : 'Failed to generate mock test.';
+      this.toastr.error(message, 'Generation Error');
+      console.error('Mock test generation failed:', error);
+    }
   }
 }

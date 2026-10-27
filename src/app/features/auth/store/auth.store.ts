@@ -68,18 +68,14 @@ export const authStore = signalStore(
       if (userData) {
         const role = userData.role;
         if (role) {
-          const roleLower = role.toLowerCase();
-          if (roleLower === Role.Student.toLowerCase()) {
-            router.navigateByUrl(`/student/dashboard`);
-          } else if (roleLower === Role.Teacher.toLowerCase()) {
-            router.navigateByUrl(`/teacher/dashboard`);
-          } else if (roleLower === Role.Admin.toLowerCase()) {
+          const roleUpper = role.toUpperCase();
+          if (roleUpper === Role.Admin.toUpperCase()) {
             router.navigateByUrl(`/admin/dashboard`);
-          } else if (roleLower === Role.Parent.toLowerCase()) {
-            router.navigateByUrl(`/parent/dashboard`);
+          } else {
+            router.navigateByUrl(`/student/dashboard`);
           }
         } else {
-          router.navigateByUrl('/complete-profile');
+          router.navigateByUrl('/auth/complete-profile');
         }
       }
     },
@@ -238,10 +234,11 @@ export const authStore = signalStore(
         switchMap((payload) =>
           authService.completeProfile(payload).pipe(
             tapResponse({
-              next: (res: IAuthResponse) => {
+              next: (res: any) => {
+                const user = res.data?.userData || res.data;
                 patchState(store, {
                   isLoading: false,
-                  userData: res.data.userData,
+                  userData: user,
                 });
                 store.setStorage();
                 toastr.success(res?.message || 'Profile completed successfully', 'Success');

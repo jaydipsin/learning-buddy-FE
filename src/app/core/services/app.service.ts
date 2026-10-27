@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IUserProfile } from '../../shared/models/global.interface';
 import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';
 
@@ -9,6 +10,8 @@ export class AppService {
   constructor(private http: HttpClient) { }
 
   getUserData(): Observable<IUserProfile> {
-    return this.http.get<IUserProfile>(`${BASE_BACKEND_URL}/api/user/profile`);
+    return this.http.get<any>(`${BASE_BACKEND_URL}/api/user/profile`).pipe(
+      map((res) => res.data.userData)
+    );
   }
 }

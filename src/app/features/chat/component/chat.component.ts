@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, effect, inject } from "@angular/core";
+import { ChangeDetectorRef, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ChatStore } from "../store/chat.store";
 import { ChatService } from "../service/chat.service";
@@ -16,13 +16,13 @@ export class ChatComponent {
     chatStore = inject(ChatStore);
     chatService = inject(ChatService);
 
-
     chatMessage: string = '';
 
-
-    constructor() {
-     
+    sendQuickPrompt(text: string) {
+        this.chatMessage = text;
+        this.sendMessage();
     }
+
     async sendMessage() {
         if (this.chatMessage.trim()) {
             const message = this.chatMessage;
@@ -30,5 +30,4 @@ export class ChatComponent {
             this.chatStore.chatWithAiMentor(message);
         }
     }
-
 }

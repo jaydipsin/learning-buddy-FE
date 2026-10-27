@@ -1,0 +1,13 @@
+<div 
+  class="countdown-timer-pill"
+  [ngClass]="'timer-' + urgencyState()"
+  role="timer"
+  [attr.aria-label]="formattedTime()">
+  
+  <svg class="timer-clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="9"/>
+    <path stroke-linecap="round" d="M12 7v5l3 2"/>
+  </svg>
+
+  <span class="timer-display font-mono">{{ formattedTime() }}</span>
+</div>

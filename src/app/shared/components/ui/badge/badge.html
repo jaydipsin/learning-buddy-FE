@@ -1,0 +1,9 @@
+<span [class]="badgeClasses">
+  @if (dot) {
+    <span class="badge-dot"></span>
+  }
+  @if (text) {
+    <span>{{ text }}</span>
+  }
+  <ng-content></ng-content>
+</span>

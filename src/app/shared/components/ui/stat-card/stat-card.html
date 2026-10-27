@@ -1,0 +1,57 @@
+<div class="stat-card card-base">
+  <!-- Card Header -->
+  <div class="stat-card-header">
+    <span class="stat-card-label">{{ label }}</span>
+    
+    @if (badge) {
+      <span class="badge-minimal stat-badge" [ngClass]="badgeClass">
+        {{ badge.text }}
+      </span>
+    }
+  </div>
+
+  <!-- Main Value Row -->
+  <div class="stat-card-main">
+    <span class="stat-value font-mono">{{ value }}</span>
+    @if (subtitle) {
+      <span class="stat-subtitle font-mono">{{ subtitle }}</span>
+    }
+  </div>
+
+  <!-- Trend or Sub-metric Row -->
+  @if (trend && trendValue) {
+    <div class="stat-sub-row" [ngClass]="trend">
+      <svg class="trend-icon" viewBox="0 0 16 16" fill="currentColor">
+        @if (trend === 'up') {
+          <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v7.793l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 11.793V4a.5.5 0 0 1 .5-.5z" transform="rotate(180 8 8)"/>
+        } @else {
+          <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v7.793l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 11.793V4a.5.5 0 0 1 .5-.5z"/>
+        }
+      </svg>
+      <span>{{ trendValue }}</span>
+    </div>
+  }
+
+  <!-- Progress Track -->
+  @if (progress !== undefined) {
+    <div class="clean-progress-track stat-progress">
+      <div 
+        class="clean-progress-fill" 
+        [style.width.%]="progress"
+        [style.background-color]="progressColor || 'var(--color-primary)'">
+      </div>
+    </div>
+  }
+
+  <!-- Footer Stats -->
+  @if (footerLeft || footerRight) {
+    <div class="stat-card-footer">
+      @if (footerLeft) {
+        <span>{{ footerLeft }}</span>
+      }
+      @if (footerRight) {
+        <span>{{ footerRight }}</span>
+      }
+    </div>
+  }
+</div>
