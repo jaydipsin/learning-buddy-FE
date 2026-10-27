@@ -4,11 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../../core/services/auth.service';
 import { AuthFormService } from '../../../../core/services/auth.form.service';
+import { IonContent } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, IonContent],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })

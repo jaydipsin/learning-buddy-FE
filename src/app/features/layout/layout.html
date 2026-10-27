@@ -1,4 +1,18 @@
-<app-header></app-header>
-<ion-content fullscreen>
-  <router-outlet></router-outlet>
-</ion-content>
+<!-- Animated Splash Screen -->
+<app-splash-screen *ngIf="showSplash" (finished)="onSplashFinished()"></app-splash-screen>
+
+<!-- Main Application Layout Shell -->
+<div class="app-layout-shell">
+  <!-- Fixed/Sticky Desktop Header -->
+  <app-header></app-header>
+
+  <!-- Scrollable Main Viewport Area -->
+  <main class="app-viewport-scroll">
+    <div class="app-content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Mobile Edge-Docked Bottom Nav -->
+  <app-bottom-nav></app-bottom-nav>
+</div>

@@ -1,0 +1,47 @@
+<div 
+  class="progress-ring-container" 
+  [style.width.px]="pixelSize()" 
+  [style.height.px]="pixelSize()">
+  
+  <svg 
+    class="progress-ring-svg" 
+    [attr.width]="pixelSize()" 
+    [attr.height]="pixelSize()">
+    
+    <!-- Background Track -->
+    <circle
+      class="progress-ring-track"
+      [attr.stroke]="trackColor"
+      [attr.stroke-width]="stroke()"
+      fill="transparent"
+      [attr.r]="radius()"
+      [attr.cx]="pixelSize() / 2"
+      [attr.cy]="pixelSize() / 2"
+    />
+
+    <!-- Fill Circle -->
+    <circle
+      class="progress-ring-fill"
+      [attr.stroke]="color"
+      [attr.stroke-width]="stroke()"
+      stroke-linecap="round"
+      fill="transparent"
+      [attr.r]="radius()"
+      [attr.cx]="pixelSize() / 2"
+      [attr.cy]="pixelSize() / 2"
+      [style.stroke-dasharray]="circumference()"
+      [style.stroke-dashoffset]="strokeDashoffset()"
+    />
+  </svg>
+
+  @if (showLabel) {
+    <div class="progress-ring-content">
+      <span class="progress-ring-val font-mono">
+        {{ label !== undefined ? label : value + '%' }}
+      </span>
+      @if (subLabel) {
+        <span class="progress-ring-sublabel">{{ subLabel }}</span>
+      }
+    </div>
+  }
+</div>

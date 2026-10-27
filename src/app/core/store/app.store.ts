@@ -31,7 +31,7 @@ export const appStore = signalStore(
             tapResponse({
               next: (user) =>
                 patchState(store, {
-                  appData: user as unknown as { userDetails: IUserProfile },
+                  appData: { userDetails: user },
                   isLoading: false,
                 }),
               error: (err) =>

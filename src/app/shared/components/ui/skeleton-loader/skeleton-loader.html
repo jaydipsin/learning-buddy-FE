@@ -1,0 +1,44 @@
+<div class="skeleton-wrapper">
+  @for (i of countArray; track i) {
+    @switch (variant) {
+      @case ('card') {
+        <div class="skeleton-card card-base">
+          <div class="skeleton-shimmer h-4 w-1/3 mb-3"></div>
+          <div class="skeleton-shimmer h-8 w-2/3 mb-4"></div>
+          <div class="skeleton-shimmer h-2 w-full mb-3"></div>
+          <div class="flex justify-between">
+            <div class="skeleton-shimmer h-3 w-1/4"></div>
+            <div class="skeleton-shimmer h-3 w-1/4"></div>
+          </div>
+        </div>
+      }
+      @case ('stat') {
+        <div class="skeleton-stat card-base">
+          <div class="skeleton-shimmer h-3 w-2/5 mb-2"></div>
+          <div class="skeleton-shimmer h-7 w-1/2 mb-2"></div>
+          <div class="skeleton-shimmer h-1.5 w-full"></div>
+        </div>
+      }
+      @case ('list-item') {
+        <div class="skeleton-list-item">
+          <div class="skeleton-shimmer h-9 w-9 rounded-full flex-shrink-0"></div>
+          <div class="flex-1 space-y-2">
+            <div class="skeleton-shimmer h-4 w-3/4"></div>
+            <div class="skeleton-shimmer h-3 w-1/2"></div>
+          </div>
+        </div>
+      }
+      @case ('avatar') {
+        <div class="skeleton-shimmer skeleton-avatar rounded-full"></div>
+      }
+      @default {
+        <div 
+          class="skeleton-shimmer skeleton-rect"
+          [style.height]="computedHeight"
+          [style.width]="computedWidth"
+          [style.border-radius]="radius">
+        </div>
+      }
+    }
+  }
+</div>

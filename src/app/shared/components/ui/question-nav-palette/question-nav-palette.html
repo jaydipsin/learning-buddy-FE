@@ -1,0 +1,42 @@
+<div class="question-palette-card card-base">
+  <div class="palette-header">
+    <h3 class="palette-title">Question Palette</h3>
+    <span class="palette-count font-mono">{{ currentIndex + 1 }} / {{ questions.length }}</span>
+  </div>
+
+  <!-- Number Grid -->
+  <div class="palette-grid">
+    @for (q of questions; track q.id; let idx = $index) {
+      <button
+        type="button"
+        class="palette-btn font-mono"
+        [ngClass]="['status-' + q.status, idx === currentIndex ? 'active-current' : '']"
+        [attr.aria-current]="idx === currentIndex ? 'true' : null"
+        (click)="onSelect(idx)">
+        {{ q.index }}
+      </button>
+    }
+  </div>
+
+  @if (showLegend) {
+    <!-- Legend -->
+    <div class="palette-legend">
+      <div class="legend-item">
+        <span class="legend-dot status-answered"></span>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot status-unanswered"></span>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot status-marked"></span>
+        <span>Marked</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot status-marked-answered"></span>
+        <span>Answered & Marked</span>
+      </div>
+    </div>
+  }
+</div>

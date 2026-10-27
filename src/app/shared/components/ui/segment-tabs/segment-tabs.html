@@ -1,0 +1,29 @@
+<div 
+  class="segment-tabs-container"
+  [class.full-width]="fullWidth"
+  [ngClass]="'segment-size-' + size"
+  role="tablist">
+  
+  @for (tab of tabs; track tab.id) {
+    <button
+      type="button"
+      role="tab"
+      class="segment-tab-item"
+      [class.active]="tab.id === activeTab"
+      [class.disabled]="tab.disabled"
+      [disabled]="tab.disabled"
+      [attr.aria-selected]="tab.id === activeTab"
+      (click)="selectTab(tab)">
+      
+      @if (tab.icon) {
+        <span class="segment-tab-icon">{{ tab.icon }}</span>
+      }
+
+      <span class="segment-tab-label">{{ tab.label }}</span>
+
+      @if (tab.count !== undefined) {
+        <span class="segment-tab-count font-mono">{{ tab.count }}</span>
+      }
+    </button>
+  }
+</div>

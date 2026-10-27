@@ -1,0 +1,29 @@
+<div class="chip-group" [ngClass]="'chip-size-' + size" role="group">
+  @for (option of options; track option.id) {
+    <button
+      type="button"
+      class="chip-button"
+      [class.selected]="isSelected(option.id)"
+      [class.disabled]="disabled || option.disabled"
+      [disabled]="disabled || option.disabled"
+      [attr.aria-pressed]="isSelected(option.id)"
+      (click)="onChipClick(option)">
+      
+      @if (option.icon) {
+        <span class="chip-icon">{{ option.icon }}</span>
+      }
+
+      <span class="chip-label">{{ option.label }}</span>
+
+      @if (isSelected(option.id)) {
+        <svg class="chip-check-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207z"/>
+        </svg>
+      }
+
+      @if (option.badge) {
+        <span class="chip-badge">{{ option.badge }}</span>
+      }
+    </button>
+  }
+</div>

@@ -1,0 +1,44 @@
+.progress-ring-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring-svg {
+  transform: rotate(-90deg);
+  display: block;
+}
+
+.progress-ring-track {
+  transition: stroke 0.2s ease;
+}
+
+.progress-ring-fill {
+  transition: stroke-dashoffset 0.4s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease;
+}
+
+.progress-ring-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.progress-ring-val {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1;
+}
+
+.progress-ring-sublabel {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}

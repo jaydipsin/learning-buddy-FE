@@ -31,6 +31,12 @@ export const routes: Routes = [
           import('./features/generate-mocktest/generate-mocktest').then((c) => c.GenerateMockTest),
         title: 'Generate Mock Test',
       },
+      {
+        path: 'student/chat',
+        loadComponent: () =>
+          import('./features/chat/component/chat.component').then((c) => c.ChatComponent),
+        title: 'AI Study Buddy',
+      },
     ],
   },
 

@@ -1,0 +1,21 @@
+<div class="splash-backdrop" [class.fade-out]="isFadingOut">
+  <div class="splash-card">
+    <div class="brand-badge-icon">
+      LB
+    </div>
+
+    <h1 class="brand-title">Learning Buddy</h1>
+    <p class="brand-subtitle">NEET & JEE Exam Analytics Engine</p>
+
+    <div class="loader-box">
+      <div class="loader-track">
+        <div class="loader-fill" [style.width.%]="progress"></div>
+      </div>
+      <span class="status-label">{{ tagline }}</span>
+    </div>
+
+    <button class="skip-btn" (click)="dismiss()">
+      Skip &rarr;
+    </button>
+  </div>
+</div>
