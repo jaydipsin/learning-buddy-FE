@@ -32,6 +32,12 @@ export const routes: Routes = [
         title: 'Generate Mock Test',
       },
       {
+        path: 'student/mock-test/attempt',
+        loadComponent: () =>
+          import('./features/mock-test/mock-test').then((c) => c.MockTest),
+        title: 'Mock Test Attempt',
+      },
+      {
         path: 'student/chat',
         loadComponent: () =>
           import('./features/chat/component/chat.component').then((c) => c.ChatComponent),

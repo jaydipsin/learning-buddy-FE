@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { appStore } from '../../core/store/app.store';
 import {
@@ -38,6 +39,7 @@ export interface SubjectOption {
 })
 export class GenerateMockTest implements OnInit {
   private toastr = inject(ToastrService);
+  private router = inject(Router);
   private mockTestGeneration = inject(MockTestGenerationService);
   readonly store = inject(appStore);
 
@@ -248,6 +250,7 @@ export class GenerateMockTest implements OnInit {
         `${this.generatedQuestionIds.length} questions are ready.`,
         'Simulation Launched',
       );
+      await this.router.navigate(['/student/mock-test/attempt']);
       console.log('Mock test generation completed:', completedJob);
     } catch (error) {
       this.isLaunching = false;

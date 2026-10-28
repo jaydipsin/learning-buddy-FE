@@ -1,0 +1,147 @@
+<div class="attempt-page">
+  <header class="attempt-header">
+    <div class="attempt-title">
+      <button type="button" class="back-button" aria-label="Exit mock test" (click)="exitTest()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
+      </button>
+      <div>
+        <p class="eyebrow">JEE Advanced · Timed practice</p>
+        <h1>Physics, Chemistry &amp; Mathematics</h1>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="timer" [class.timer-warning]="remainingSeconds() <= 600" aria-label="Time remaining">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3 2" /></svg>
+        <span><small>Time left</small><strong class="font-mono">{{ formatTime(remainingSeconds()) }}</strong></span>
+      </div>
+      <span class="question-count font-mono">{{ currentIndex() + 1 }} / {{ paletteQuestions().length }}</span>
+      <span class="live-status"><span class="status-pip"></span>Autosaved</span>
+    </div>
+  </header>
+
+  <div class="attempt-layout">
+    <main class="question-column">
+      @if (isComplete()) {
+        <section class="completion-card card-base">
+          <div class="completion-mark">✓</div>
+          <p class="eyebrow">Simulation complete</p>
+          <h2>Your answers are saved.</h2>
+          <p>{{ answeredCount() }} of {{ paletteQuestions().length }} questions submitted in this attempt.</p>
+          <button type="button" class="btn-primary" (click)="exitTest()">Back to mock tests</button>
+        </section>
+      } @else if (isLoadingQuestion()) {
+        <section class="question-card loading-card card-base" aria-live="polite">
+          <div class="loading-bar loading-short"></div>
+          <div class="loading-bar loading-long"></div>
+          <div class="loading-workspace"></div>
+          <div class="loading-options">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <p>Loading question {{ currentIndex() + 1 }}…</p>
+        </section>
+      } @else if (currentQuestion(); as question) {
+        <section class="question-card card-base">
+          <div class="question-topline">
+            <div class="question-label">
+              <span class="question-number font-mono">Q{{ currentIndex() + 1 }}</span>
+              <span class="subject-label">{{ question.subject }}</span>
+            </div>
+            <button type="button" class="review-button" [class.reviewing]="marked().has(question.id)" (click)="toggleMark()">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" /></svg>
+              {{ marked().has(question.id) ? 'Marked for review' : 'Mark for review' }}
+            </button>
+          </div>
+
+          <div class="question-copy">
+            <h2>{{ question.prompt }}</h2>
+            <div class="equation-space" aria-label="Question workspace">
+              <span>Workspace</span>
+              <span class="workspace-line"></span>
+            </div>
+          </div>
+
+          <div class="options" role="radiogroup" aria-label="Answer options">
+            @for (option of question.options; track option; let optionIndex = $index) {
+              <button
+                type="button"
+                class="option"
+                [class.selected]="answers()[question.id] === option"
+                [class.locked]="submitted().has(question.id)"
+                role="radio"
+                [attr.aria-checked]="answers()[question.id] === option"
+                (click)="selectAnswer(option)">
+                <span class="option-letter">{{ getOptionLetter(optionIndex) }}</span>
+                <span>{{ option }}</span>
+                @if (answers()[question.id] === option) {
+                  <span class="selected-check">✓</span>
+                }
+              </button>
+            }
+          </div>
+
+          <div class="question-actions">
+            <button type="button" class="btn-secondary" [disabled]="currentIndex() === 0" (click)="previousQuestion()">Previous</button>
+            <div class="action-status" aria-live="polite">
+              @if (feedback() === 'saved') { Answer saved }
+              @if (feedback() === 'marked') { Saved for review }
+              @if (!answers()[question.id] && feedback() === 'idle') { Choose an answer to continue }
+            </div>
+            <button type="button" class="btn-primary" [disabled]="!answers()[question.id] || isSubmitting()" (click)="submitAndContinue()">
+              @if (isSubmitting()) { Saving... } @else { Save &amp; next }
+              @if (!isSubmitting()) {
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+              }
+            </button>
+          </div>
+        </section>
+      }
+    </main>
+
+    <aside class="attempt-rail" aria-label="Test progress">
+      <section class="progress-panel card-base">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Attempt progress</p>
+            <h2>{{ answeredCount() }} answered</h2>
+          </div>
+          <span class="progress-value font-mono">{{ progressPercent() }}%</span>
+        </div>
+        <div class="progress-track"><span [style.width.%]="progressPercent()"></span></div>
+        <p class="progress-note">One question at a time. Your answer is saved before you move on.</p>
+      </section>
+
+      <section class="palette-panel card-base">
+        <div class="palette-panel-heading">
+          <div>
+            <p class="eyebrow">Question palette</p>
+            <h2>Jump to a question</h2>
+          </div>
+          <span class="palette-total font-mono">{{ paletteQuestions().length }}</span>
+        </div>
+        <app-question-nav-palette
+          [questions]="paletteQuestions()"
+          [currentIndex]="currentIndex()"
+          [showLegend]="true"
+          (selectQuestion)="goToQuestion($event)">
+        </app-question-nav-palette>
+      </section>
+
+      <section class="batch-panel card-base" [class.is-loading]="isPrefetching()">
+        <div class="batch-icon">
+          @if (isPrefetching()) {
+            <span class="spinner"></span>
+          } @else {
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18m9-9H3" /></svg>
+          }
+        </div>
+        <div>
+          <h2>{{ isPrefetching() ? 'Loading next set' : 'More questions ready soon' }}</h2>
+          <p>{{ isPrefetching() ? 'Fetching the next 5 questions in the background.' : 'The next batch loads quietly when you reach question 4.' }}</p>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
