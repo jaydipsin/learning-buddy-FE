@@ -1,0 +1,130 @@
+.profile-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+}
+
+.profile-header {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+h1 {
+  color: var(--color-text-main);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.subtitle,
+.hint {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.profile-form {
+  display: grid;
+  gap: 24px;
+  padding: 20px;
+}
+
+.form-section {
+  display: grid;
+  gap: 8px;
+}
+
+h2 {
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  margin: 0 0 8px;
+}
+
+label {
+  color: var(--color-text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+label span {
+  color: var(--color-text-subtle);
+  font-weight: 400;
+}
+
+input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-main);
+  font: inherit;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+input:focus {
+  border-color: var(--color-primary);
+  outline: 2px solid var(--color-primary-light);
+}
+
+input:disabled {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+}
+
+.hint,
+.error {
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.course-list {
+  display: grid;
+  gap: 8px;
+}
+
+.course-option {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-main);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.course-option.selected {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+}
+
+.check {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.form-actions {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}

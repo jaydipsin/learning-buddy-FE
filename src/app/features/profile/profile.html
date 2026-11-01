@@ -1,0 +1,55 @@
+<main class="profile-page">
+  <section class="profile-header">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h1>Edit profile</h1>
+      <p class="subtitle">Keep your study profile and course preferences up to date.</p>
+    </div>
+  </section>
+
+  <form class="profile-form card-base" [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-section">
+      <h2>Personal details</h2>
+      <label for="userName">Display name</label>
+      <input id="userName" type="text" formControlName="userName" autocomplete="name" />
+      @if (form.controls.userName.touched && form.controls.userName.invalid) {
+        <p class="error">Enter a display name of up to 50 characters.</p>
+      }
+
+      <label for="email">Email address</label>
+      <input id="email" type="email" [value]="userEmail" disabled />
+      <p class="hint">Your email is used for sign-in and cannot be changed here.</p>
+
+      <label for="avatar">Avatar URL <span>(optional)</span></label>
+      <input id="avatar" type="url" formControlName="avatar" placeholder="https://..." />
+    </div>
+
+    <div class="form-section">
+      <h2>Study courses</h2>
+      <p class="hint">Choose the courses you want to see in your study workspace.</p>
+      <div class="course-list">
+        @for (course of courses; track course._id || course.id) {
+          <button
+            type="button"
+            class="course-option"
+            [class.selected]="isSelected(course._id || course.id)"
+            (click)="toggleCourse(course._id || course.id)"
+          >
+            <span>{{ course.name }}</span>
+            @if (isSelected(course._id || course.id)) {
+              <span class="check" aria-label="Selected">✓</span>
+            }
+          </button>
+        } @empty {
+          <p class="hint">No courses are available right now.</p>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" type="submit" [disabled]="store.isLoading()">
+        {{ store.isLoading() ? 'Saving...' : 'Save changes' }}
+      </button>
+    </div>
+  </form>
+</main>
