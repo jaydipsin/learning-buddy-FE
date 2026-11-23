@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
-  font-size: 0.75rem;
+  font-size: var(--text-label);
 }
 
 .progress-bar-label {
@@ -29,5 +29,5 @@
 .clean-progress-fill {
   height: 100%;
   border-radius: var(--radius-full);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--duration-normal) var(--ease-smooth);
 }

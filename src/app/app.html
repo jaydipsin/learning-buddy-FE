@@ -1,3 +1,6 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-router-outlet [attr.inert]="showSplash() ? '' : null"></ion-router-outlet>
+  @if (showSplash()) {
+    <app-splash-screen />
+  }
 </ion-app>

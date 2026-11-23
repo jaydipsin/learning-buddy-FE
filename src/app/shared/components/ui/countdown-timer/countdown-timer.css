@@ -1,63 +1,7 @@
-.countdown-timer-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: var(--radius-full);
-  font-weight: 700;
-  transition: all var(--duration-fast) var(--ease-smooth);
-}
-
-.timer-clock-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.timer-display {
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
-
-/* Urgency States */
-.timer-normal {
-  background-color: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-main);
-}
-
-.timer-warning {
-  background-color: var(--color-warning-light);
-  border: 1px solid rgba(217, 119, 6, 0.3);
-  color: var(--color-warning);
-}
-
-body.dark .timer-warning {
-  background-color: rgba(217, 119, 6, 0.15);
-  color: #fde68a;
-  border-color: rgba(217, 119, 6, 0.4);
-}
-
-.timer-critical {
-  background-color: var(--color-danger-light);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  color: var(--color-danger);
-  animation: pulseTimer 1s infinite alternate;
-}
-
-body.dark .timer-critical {
-  background-color: rgba(220, 38, 38, 0.2);
-  color: #fca5a5;
-  border-color: rgba(220, 38, 38, 0.5);
-}
-
-@keyframes pulseTimer {
-  from {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3);
-  }
-  to {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
-  }
-}
+.countdown-timer-pill { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: var(--border-width) solid var(--color-border); border-radius: var(--radius-full); font-weight: var(--weight-bold); }
+.timer-clock-icon { width: var(--icon-sm); height: var(--icon-sm); }
+.timer-display { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--text-body); line-height: var(--leading-tight); }
+.timer-normal { background: var(--color-bg-subtle); color: var(--color-text-main); }
+.timer-warning { background: var(--color-warning-light); border-color: var(--color-warning-border); color: var(--color-warning); }
+.timer-critical { background: var(--color-danger-light); border-color: var(--color-danger-border); color: var(--color-danger); animation: pulseTimer 1s infinite alternate; }
+@keyframes pulseTimer { from { opacity: 1; } to { opacity: 0.7; } }
