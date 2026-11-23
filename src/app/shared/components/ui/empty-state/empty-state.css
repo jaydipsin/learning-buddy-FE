@@ -31,21 +31,21 @@
 }
 
 .empty-state-title {
-  font-size: 0.9375rem;
+  font-size: var(--text-section);
   font-weight: 700;
   color: var(--color-text-main);
   margin-bottom: 6px;
 }
 
 .empty-state-description {
-  font-size: 0.8125rem;
+  font-size: var(--text-body);
   color: var(--color-text-muted);
   max-width: 320px;
-  line-height: 1.4;
+  line-height: var(--leading-body);
   margin-bottom: 20px;
 }
 
 .empty-state-btn {
-  font-size: 0.8125rem;
-  padding: 8px 16px;
+  font-size: var(--text-body);
+  padding: var(--space-3) var(--space-4);
 }

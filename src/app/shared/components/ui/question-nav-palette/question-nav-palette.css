@@ -14,10 +14,10 @@
 }
 
 .palette-title {
-  font-size: 0.8125rem;
+  font-size: var(--text-label);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: none;
+  letter-spacing: normal;
   color: var(--color-text-main);
   margin: 0;
 }
@@ -30,25 +30,25 @@
 
 .palette-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--touch-target), 1fr));
   gap: 8px;
   max-height: 320px;
   overflow-y: auto;
-  padding: 2px;
+  padding: var(--space-2);
 }
 
 .palette-btn {
-  width: 36px;
-  height: 36px;
+  width: var(--touch-target);
+  height: var(--touch-target);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  font-size: 0.8125rem;
+  font-size: var(--text-label);
   font-weight: 700;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all var(--duration-fast) var(--ease-smooth);
+  transition: transform var(--duration-fast) var(--ease-smooth);
   user-select: none;
 }
 
@@ -65,17 +65,17 @@
 
 .status-answered {
   background-color: var(--color-success);
-  color: #ffffff;
+  color: var(--color-on-success);
 }
 
 .status-marked {
   background-color: var(--color-warning);
-  color: #ffffff;
+  color: var(--color-on-warning);
 }
 
 .status-marked-answered {
   background-color: var(--color-xp);
-  color: #ffffff;
+  color: var(--color-on-xp);
 }
 
 /* Current active item highlight */
@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.6875rem;
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
 }
 
