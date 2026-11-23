@@ -157,13 +157,13 @@
 
         <!-- Launch Button / Progress State -->
         <div class="blueprint-launch-box">
-          @if (isLaunching) {
+          @if (isLaunching()) {
             <div class="launch-progress-wrap">
               <div class="flex justify-between items-center text-xs font-semibold mb-2 text-[var(--color-text-main)]">
                 <span>Calibrating Question Set...</span>
-                <span class="font-mono text-[var(--color-primary)]">{{ launchProgress }}%</span>
+                <span class="font-mono text-[var(--color-primary)]">{{ launchProgress() }}%</span>
               </div>
-              <app-progress-bar [value]="launchProgress" [height]="8" [showHeader]="false"></app-progress-bar>
+              <app-progress-bar [value]="launchProgress()" [height]="8" [showHeader]="false"></app-progress-bar>
             </div>
           } @else {
             <button

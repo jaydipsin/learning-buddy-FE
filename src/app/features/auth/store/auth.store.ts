@@ -5,6 +5,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   IAuthResponse,
   ILoginPayload,
+  IProfileUpdatePayload,
   IRegisterResponse,
   Iregistrationpayload,
 } from '../../../shared/models/auth.interface';
@@ -115,6 +116,24 @@ export const authStore = signalStore(
       ),
     ),
 
+    updateProfile: rxMethod<IProfileUpdatePayload>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap((payload) =>
+          authService.updateProfile(payload).pipe(
+            tapResponse({
+              next(res: { message: string }) {
+                toastr.success(res.message);
+              },
+              error(error: any) {
+                toastr.error(error?.error?.message);
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+
     getAllCourses: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { isLoading: true })),
@@ -150,7 +169,7 @@ export const authStore = signalStore(
                   accessToken: res.data.accessToken || null,
                   userData: res.data.userData,
                 });
-                console.log("RES : ", res)
+                console.log('RES : ', res);
                 if (!res.data.accessToken) {
                   store.setUnverifiedUserStorage();
                   toastr.info(res?.message || 'Please verify your email address.', 'Info');
@@ -293,7 +312,9 @@ export const authStore = signalStore(
             tapResponse({
               next: (res: IAuthResponse) => {
                 const currentUserData = store.userData();
-                const updatedUserData = currentUserData ? { ...currentUserData, isUserVerified: true } : null;
+                const updatedUserData = currentUserData
+                  ? { ...currentUserData, isUserVerified: true }
+                  : null;
                 patchState(store, {
                   isLoading: false,
                   accessToken: res.data.accessToken || null,
@@ -346,6 +367,6 @@ export const authStore = signalStore(
   withHooks({
     onInit(store) {
       store.loadStorage();
-    }
-  })
+    },
+  }),
 );

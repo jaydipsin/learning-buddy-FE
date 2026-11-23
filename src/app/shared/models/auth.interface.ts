@@ -1,4 +1,10 @@
-import { IUserProfile, Role } from "./global.interface";
+import { IUserProfile, Role } from './global.interface';
+
+export interface IProfileUpdatePayload {
+  userName?: string;
+  avatar?: string;
+  course?: string[];
+}
 
 export interface Iregistrationpayload {
   email: string;

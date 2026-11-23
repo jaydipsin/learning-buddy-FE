@@ -30,6 +30,16 @@ export interface IDashboardInitialState {
     mockTestLabel: string;
   }[]; // List of recent mock tests with date, score, and percentile
 
+  onGoingMockTest: {
+    _id: string;
+    title: string;
+    timeLimit: number;
+    timeTaken: number;
+    remainingTime: number;
+    currentQuestionIndex: number;
+    totalQuestions: number;
+  }[] | null;
+
   whatToDoNext: {
     action: string; // e.g., "Focus on weak topics", "Review last mock test analysis", "Attempt more questions"
     details: string; // Additional details or resources for the recommended action

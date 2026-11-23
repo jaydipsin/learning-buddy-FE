@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { appStore } from '../../core/store/app.store';
 import {
@@ -38,6 +39,7 @@ export interface SubjectOption {
 })
 export class GenerateMockTest implements OnInit {
   private toastr = inject(ToastrService);
+  private router = inject(Router);
   private mockTestGeneration = inject(MockTestGenerationService);
   readonly store = inject(appStore);
 
@@ -89,8 +91,8 @@ export class GenerateMockTest implements OnInit {
     { id: 'adaptive', label: 'Adaptive (Dynamic AI)' },
   ];
 
-  isLaunching = false;
-  launchProgress = 0;
+  isLaunching = signal(false);
+  launchProgress = signal(0);
   generatedQuestionIds: string[] = [];
   generationJobId: string | null = null;
 
@@ -219,8 +221,8 @@ export class GenerateMockTest implements OnInit {
       apiPayload.difficulty = this.difficulty();
     }
 
-    this.isLaunching = true;
-    this.launchProgress = 0;
+    this.isLaunching.set(true);
+    this.launchProgress.set(0);
 
     void this.generateMockTest(apiPayload);
   }
@@ -237,21 +239,24 @@ export class GenerateMockTest implements OnInit {
         payload,
         (job: MockTestGenerationJob) => {
           this.generationJobId = job.jobId;
-          this.launchProgress = job.progress;
+          this.launchProgress.set(job.progress);
         },
       );
 
       this.generatedQuestionIds = completedJob.questionIds || [];
-      this.launchProgress = 100;
-      this.isLaunching = false;
+      this.launchProgress.set(100);
+      this.isLaunching.set(false);
       this.toastr.success(
         `${this.generatedQuestionIds.length} questions are ready.`,
         'Simulation Launched',
       );
+      await this.router.navigate(['/student/mock-test/attempt'], {
+        queryParams: { attemptId: completedJob.attemptId },
+      });
       console.log('Mock test generation completed:', completedJob);
     } catch (error) {
-      this.isLaunching = false;
-      this.launchProgress = 0;
+      this.isLaunching.set(false);
+      this.launchProgress.set(0);
       const message = error instanceof Error ? error.message : 'Failed to generate mock test.';
       this.toastr.error(message, 'Generation Error');
       console.error('Mock test generation failed:', error);

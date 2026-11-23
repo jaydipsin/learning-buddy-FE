@@ -2,6 +2,7 @@ import { inject, Injectable, Injector } from '@angular/core';
 import {
   IAuthResponse,
   ILoginPayload,
+  IProfileUpdatePayload,
   Iregistrationpayload,
 } from '../../shared/models/auth.interface';
 import { Observable } from 'rxjs';
@@ -54,6 +55,10 @@ export class AuthService {
     return this.http.post<{ message: string }>(BASE_BACKEND_URL + '/auth/forgot-password', { email });
   }
 
+  updateProfile(payload: IProfileUpdatePayload): Observable<IAuthResponse> {
+    return this.http.put<IAuthResponse>(BASE_BACKEND_URL + '/api/user/profile', payload);
+  }
+
   resetPassword(token: string, newPassword: string, confirmNewPassword?: string): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${BASE_BACKEND_URL}/auth/reset-password/${token}`, {
       newPassword,
@@ -61,4 +66,3 @@ export class AuthService {
     });
   }
 }
-
