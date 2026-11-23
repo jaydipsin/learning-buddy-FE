@@ -2,6 +2,57 @@
   display: block;
 }
 
+.attempt-error,
+.image-error {
+  margin: var(--space-4) 0;
+  padding: var(--space-3);
+  color: var(--color-danger);
+  background: var(--color-danger-light);
+  border-radius: var(--radius-sm);
+}
+
+.question-copy h2,
+.question-passage,
+.option-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.question-passage {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-main);
+}
+
+.question-figure {
+  margin: var(--space-4) 0 0;
+}
+
+.question-figure a,
+.question-figure img {
+  display: block;
+}
+
+.question-figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.question-figure figcaption {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: smaller;
+}
+
+.finish-panel {
+  padding: var(--space-4);
+}
+
+.finish-panel p {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+}
+
 .attempt-page {
   max-width: 1240px;
   margin: 0 auto;

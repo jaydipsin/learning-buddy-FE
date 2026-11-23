@@ -11,6 +11,7 @@ export interface IAppData {
 export interface IUserProfile {
   id: string;
   email: string;
+  avatar:string;
   userName: string;
   role: Role;
   themePreference: 'light' | 'dark';

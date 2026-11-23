@@ -5,8 +5,8 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
       </button>
       <div>
-        <p class="eyebrow">JEE Advanced · Timed practice</p>
-        <h1>Physics, Chemistry &amp; Mathematics</h1>
+        <p class="eyebrow">{{ title() }}</p>
+        <h1>{{ subjects() || 'Timed practice' }}</h1>
       </div>
     </div>
     <div class="header-meta">
@@ -15,16 +15,20 @@
         <span><small>Time left</small><strong class="font-mono">{{ formatTime(remainingSeconds()) }}</strong></span>
       </div>
       <span class="question-count font-mono">{{ currentIndex() + 1 }} / {{ paletteQuestions().length }}</span>
-      <span class="live-status"><span class="status-pip"></span>Autosaved</span>
+      <span class="live-status"><span class="status-pip"></span>{{ answeredCount() }} saved</span>
     </div>
   </header>
+
+  @if (error()) {
+    <p class="attempt-error" role="alert">{{ error() }}</p>
+  }
 
   <div class="attempt-layout">
     <main class="question-column">
       @if (isComplete()) {
         <section class="completion-card card-base">
           <div class="completion-mark">✓</div>
-          <p class="eyebrow">Simulation complete</p>
+          <p class="eyebrow">Test complete</p>
           <h2>Your answers are saved.</h2>
           <p>{{ answeredCount() }} of {{ paletteQuestions().length }} questions submitted in this attempt.</p>
           <button type="button" class="btn-primary" (click)="exitTest()">Back to mock tests</button>
@@ -56,26 +60,38 @@
           </div>
 
           <div class="question-copy">
+            @if (question.passageText && !question.prompt.includes(question.passageText)) {
+              <p class="question-passage">{{ question.passageText }}</p>
+            }
             <h2>{{ question.prompt }}</h2>
-            <div class="equation-space" aria-label="Question workspace">
-              <span>Workspace</span>
-              <span class="workspace-line"></span>
-            </div>
+            @for (diagram of diagramsFor(question); track diagram.ref) {
+              <figure class="question-figure">
+                @if (failedImages().has(diagram.ref) || !diagramUrl(diagram.ref)) {
+                  <p class="image-error" role="alert">The question image could not be loaded. Please refresh before answering.</p>
+                } @else {
+                  <a [href]="diagramUrl(diagram.ref)" target="_blank" rel="noopener noreferrer" aria-label="Open question image at full size">
+                    <img [src]="diagramUrl(diagram.ref)" [alt]="diagram.description || 'Figure for question ' + (currentIndex() + 1)" loading="lazy" (error)="onDiagramError(diagram.ref)" />
+                  </a>
+                  <figcaption>Open image at full size</figcaption>
+                }
+              </figure>
+            }
           </div>
 
           <div class="options" role="radiogroup" aria-label="Answer options">
-            @for (option of question.options; track option; let optionIndex = $index) {
+            @for (option of question.options; track option.label) {
               <button
                 type="button"
                 class="option"
-                [class.selected]="answers()[question.id] === option"
+                [class.selected]="answers()[question.id] === option.label"
                 [class.locked]="submitted().has(question.id)"
+                [disabled]="submitted().has(question.id) || isSubmitting() || remainingSeconds() === 0 || questionHasImageError(question)"
                 role="radio"
-                [attr.aria-checked]="answers()[question.id] === option"
-                (click)="selectAnswer(option)">
-                <span class="option-letter">{{ getOptionLetter(optionIndex) }}</span>
-                <span>{{ option }}</span>
-                @if (answers()[question.id] === option) {
+                [attr.aria-checked]="answers()[question.id] === option.label"
+                (click)="selectAnswer(option.label)">
+                <span class="option-letter">{{ option.label }}</span>
+                <span class="option-text">{{ option.text }}</span>
+                @if (answers()[question.id] === option.label) {
                   <span class="selected-check">✓</span>
                 }
               </button>
@@ -89,8 +105,8 @@
               @if (feedback() === 'marked') { Saved for review }
               @if (!answers()[question.id] && feedback() === 'idle') { Choose an answer to continue }
             </div>
-            <button type="button" class="btn-primary" [disabled]="!answers()[question.id] || isSubmitting()" (click)="submitAndContinue()">
-              @if (isSubmitting()) { Saving... } @else { Save &amp; next }
+            <button type="button" class="btn-primary" [disabled]="!answers()[question.id] || isSubmitting() || remainingSeconds() === 0 || questionHasImageError(question)" (click)="submitAndContinue()">
+              @if (isSubmitting()) { Saving... } @else if (currentIndex() === loadedQuestions().length - 1) { Save &amp; finish } @else { Save &amp; next }
               @if (!isSubmitting()) {
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
               }
@@ -129,19 +145,12 @@
         </app-question-nav-palette>
       </section>
 
-      <section class="batch-panel card-base" [class.is-loading]="isPrefetching()">
-        <div class="batch-icon">
-          @if (isPrefetching()) {
-            <span class="spinner"></span>
-          } @else {
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18m9-9H3" /></svg>
-          }
-        </div>
-        <div>
-          <h2>{{ isPrefetching() ? 'Loading next set' : 'More questions ready soon' }}</h2>
-          <p>{{ isPrefetching() ? 'Fetching the next 5 questions in the background.' : 'The next batch loads quietly when you reach question 4.' }}</p>
-        </div>
-      </section>
+      @if (loadedQuestions().length && !isComplete()) {
+        <section class="finish-panel card-base">
+          <p>Only saved answers count. Unanswered questions will be skipped.</p>
+          <button type="button" class="btn-secondary" [disabled]="isSubmitting()" (click)="finishAttempt()">Finish test</button>
+        </section>
+      }
     </aside>
   </div>
 </div>

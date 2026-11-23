@@ -1,127 +1,44 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { BASE_BACKEND_URL } from '../../../enviroment/enviroment';
 import {
   QuestionNavPaletteComponent,
   QuestionPaletteItem,
   QuestionStatus,
 } from '../../shared/components/ui';
 
-interface MockQuestion {
-  id: string;
-  subject: 'Physics' | 'Chemistry' | 'Mathematics';
-  prompt: string;
-  options: string[];
-  explanation: string;
+interface QuestionDiagram {
+  ref: string;
+  description?: string;
+  page?: number;
 }
 
-const QUESTION_BANK: MockQuestion[] = [
-  {
-    id: 'physics-01',
-    subject: 'Physics',
-    prompt: 'A particle of mass m moves in a circular path of constant radius r. If its centripetal acceleration is v²/r, which expression gives the power delivered by the centripetal force?',
-    options: ['mv²/r', 'Zero', 'mv²', 'mr²'],
-    explanation: 'The centripetal force is perpendicular to instantaneous velocity, so its work and power are both zero.',
-  },
-  {
-    id: 'chemistry-01',
-    subject: 'Chemistry',
-    prompt: 'Which property of a catalyst changes the rate of a reaction without changing the equilibrium constant?',
-    options: ['It changes the enthalpy', 'It lowers activation energy', 'It changes the temperature', 'It changes the equilibrium composition'],
-    explanation: 'A catalyst provides an alternate pathway with lower activation energy for both forward and reverse reactions.',
-  },
-  {
-    id: 'mathematics-01',
-    subject: 'Mathematics',
-    prompt: 'If the roots of x² − 6x + k = 0 differ by 2, what is the value of k?',
-    options: ['5', '8', '9', '10'],
-    explanation: 'The difference between roots is √(b² − 4ac)/a. Therefore √(36 − 4k) = 2, giving k = 8.',
-  },
-  {
-    id: 'physics-02',
-    subject: 'Physics',
-    prompt: 'A body is projected vertically upward with speed u. At what height is its kinetic energy one-fourth of its initial value?',
-    options: ['u²/8g', '3u²/8g', 'u²/2g', '3u²/4g'],
-    explanation: 'At the required height, v² = u²/4. Using v² = u² − 2gh gives h = 3u²/8g.',
-  },
-  {
-    id: 'chemistry-02',
-    subject: 'Chemistry',
-    prompt: 'The pH of a 0.001 M strong monoprotic acid solution at 25°C is:',
-    options: ['1', '2', '3', '11'],
-    explanation: 'A strong acid dissociates completely, so [H⁺] = 10⁻³ M and pH = 3.',
-  },
-  {
-    id: 'mathematics-02',
-    subject: 'Mathematics',
-    prompt: 'The derivative of sin⁻¹(2x√(1 − x²)) for 0 ≤ x ≤ 1/√2 is:',
-    options: ['2', '1', '2x', '√(1 − x²)'],
-    explanation: 'The expression inside the inverse sine is sin(2 sin⁻¹x), so the derivative is 2 on this interval.',
-  },
-  {
-    id: 'physics-03',
-    subject: 'Physics',
-    prompt: 'Two resistors of 4 Ω and 6 Ω are connected in parallel across a 12 V battery. The total current is:',
-    options: ['1.2 A', '2 A', '5 A', '10 A'],
-    explanation: 'The parallel resistance is 2.4 Ω. Hence total current is 12/2.4 = 5 A.',
-  },
-  {
-    id: 'chemistry-03',
-    subject: 'Chemistry',
-    prompt: 'Which quantum number determines the orientation of an orbital in space?',
-    options: ['Principal quantum number', 'Azimuthal quantum number', 'Magnetic quantum number', 'Spin quantum number'],
-    explanation: 'The magnetic quantum number (mₗ) specifies the orientation of an orbital.',
-  },
-  {
-    id: 'mathematics-03',
-    subject: 'Mathematics',
-    prompt: 'If A is a 2 × 2 matrix and |A| = 3, then |2A| is:',
-    options: ['6', '9', '12', '18'],
-    explanation: 'For a 2 × 2 matrix, |cA| = c²|A|. Thus |2A| = 4 × 3 = 12.',
-  },
-  {
-    id: 'physics-04',
-    subject: 'Physics',
-    prompt: 'A wave has frequency 500 Hz and wavelength 0.68 m. Its speed is:',
-    options: ['340 m/s', '735 m/s', '250 m/s', '0.00136 m/s'],
-    explanation: 'Wave speed v = fλ = 500 × 0.68 = 340 m/s.',
-  },
-  {
-    id: 'chemistry-04',
-    subject: 'Chemistry',
-    prompt: 'The hybridisation of the central atom in BF₃ is:',
-    options: ['sp', 'sp²', 'sp³', 'dsp²'],
-    explanation: 'Boron forms three sigma bonds and has a trigonal planar arrangement: sp² hybridisation.',
-  },
-  {
-    id: 'mathematics-04',
-    subject: 'Mathematics',
-    prompt: 'The area enclosed between y = x and y = x² from x = 0 to x = 1 is:',
-    options: ['1/3', '1/6', '1/2', '2/3'],
-    explanation: 'The area is ∫₀¹(x − x²)dx = 1/2 − 1/3 = 1/6.',
-  },
-  {
-    id: 'physics-05',
-    subject: 'Physics',
-    prompt: 'The dimensional formula of impulse is the same as that of:',
-    options: ['Force', 'Momentum', 'Energy', 'Power'],
-    explanation: 'Impulse equals change in momentum, so both have dimensions [MLT⁻¹].',
-  },
-  {
-    id: 'chemistry-05',
-    subject: 'Chemistry',
-    prompt: 'Which of these is a colligative property?',
-    options: ['Viscosity', 'Surface tension', 'Elevation in boiling point', 'Refractive index'],
-    explanation: 'Elevation in boiling point depends on the number of solute particles, not their identity.',
-  },
-  {
-    id: 'mathematics-05',
-    subject: 'Mathematics',
-    prompt: 'The sum of the first n odd natural numbers is:',
-    options: ['n²', 'n(n + 1)', '2n²', 'n² + 1'],
-    explanation: 'The first n odd numbers form an arithmetic progression whose sum is n².',
-  },
-];
+interface MockQuestion {
+  id: string;
+  subject: string;
+  prompt: string;
+  passageText?: string;
+  options: { label: string; text: string }[];
+  diagrams?: QuestionDiagram[];
+  diagramRef?: string;
+  diagramDescription?: string;
+}
+
+interface AttemptResponse {
+  success: boolean;
+  data: {
+    attemptId: string;
+    testId: string;
+    title: string;
+    remainingSeconds: number;
+    status: string;
+    questions: MockQuestion[];
+    answers: { questionId: string; selectedOptionIndex?: number; isSkipped?: boolean }[];
+  };
+}
 
 @Component({
   selector: 'app-mock-test',
@@ -132,29 +49,34 @@ const QUESTION_BANK: MockQuestion[] = [
 })
 export class MockTest implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
+  private attemptId = '';
+  private testId = '';
+  private deadline = 0;
+  private timerHandle: ReturnType<typeof setInterval> | null = null;
 
-  readonly batchSize = 5;
-  readonly loadedQuestions = signal<MockQuestion[]>(QUESTION_BANK.slice(0, this.batchSize));
+  readonly title = signal('Mock test');
+  readonly loadedQuestions = signal<MockQuestion[]>([]);
   readonly currentIndex = signal(0);
   readonly answers = signal<Record<string, string>>({});
   readonly submitted = signal<Set<string>>(new Set());
   readonly marked = signal<Set<string>>(new Set());
-  readonly isPrefetching = signal(false);
-  readonly isLoadingQuestion = signal(false);
+  readonly failedImages = signal<Set<string>>(new Set());
+  readonly isLoadingQuestion = signal(true);
   readonly isSubmitting = signal(false);
   readonly isComplete = signal(false);
+  readonly error = signal('');
   readonly feedback = signal<'idle' | 'saved' | 'marked'>('idle');
-  readonly remainingSeconds = signal(180 * 60);
-  private prefetchPromise: Promise<void> | null = null;
-  private timerHandle: ReturnType<typeof setInterval> | null = null;
+  readonly remainingSeconds = signal(0);
 
   readonly currentQuestion = computed(() => this.loadedQuestions()[this.currentIndex()]);
-  readonly answeredCount = computed(() => Object.keys(this.answers()).length);
-  readonly progressPercent = computed(() =>
-    Math.round((this.answeredCount() / QUESTION_BANK.length) * 100),
-  );
+  readonly subjects = computed(() => [...new Set(this.loadedQuestions().map((q) => q.subject))].join(', '));
+  readonly answeredCount = computed(() => this.submitted().size);
+  readonly progressPercent = computed(() => this.loadedQuestions().length
+    ? Math.round((this.answeredCount() / this.loadedQuestions().length) * 100) : 0);
   readonly paletteQuestions = computed<QuestionPaletteItem[]>(() =>
-    QUESTION_BANK.map((question, index) => ({
+    this.loadedQuestions().map((question, index) => ({
       id: question.id,
       index: index + 1,
       status: this.questionStatus(question.id),
@@ -162,31 +84,69 @@ export class MockTest implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this.timerHandle = setInterval(() => {
-      if (this.remainingSeconds() <= 1) {
-        this.remainingSeconds.set(0);
-        this.isComplete.set(true);
-        this.stopTimer();
-        return;
-      }
-      this.remainingSeconds.update((seconds) => seconds - 1);
-    }, 1000);
+    this.attemptId = this.route.snapshot.queryParamMap.get('attemptId') || '';
+    if (!this.attemptId) {
+      this.error.set('Open an attempt from the mock-test generator to load your questions.');
+      this.isLoadingQuestion.set(false);
+      return;
+    }
+    void this.loadAttempt();
   }
 
   ngOnDestroy(): void {
     this.stopTimer();
   }
 
+  private async loadAttempt(): Promise<void> {
+    this.isLoadingQuestion.set(true);
+    this.error.set('');
+    try {
+      const response = await firstValueFrom(this.http.get<AttemptResponse>(
+        `${BASE_BACKEND_URL}/api/test/attempts/${encodeURIComponent(this.attemptId)}/questions`,
+      ));
+      const attempt = response.data;
+      this.testId = attempt.testId;
+      this.title.set(attempt.title || 'Mock test');
+      this.loadedQuestions.set(attempt.questions);
+      const answers: Record<string, string> = {};
+      for (const saved of attempt.answers || []) {
+        const question = attempt.questions.find((q) => q.id === saved.questionId);
+        const option = saved.selectedOptionIndex == null ? undefined
+          : question?.options[saved.selectedOptionIndex];
+        if (option && !saved.isSkipped) answers[saved.questionId] = option.label;
+      }
+      this.answers.set(answers);
+      this.submitted.set(new Set(Object.keys(answers)));
+      this.remainingSeconds.set(attempt.remainingSeconds);
+      this.isComplete.set(attempt.status !== 'in-progress' && attempt.status !== 'expired');
+      if (attempt.status === 'expired') {
+        await this.completeRequest();
+      } else if (!this.isComplete()) {
+        this.deadline = Date.now() + attempt.remainingSeconds * 1000;
+        this.timerHandle = setInterval(() => {
+          this.remainingSeconds.set(Math.max(0, Math.ceil((this.deadline - Date.now()) / 1000)));
+          if (!this.remainingSeconds() && !this.isSubmitting()) {
+            this.stopTimer();
+            void this.finishAttempt();
+          }
+        }, 1000);
+      }
+    } catch (error) {
+      this.error.set(this.errorMessage(error, 'Unable to load this test. Please try again.'));
+    } finally {
+      this.isLoadingQuestion.set(false);
+    }
+  }
+
   formatTime(totalSeconds: number): string {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return [hours, minutes, seconds].map((part) => String(part).padStart(2, '0')).join(':');
+    return [Math.floor(totalSeconds / 3600), Math.floor((totalSeconds % 3600) / 60), totalSeconds % 60]
+      .map((part) => String(part).padStart(2, '0')).join(':');
   }
 
   selectAnswer(option: string): void {
     const question = this.currentQuestion();
-    if (!question || this.submitted().has(question.id)) return;
+    if (!question || this.submitted().has(question.id) || this.isSubmitting()
+      || !this.remainingSeconds() || this.questionHasImageError(question)) return;
     this.answers.update((answers) => ({ ...answers, [question.id]: option }));
     this.feedback.set('idle');
   }
@@ -202,58 +162,78 @@ export class MockTest implements OnInit, OnDestroy {
     this.feedback.set(this.marked().has(id) ? 'marked' : 'idle');
   }
 
-  async goToQuestion(index: number): Promise<void> {
-    if (index < 0 || index >= QUESTION_BANK.length || this.isLoadingQuestion()) return;
-
+  goToQuestion(index: number): void {
+    if (index < 0 || index >= this.loadedQuestions().length || this.isSubmitting()) return;
     this.currentIndex.set(index);
     this.feedback.set('idle');
-    this.prefetchWhenReady(index);
-
-    if (!this.loadedQuestions()[index]) {
-      this.isLoadingQuestion.set(true);
-      const question = await this.mockFetchQuestion(index);
-      this.loadedQuestions.update((questions) => {
-        const next = [...questions];
-        next[index] = question;
-        return next;
-      });
-      this.isLoadingQuestion.set(false);
-    }
   }
 
   async submitAndContinue(): Promise<void> {
     const question = this.currentQuestion();
-    if (!question || this.isSubmitting()) return;
-
-    if (!this.answers()[question.id]) {
-      this.feedback.set('idle');
-      return;
-    }
-
+    if (!question || this.isSubmitting() || !this.answers()[question.id]
+      || !this.remainingSeconds() || this.questionHasImageError(question)) return;
     this.isSubmitting.set(true);
-    await this.mockSubmitAnswer(question.id, this.answers()[question.id]);
-    this.submitted.update((submitted) => new Set(submitted).add(question.id));
-    this.isSubmitting.set(false);
-    this.feedback.set('saved');
-
-    if (this.currentIndex() === this.loadedQuestions().length - 1 && this.loadedQuestions().length === QUESTION_BANK.length) {
-      this.isComplete.set(true);
-      return;
+    this.error.set('');
+    try {
+      if (!this.submitted().has(question.id)) {
+        await firstValueFrom(this.http.patch(
+          `${BASE_BACKEND_URL}/api/test/submit-answer/${encodeURIComponent(this.attemptId)}`,
+          { testId: this.testId, questionId: question.id, answer: this.answers()[question.id] },
+        ));
+        this.submitted.update((submitted) => new Set(submitted).add(question.id));
+      }
+      this.feedback.set('saved');
+      if (this.currentIndex() === this.loadedQuestions().length - 1) {
+        await this.completeRequest();
+      } else {
+        this.currentIndex.update((index) => index + 1);
+      }
+    } catch (error) {
+      this.error.set(this.errorMessage(error, 'Your answer could not be saved. Please try again.'));
+    } finally {
+      this.isSubmitting.set(false);
     }
-
-    if (this.currentIndex() === this.loadedQuestions().length - 1 && this.isPrefetching()) {
-      await this.prefetchNextBatch();
-    }
-
-    await this.goToQuestion(Math.min(this.currentIndex() + 1, QUESTION_BANK.length - 1));
   }
 
-  previousQuestion(): void {
-    void this.goToQuestion(this.currentIndex() - 1);
+  async finishAttempt(): Promise<void> {
+    if (this.isSubmitting() || this.isComplete() || !this.testId) return;
+    this.isSubmitting.set(true);
+    this.error.set('');
+    try {
+      await this.completeRequest();
+    } catch (error) {
+      this.error.set(this.errorMessage(error, 'Unable to finish your test. Please try again.'));
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 
-  getOptionLetter(index: number): string {
-    return String.fromCharCode(65 + index);
+  private async completeRequest(): Promise<void> {
+    await firstValueFrom(this.http.post(
+      `${BASE_BACKEND_URL}/api/test/attempts/${encodeURIComponent(this.attemptId)}/complete`, {},
+    ));
+    this.isComplete.set(true);
+    this.stopTimer();
+  }
+
+  diagramsFor(question: MockQuestion): QuestionDiagram[] {
+    if (question.diagrams?.length) return question.diagrams;
+    return question.diagramRef
+      ? [{ ref: question.diagramRef, description: question.diagramDescription }] : [];
+  }
+
+  diagramUrl(ref: string): string {
+    // The scraper only writes images served by our own API; do not load arbitrary URLs.
+    return ref.startsWith('/media/pyq/') ? `${BASE_BACKEND_URL}${ref}` : '';
+  }
+
+  onDiagramError(ref: string): void {
+    this.failedImages.update((images) => new Set(images).add(ref));
+  }
+
+  questionHasImageError(question: MockQuestion): boolean {
+    return this.diagramsFor(question).some((diagram) =>
+      this.failedImages().has(diagram.ref) || !this.diagramUrl(diagram.ref));
   }
 
   private questionStatus(id: string): QuestionStatus {
@@ -261,45 +241,21 @@ export class MockTest implements OnInit, OnDestroy {
     const marked = this.marked().has(id);
     if (answered && marked) return 'marked-answered';
     if (marked) return 'marked';
-    if (answered) return 'answered';
-    return 'unanswered';
+    return answered ? 'answered' : 'unanswered';
   }
 
-  private prefetchWhenReady(index: number): void {
-    const isFourthQuestion = (index + 1) % this.batchSize === this.batchSize - 1;
-    if (isFourthQuestion && this.loadedQuestions().length < QUESTION_BANK.length) {
-      void this.prefetchNextBatch();
-    }
-  }
-
-  private async prefetchNextBatch(): Promise<void> {
-    if (this.prefetchPromise) return this.prefetchPromise;
-    this.isPrefetching.set(true);
-    this.prefetchPromise = new Promise((resolve) => setTimeout(resolve, 650)).then(() => {
-      const nextEnd = Math.min(this.loadedQuestions().length + this.batchSize, QUESTION_BANK.length);
-      this.loadedQuestions.set(QUESTION_BANK.slice(0, nextEnd));
-      this.isPrefetching.set(false);
-      this.prefetchPromise = null;
-    });
-    return this.prefetchPromise;
-  }
-
-  private async mockSubmitAnswer(questionId: string, answer: string): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, 420));
-    console.info('Mock submit /api/mock-tests/answers', { questionId, answer });
-  }
-
-  private async mockFetchQuestion(index: number): Promise<MockQuestion> {
-    await new Promise((resolve) => setTimeout(resolve, 320));
-    console.info('Mock fetch /api/mock-tests/questions/' + (index + 1));
-    return QUESTION_BANK[index];
+  private errorMessage(error: unknown, fallback: string): string {
+    return error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+      ? error.error.message : fallback;
   }
 
   private stopTimer(): void {
-    if (this.timerHandle) {
-      clearInterval(this.timerHandle);
-      this.timerHandle = null;
-    }
+    if (this.timerHandle) clearInterval(this.timerHandle);
+    this.timerHandle = null;
+  }
+
+  previousQuestion(): void {
+    this.goToQuestion(this.currentIndex() - 1);
   }
 
   exitTest(): void {

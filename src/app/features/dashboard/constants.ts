@@ -33,5 +33,6 @@ export const initialDashboardState: IDashboardInitialState = {
     strengthAreas: [],
     needsImprovementAreas: [],
     recentMockTests: [],
+    onGoingMockTest: null,
     whatToDoNext: [],
 }

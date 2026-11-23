@@ -59,9 +59,9 @@ export class Profile implements OnInit {
     }
     const value = this.form.getRawValue();
     this.store.updateProfile({
-      userName: value.userName || undefined,
-      avatar: value.avatar || undefined,
-      course: value.course || undefined,
+      userName: value.userName || '',
+      avatar: value.avatar || '',
+      course: value.course || [],
     });
   }
 }

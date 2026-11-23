@@ -19,6 +19,12 @@
     --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+
     /* Light Theme (Clean White & Blue Minimalist) */
     --color-bg: #ffffff;
     --color-bg-subtle: #f8fafc;
