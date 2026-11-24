@@ -20,6 +20,8 @@ import { withDevtools } from '../../../core/store/devtools';
 export interface AuthState extends IStateData {
   isLoading: boolean;
   courses: any[];
+  coursesLoading: boolean;
+  formError: string;
 }
 
 const initialState: AuthState = {
@@ -28,6 +30,8 @@ const initialState: AuthState = {
   themePreference: 'light',
   isLoading: false,
   courses: [],
+  coursesLoading: false,
+  formError: '',
 };
 
 export const authStore = signalStore(
@@ -36,6 +40,7 @@ export const authStore = signalStore(
   withState(initialState),
 
   withMethods((store, localStorage = inject(LocalStorageService)) => ({
+    clearFormError: () => patchState(store, { formError: '' }),
     setStorage: () => {
       localStorage.saveUserData({ userData: store.userData(), accessToken: store.accessToken() });
     },
@@ -89,7 +94,7 @@ export const authStore = signalStore(
   withMethods((store, authService = inject(AuthService), toastr = inject(ToastrService)) => ({
     register: rxMethod<Iregistrationpayload>(
       pipe(
-        tap(() => patchState(store, { isLoading: true })),
+        tap(() => patchState(store, { isLoading: true, formError: '' })),
         switchMap((payload) =>
           authService.register(payload).pipe(
             tapResponse({
@@ -102,13 +107,8 @@ export const authStore = signalStore(
                 store.setUnverifiedUserStorage();
               },
               error: (err: any) => {
-                toastr.error(
-                  err?.error?.message || 'Registration failed. Please try again.',
-                  'Error',
-                );
-                patchState(store, {
-                  isLoading: false,
-                });
+                const message = err?.error?.message || 'Registration failed. Please try again.';
+                patchState(store, { isLoading: false, formError: message });
               },
             }),
           ),
@@ -136,20 +136,18 @@ export const authStore = signalStore(
 
     getAllCourses: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { isLoading: true })),
+        tap(() => patchState(store, { coursesLoading: true, formError: '' })),
         switchMap(() =>
           authService.getAllCourses().pipe(
             tapResponse({
               next: (res: { message: string; courses: any[] }) => {
-                console.log(res);
-                patchState(store, { courses: res.courses });
+                patchState(store, { courses: res.courses, coursesLoading: false });
                 store.setStorage();
               },
               error: (err: any) => {
-                toastr.error(
-                  err?.error?.message || 'Courses fetch failed. Please try again.',
-                  'Error',
-                );
+                const message = err?.error?.message || 'Could not load the courses. Try again.';
+                patchState(store, { coursesLoading: false, formError: message });
+                toastr.error(message, 'Error', { enableHtml: false });
               },
             }),
           ),
@@ -159,7 +157,7 @@ export const authStore = signalStore(
 
     login: rxMethod<ILoginPayload>(
       pipe(
-        tap(() => patchState(store, { isLoading: true })),
+        tap(() => patchState(store, { isLoading: true, formError: '' })),
         switchMap((payload) =>
           authService.login(payload).pipe(
             tapResponse({
@@ -169,7 +167,6 @@ export const authStore = signalStore(
                   accessToken: res.data.accessToken || null,
                   userData: res.data.userData,
                 });
-                console.log('RES : ', res);
                 if (!res.data.accessToken) {
                   store.setUnverifiedUserStorage();
                   toastr.info(res?.message || 'Please verify your email address.', 'Info');
@@ -180,10 +177,8 @@ export const authStore = signalStore(
                 }
               },
               error: (err: any) => {
-                toastr.error(err?.error?.message || 'Login failed. Please try again.', 'Error');
-                patchState(store, {
-                  isLoading: false,
-                });
+                const message = err?.error?.message || 'Sign-in failed. Please try again.';
+                patchState(store, { isLoading: false, formError: message });
               },
             }),
           ),
@@ -194,7 +189,7 @@ export const authStore = signalStore(
     loginWithToken: rxMethod<string>(
       pipe(
         tap((token) => {
-          patchState(store, { isLoading: true, accessToken: token });
+          patchState(store, { isLoading: true, formError: '', accessToken: token });
         }),
         switchMap(() =>
           authService.getProfile().pipe(
@@ -209,12 +204,8 @@ export const authStore = signalStore(
                 store.redirectToDashboard();
               },
               error: (err: any) => {
-                toastr.error(err?.error?.message || 'Failed to retrieve profile details.', 'Error');
-                patchState(store, {
-                  isLoading: false,
-                  accessToken: null,
-                  userData: null,
-                });
+                const message = err?.error?.message || 'Could not finish signing in with Google.';
+                patchState(store, { isLoading: false, formError: message, accessToken: null, userData: null });
               },
             }),
           ),
@@ -306,7 +297,7 @@ export const authStore = signalStore(
 
     verifyOtp: rxMethod<{ email: string; otp: string }>(
       pipe(
-        tap(() => patchState(store, { isLoading: true })),
+        tap(() => patchState(store, { isLoading: true, formError: '' })),
         exhaustMap((payload) =>
           authService.verifyOtp(payload.email, payload.otp).pipe(
             tapResponse({
@@ -325,13 +316,8 @@ export const authStore = signalStore(
                 store.redirectToDashboard();
               },
               error: (err: any) => {
-                toastr.error(
-                  err?.error?.message || 'OTP verification failed. Please try again.',
-                  'Error',
-                );
-                patchState(store, {
-                  isLoading: false,
-                });
+                const message = err?.error?.message || 'Could not verify the code. Try again.';
+                patchState(store, { isLoading: false, formError: message });
               },
             }),
           ),

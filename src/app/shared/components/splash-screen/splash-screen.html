@@ -1,7 +1,7 @@
 <section class="welcome" role="status" aria-label="Loading Learning Buddy">
   <div class="signature" aria-hidden="true">
     <img class="buddy" src="mascots/buddy-welcome.webp" alt="" width="576" height="576"
-         fetchpriority="high" />
+         fetchpriority="high" (load)="artworkReady.emit()" (error)="artworkReady.emit()" />
     <h1>Learning Buddy</h1>
     <div class="loading">
       <span class="meter"><span></span></span>

@@ -143,6 +143,19 @@
     --streak-accent-muted: #4e392d;
     --streak-on-accent: #34220b;
     --mascot-surface: #eeebff;
+    --studio-sky: #201b40;
+    --studio-disc: #383058;
+    --studio-grid: rgb(196 177 251 / 0.08);
+    --studio-orbit: #797099;
+    --studio-star: #ccc2ee;
+    --studio-ink: #faf8ff;
+    --studio-muted: #cec8dc;
+    --studio-mint: #c9ffe5;
+    --studio-teal: #70bfab;
+    --studio-deep: #34635e;
+    --studio-gold: #ffdf91;
+    --studio-amber: #faae63;
+    --studio-copper: #c67949;
 
     --radius-xs: 6px;
     --radius-sm: 10px;

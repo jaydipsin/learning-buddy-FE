@@ -1,178 +1,162 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AuthFormService } from '../../../../core/services/auth.form.service';
 import { AuthService } from '../../../../core/services/auth.service';
-
-import {
-  FormGroup,
-  ReactiveFormsModule,
-  FormArray,
-  FormControl,
-  FormsModule,
-} from '@angular/forms';
 import { authStore } from '../../store/auth.store';
-import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
-
-import { IonContent } from '@ionic/angular/standalone';
+import { AuthLayout } from '../../presentation/auth-layout';
+import { AuthField } from '../../presentation/auth-field';
+import { ChipSelectComponent } from '../../../../shared/components/ui/chip-select/chip-select';
 import { BASE_BACKEND_URL } from '../../../../../enviroment/enviroment';
+
+type Screen = 'login' | 'signup' | 'courses' | 'forgot' | 'verify';
+
+const headings: Record<Screen, string> = {
+  login: 'Welcome back', signup: 'Create your account', courses: 'Choose your courses',
+  forgot: 'Forgot your password?', verify: 'Verify your email',
+};
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, FormsModule, IonContent],
+  imports: [ReactiveFormsModule, AuthLayout, AuthField, ChipSelectComponent],
   templateUrl: './register.html',
-  styleUrl: './register.css',
+  styleUrl: '../../presentation/auth-form.css',
 })
-export class Register implements OnInit {
-  isDarkMode = false;
-  isLogin = true;
-  registerForm!: FormGroup;
-  loginForm!: FormGroup;
-  courses = signal<any[] | null | undefined>(null);
-  store = inject(authStore);
-  authFormService = inject(AuthFormService);
-  authService = inject(AuthService);
-  toastr = inject(ToastrService);
-  route = inject(ActivatedRoute);
-  forgotPasswordForm!: FormGroup;
-  isForgotPassword = signal(false);
-  isForgotLoading = signal(false);
-  otp = signal<{ [key: number]: string }>({
-    0: '',
-    1: '',
-    2: '',
-    3: '',
-    4: '',
-    5: '',
-  });
-  currentStep = signal(1);
+export class Register {
+  readonly store = inject(authStore);
+  private readonly forms = inject(AuthFormService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly registerForm = this.forms.createRegisterForm();
+  readonly loginForm = this.forms.createLoginForm();
+  readonly forgotPasswordForm = this.forms.createForgotPasswordForm();
+  readonly forgotStatus = toSignal(this.forgotPasswordForm.statusChanges, { initialValue: this.forgotPasswordForm.status });
+  readonly courseFormArray = this.registerForm.controls['course'] as FormArray;
+  readonly screen = signal<Screen>('login');
+  readonly heading = computed(() => headings[this.screen()]);
+  readonly courseOptions = computed(() => this.store.courses().map(c => ({ id: c._id, label: c.name })));
+  readonly otp = signal(['', '', '', '', '', '']);
+  readonly feedback = signal('');
+  readonly success = signal('');
+  readonly isForgotLoading = signal(false);
+  readonly resending = signal(false);
+  readonly busy = computed(() => this.isForgotLoading() || this.store.isLoading() || this.store.coursesLoading());
+  private verificationBack: Screen = 'login';
 
   constructor() {
-    effect(() => {
-      this.courses.set(this.store.courses());
-      const accessToken = this.store.accessToken();
-      const userData = this.store.userData();
-      if (!accessToken && userData) {
-        this.currentStep.set(4);
-        console.log('User is not verified. Please verify your email address.');
-      }
-      console.log('course : ', this.store.courses());
-      console.log('userData: ', this.store.userData());
-      console.log('token: ', this.store.accessToken());
-    });
-  }
-
-  ngOnInit(): void {
-    this.registerForm = this.authFormService.createRegisterForm();
-    this.loginForm = this.authFormService.createLoginForm();
-    this.forgotPasswordForm = this.authFormService.createForgotPasswordForm();
+    this.store.clearFormError();
     this.store.loadStorage();
-
-
-    // Check for query parameters from social login redirect
-    this.route.queryParams.subscribe((params) => {
-      const token = params['token'];
-      if (token) {
-        this.store.loginWithToken(token);
+    effect(() => {
+      if (!this.store.accessToken() && this.store.userData()) {
+        this.screen.set('verify');
       }
-      const error = params['error'];
-      console.log('error: ', !!error);
+    });
+    inject(ActivatedRoute).queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
+      if (params['token']) this.store.loginWithToken(params['token']);
+      if (params['error']) this.feedback.set('Google sign-in did not finish. Please try again.');
     });
   }
 
-  get courseFormArray(): FormArray {
-    return this.registerForm.get('course') as FormArray;
+  clearFeedback() {
+    this.feedback.set('');
+    this.success.set('');
+    this.store.clearFormError();
   }
 
-  isCourseSelected(id: string): boolean {
-    return this.courseFormArray.value.includes(id);
+  open(screen: Screen) {
+    this.clearFeedback();
+    this.screen.set(screen);
   }
 
-  onOtpInput(event: any, index: number) {
+  backFromCode() {
+    this.store.clearUserData();
+    this.otp.set(['', '', '', '', '', '']);
+    this.open(this.verificationBack);
+  }
+
+  login() {
+    if (this.busy()) return;
+    this.clearFeedback();
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid) return;
+    this.verificationBack = 'login';
+    this.store.login(this.loginForm.value);
+  }
+
+  chooseCourses() {
+    this.clearFeedback();
+    this.registerForm.markAllAsTouched();
+    const { password, confirmPassword } = this.registerForm.value;
+    if (this.registerForm.invalid || password !== confirmPassword) return;
+    this.screen.set('courses');
+    this.store.getAllCourses();
+  }
+
+  toggleCourse(id: string | number) {
+    this.clearFeedback();
+    const index = this.courseFormArray.value.indexOf(id);
+    if (index === -1) this.courseFormArray.push(new FormControl(id));
+    else this.courseFormArray.removeAt(index);
+  }
+
+  register() {
+    if (this.busy()) return;
+    this.clearFeedback();
+    if (!this.courseFormArray.length) {
+      this.feedback.set('Choose at least one course to create your account.');
+      return;
+    }
+    const data = this.registerForm.value;
+    this.verificationBack = 'signup';
+    this.store.register({ ...data, role: data.role.toLowerCase() });
+  }
+
+  onOtpInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
-    let value = input.value;
-    if (value.length > 1) {
-      value = value.charAt(value.length - 1);
-      input.value = value;
+    if (/^\d{6}$/.test(input.value)) {
+      const code = input.value;
+      input.value = code[index];
+      this.fillCode(code, input);
+      return;
     }
-    this.otp.update((otp) => {
-      const newOtp = { ...otp };
-      newOtp[index] = value;
-      return newOtp;
-    });
-
-    if (value && index < 5) {
-      const nextInput = input.nextElementSibling as HTMLInputElement;
-      if (nextInput) {
-        nextInput.focus();
-      }
-    }
+    const value = input.value.slice(-1);
+    input.value = value;
+    this.otp.update(digits => digits.map((digit, i) => i === index ? value : digit));
+    if (value) (input.nextElementSibling as HTMLInputElement | null)?.focus();
   }
 
   onOtpKeyDown(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
-    if (event.key === 'Backspace') {
-      if (!input.value && index > 0) {
-        const prevInput = input.previousElementSibling as HTMLInputElement;
-        if (prevInput) {
-          this.otp.update((otp) => {
-            const newOtp = { ...otp };
-            newOtp[index - 1] = '';
-            return newOtp;
-          });
-          prevInput.focus();
-          event.preventDefault();
-        }
-      }
-    } else if (event.key === 'ArrowLeft' && index > 0) {
-      const prevInput = input.previousElementSibling as HTMLInputElement;
-      if (prevInput) {
-        prevInput.focus();
-        event.preventDefault();
-      }
+    const backspace = event.key === 'Backspace' && !input.value;
+    if ((backspace || event.key === 'ArrowLeft') && index > 0) {
+      if (backspace) this.otp.update(digits => digits.map((digit, i) => i === index - 1 ? '' : digit));
+      (input.previousElementSibling as HTMLInputElement).focus();
+      event.preventDefault();
     } else if (event.key === 'ArrowRight' && index < 5) {
-      const nextInput = input.nextElementSibling as HTMLInputElement;
-      if (nextInput) {
-        nextInput.focus();
-        event.preventDefault();
-      }
+      (input.nextElementSibling as HTMLInputElement).focus();
+      event.preventDefault();
     }
   }
 
   onOtpPaste(event: ClipboardEvent) {
     event.preventDefault();
-    const clipboardData = event.clipboardData;
-    if (!clipboardData) return;
-    const pastedText = clipboardData.getData('text').trim();
-    if (/^\d{6}$/.test(pastedText)) {
-      const otpUpdate: { [key: number]: string } = {};
-      for (let i = 0; i < 6; i++) {
-        otpUpdate[i] = pastedText[i];
-      }
-      this.otp.set(otpUpdate);
-
-      const container = (event.target as HTMLElement).parentElement;
-      if (container) {
-        const inputs = container.querySelectorAll('input');
-        if (inputs && inputs.length > 5) {
-          inputs[5].focus();
-        }
-      }
-    }
+    const code = event.clipboardData?.getData('text').trim() || '';
+    if (/^\d{6}$/.test(code)) this.fillCode(code, event.target as HTMLInputElement);
   }
 
-  handleBack() {
-    if (this.currentStep() === 4) {
-      this.store.clearUserData();
-      this.currentStep.set(1);
-    } else {
-      this.currentStep.update((step) => step - 1);
-    }
+  private fillCode(code: string, input: HTMLInputElement) {
+    this.otp.set([...code]);
+    (input.parentElement?.lastElementChild as HTMLInputElement | null)?.focus();
   }
 
   resendOtp() {
+    if (this.busy()) return;
+    this.clearFeedback();
+    this.resending.set(true);
     const userData = this.store.userData();
     if (!userData) {
-      this.toastr.error('User data is missing. Please try logging in or registering again.', 'Error');
+      this.feedback.set('Sign in again to request another code.');
       return;
     }
     const payload = {
@@ -186,126 +170,40 @@ export class Register implements OnInit {
     this.store.register(payload);
   }
 
-  handleOtpVerification() {
-    const email = this.store.userData()?.email || this.registerForm.get('email')?.value || this.loginForm.get('email')?.value;
-    const otpValue = Object.values(this.otp()).join('');
-    if (!email) {
-      this.toastr.error('Email is missing.', 'Error');
+  verify() {
+    if (this.busy()) return;
+    this.clearFeedback();
+    this.resending.set(false);
+    const email = this.store.userData()?.email || this.registerForm.value.email || this.loginForm.value.email;
+    const otp = this.otp().join('');
+    if (!email || otp.length !== 6) {
+      this.feedback.set(email ? 'Enter the full six-digit code.' : 'Sign in again to verify your email.');
       return;
     }
-    if (otpValue.length !== 6) {
-      this.toastr.warning('Please enter a 6-digit OTP.', 'Warning');
-      return;
-    }
-    this.store.verifyOtp({ email, otp: otpValue });
-  }
-
-  toggleCourse(id: string) {
-    const courses = this.courseFormArray;
-    const index = courses.value.indexOf(id);
-    if (index === -1) {
-      courses.push(new FormControl(id));
-    } else {
-      courses.removeAt(index);
-    }
-  }
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    document.body.classList.toggle('dark', this.isDarkMode);
-  }
-
-  toggleAuthMode() {
-    this.isLogin = !this.isLogin;
-    this.currentStep.set(1);
-  }
-
-  isStep1Valid(): boolean {
-    const controls = ['userName', 'email', 'password', 'confirmPassword'];
-    let isValid = true;
-    controls.forEach((control) => {
-      this.registerForm.get(control)?.markAsTouched();
-      if (this.registerForm.get(control)?.invalid) {
-        isValid = false;
-      }
-    });
-
-    if (
-      this.registerForm.get('password')?.value !== this.registerForm.get('confirmPassword')?.value
-    ) {
-      this.registerForm.get('confirmPassword')?.setErrors({ mismatch: true });
-      isValid = false;
-    }
-    return isValid;
-  }
-
-  isStep2Valid(): boolean {
-    if (this.courseFormArray.length === 0) {
-      this.toastr.warning('Please select at least one course to continue.');
-      return false;
-    }
-    return true;
-  }
-
-  handleNext() {
-    if (this.isLogin) {
-      if (this.loginForm.valid) {
-        this.store.login(this.loginForm.value);
-      } else {
-        this.loginForm.markAllAsTouched();
-      }
-    } else {
-      if (this.currentStep() === 1) {
-        if (!this.isStep1Valid()) {
-          this.toastr.error('Please fill all required fields correctly.');
-          return;
-        }
-        this.currentStep.set(2);
-        this.store.getAllCourses();
-        return;
-      }
-
-      if (this.currentStep() === 2) {
-        if (!this.isStep2Valid()) return;
-        const formData = { ...this.registerForm.value };
-        formData.role = formData.role.toLowerCase();
-        this.store.register(formData);
-      }
-    }
+    this.store.verifyOtp({ email, otp });
   }
 
   loginWithGoogle() {
     window.location.href = `${BASE_BACKEND_URL}/auth/google`;
   }
 
-  openForgotPassword() {
-    this.isForgotPassword.set(true);
-  }
-
-  closeForgotPassword() {
-    this.isForgotPassword.set(false);
-  }
-
   sendForgotPasswordLink() {
-    if (this.forgotPasswordForm.invalid) {
-      this.toastr.error('Please enter a valid email address.');
-      return;
-    }
-
-    const email = this.forgotPasswordForm.get('email')?.value;
+    if (this.busy()) return;
+    this.clearFeedback();
+    this.forgotPasswordForm.markAllAsTouched();
+    if (this.forgotPasswordForm.invalid) return;
     this.isForgotLoading.set(true);
-
-    this.authService.forgotPassword(email).subscribe({
-      next: (res) => {
-        this.isForgotLoading.set(false);
-        this.toastr.success(res.message || 'Password reset link sent to your email.');
-        this.isForgotPassword.set(false);
-      },
-      error: (err) => {
-        this.isForgotLoading.set(false);
-        this.toastr.error(err?.error?.message || 'Failed to send reset link.');
-      },
-    });
+    this.authService.forgotPassword(this.forgotPasswordForm.value.email)
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: res => {
+          this.isForgotLoading.set(false);
+          this.open('login');
+          this.success.set(res.message || 'Check your email for a password reset link.');
+        },
+        error: err => {
+          this.isForgotLoading.set(false);
+          this.feedback.set(err?.error?.message || 'Could not send the reset link. Try again.');
+        },
+      });
   }
 }
-
