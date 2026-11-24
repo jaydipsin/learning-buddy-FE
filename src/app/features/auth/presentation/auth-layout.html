@@ -1,0 +1,36 @@
+<ion-content>
+  <ng-template #brand>
+    <span class="wordmark">
+      <svg aria-hidden="true" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="9" fill="currentColor"/>
+        <path d="M5.5 9.5c4.2-.1 7.2.8 10.5 3.1 3.3-2.3 6.3-3.2 10.5-3.1v12c-4.1 0-7.3.8-10.5 3-3.2-2.2-6.4-3-10.5-3zM16 13v11" stroke="var(--color-on-primary)" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
+      Learning Buddy
+    </span>
+  </ng-template>
+  <ng-template #sheet>
+    <div class="sheet-body" [appAuthMotion]="heading()">
+      <header class="intro">
+        @if (step()) {
+          <div class="steps">
+            <span>Step {{ step() }} of 2</span>
+            <i aria-hidden="true"></i><i aria-hidden="true" [class.current]="step() === 2"></i>
+          </div>
+        }
+        <h1 tabindex="-1">{{ heading() }}</h1>
+        @if (description()) { <p>{{ description() }}</p> }
+      </header>
+      <ng-container [ngTemplateOutlet]="form()" />
+    </div>
+  </ng-template>
+  <main *appPlatform="'mobile'" class="mobile">
+    <div class="mobile-wrap">
+      <header class="mobile-brand">
+        <ng-container [ngTemplateOutlet]="brand" />
+        <img src="mascots/buddy-welcome.webp" width="64" height="64" alt="" />
+      </header>
+      <ng-container [ngTemplateOutlet]="sheet" />
+    </div>
+  </main>
+  <app-auth-desktop *appPlatform="'desktop'" [sheet]="sheet" [brand]="brand" />
+</ion-content>

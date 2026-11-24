@@ -1,157 +1,114 @@
-<ion-content [fullscreen]="true">
-  <div class="auth-page">
-    <div class="auth-container">
-
-      <div class="auth-brand">
-        <div class="auth-brand-icon">LB</div>
-        <span class="auth-brand-name">Learning Buddy</span>
-      </div>
-
-      <div class="auth-header">
-        @if (isForgotPassword()) {
-          <h1 class="auth-title">Reset your password</h1>
-          <p class="auth-subtitle">Enter your email to receive a reset link</p>
-        } @else if (currentStep() === 4) {
-          <h1 class="auth-title">Verify your email</h1>
-          <p class="auth-subtitle">Enter the 6-digit code sent to your email</p>
-        } @else if (isLogin) {
-          <h1 class="auth-title">Welcome back</h1>
-          <p class="auth-subtitle">Sign in to continue your preparation</p>
-        } @else {
-          <h1 class="auth-title">Create your account</h1>
-          <p class="auth-subtitle">Start practicing with AI-generated tests</p>
-        }
-      </div>
-
-      @if (!isLogin && !isForgotPassword() && currentStep() !== 4) {
-        <div class="auth-stepper">
-          @for (step of [1, 2]; track step) {
-            <div class="auth-step" [class.active]="currentStep() >= step"></div>
-          }
-        </div>
-      }
-
-      @if (isForgotPassword()) {
-        <form class="auth-form" [formGroup]="forgotPasswordForm" (ngSubmit)="sendForgotPasswordLink()">
-          <div class="auth-field">
-            <label class="auth-label">Email</label>
-            <input class="auth-input" formControlName="email" type="email" placeholder="email@example.com" />
-          </div>
-          <button class="auth-submit" type="submit" [disabled]="isForgotLoading() || forgotPasswordForm.invalid">
-            {{ isForgotLoading() ? 'Sending...' : 'Send reset link' }}
+<app-auth-layout [heading]="heading()"
+  [step]="screen() === 'signup' ? 1 : screen() === 'courses' ? 2 : 0"
+  [description]="screen() === 'verify' ? 'Enter the six-digit code sent to ' + (store.userData()?.email || 'your email address') + '.' :
+    screen() === 'forgot' ? 'We’ll email you a link to reset your password.' :
+    screen() === 'courses' ? 'Select the exams you’re preparing for.' :
+    screen() === 'login' ? 'Sign in to continue your practice.' : ''">
+  <ng-template>
+    @if (feedback() || store.formError()) {
+      <p class="notice anim-view" role="alert">{{ feedback() || store.formError() }}</p>
+    }
+    @if (success()) { <p class="notice anim-view" role="status">{{ success() }}</p> }
+    @switch (screen()) {
+      @case ('login') {
+        <form class="flow" [formGroup]="loginForm" (ngSubmit)="login()">
+          <app-auth-field [group]="loginForm" fieldId="login-email" name="email" label="Email address"
+            type="email" autocomplete="username" placeholder="you@example.com" />
+          <app-auth-field [group]="loginForm" fieldId="login-password" name="password" label="Password"
+            type="password" autocomplete="current-password">
+            <button class="auth-link" type="button" [disabled]="busy()" (click)="open('forgot')">Forgot password?</button>
+          </app-auth-field>
+          <button class="btn-primary btn-block" type="submit" [disabled]="busy()" [attr.aria-busy]="busy()">
+            {{ busy() ? 'Signing in…' : 'Sign in' }}
           </button>
-          <button class="auth-back" type="button" (click)="closeForgotPassword()">Back to login</button>
         </form>
-      } @else if (isLogin && currentStep() !== 4) {
-        <form class="auth-form" [formGroup]="loginForm">
-          <div class="auth-field">
-            <label class="auth-label">Email</label>
-            <input class="auth-input" formControlName="email" type="email" placeholder="email@example.com" />
-            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-              <span class="auth-error">Please enter a valid email</span>
-            }
-          </div>
-          <div class="auth-field">
-            <div class="auth-field-header">
-              <label class="auth-label">Password</label>
-              <button class="auth-forgot" type="button" (click)="openForgotPassword()">Forgot?</button>
-            </div>
-            <input class="auth-input" formControlName="password" type="password" placeholder="Enter your password" />
-            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-              <span class="auth-error">Please enter your password</span>
-            }
-          </div>
+      }
+      @case ('signup') {
+        <form class="flow" [formGroup]="registerForm" (ngSubmit)="chooseCourses()">
+          <app-auth-field [group]="registerForm" fieldId="signup-name" name="userName" label="Full name" autocomplete="name" />
+          <app-auth-field [group]="registerForm" fieldId="signup-email" name="email" label="Email address" type="email" autocomplete="email" />
+          <app-auth-field [group]="registerForm" fieldId="signup-password" name="password" label="Password" type="password" autocomplete="new-password" />
+          <app-auth-field [group]="registerForm" fieldId="signup-confirm" name="confirmPassword" label="Confirm password"
+            matches="password" type="password" autocomplete="new-password" />
+          <button class="btn-primary btn-block" type="submit" [disabled]="busy()">Continue</button>
         </form>
-      } @else if (!isLogin && currentStep() === 1) {
-        <form class="auth-form" [formGroup]="registerForm">
-          <div class="auth-field">
-            <label class="auth-label">Full name</label>
-            <input class="auth-input" formControlName="userName" type="text" placeholder="Your name" />
-          </div>
-          <div class="auth-field">
-            <label class="auth-label">Email</label>
-            <input class="auth-input" formControlName="email" type="email" placeholder="email@example.com" />
-          </div>
-          <div class="auth-field">
-            <label class="auth-label">Password</label>
-            <input class="auth-input" formControlName="password" type="password" placeholder="Create a password" />
-          </div>
-          <div class="auth-field">
-            <label class="auth-label">Confirm password</label>
-            <input class="auth-input" formControlName="confirmPassword" type="password" placeholder="Confirm your password" />
-            @if (registerForm.get('password')?.value !== registerForm.get('confirmPassword')?.value && registerForm.get('confirmPassword')?.touched) {
-              <span class="auth-error">Passwords do not match</span>
+      }
+      @case ('courses') {
+        <form class="flow" (submit)="$event.preventDefault(); register()">
+          <fieldset>
+            <legend class="form-label">Your courses</legend>
+            @if (store.coursesLoading()) {
+              <p class="field-hint" role="status">Loading courses…</p>
+            } @else {
+              <app-chip-select [options]="courseOptions()" [selected]="courseFormArray.value"
+                mode="multi" [disabled]="busy()" (toggleOption)="toggleCourse($event)" />
+              @if (!courseOptions().length) {
+                @if (!store.formError()) { <p class="field-hint">No courses are available yet.</p> }
+                <button class="auth-link" type="button" (click)="store.getAllCourses()">Reload courses</button>
+              }
             }
+          </fieldset>
+          <div class="actions">
+            <button type="button" class="btn-secondary" [disabled]="store.isLoading()" (click)="open('signup')">Back</button>
+            <button type="submit" class="btn-primary" [disabled]="busy()" [attr.aria-busy]="store.isLoading()">
+              {{ store.isLoading() ? 'Creating account…' : 'Create account' }}
+            </button>
           </div>
         </form>
-      } @else if (!isLogin && currentStep() === 2) {
-        <div class="auth-form">
-          <div class="auth-field">
-            <label class="auth-label">Select your course</label>
-            <div class="course-grid">
-              @for (course of courses(); track course._id) {
-                <button class="course-option" [class.selected]="isCourseSelected(course._id)" (click)="toggleCourse(course._id)" type="button">
-                  <span class="course-option-check">
-                    @if (isCourseSelected(course._id)) {
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                        <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    }
-                  </span>
-                  <span class="course-option-name">{{ course.name }}</span>
-                </button>
+      }
+      @case ('verify') {
+        <form class="flow" (submit)="$event.preventDefault(); verify()">
+          <fieldset>
+            <legend class="form-label">Verification code</legend>
+            <div class="otp-container">
+              @for (digit of otp(); track $index; let i = $index) {
+                <input class="otp-input" type="text" inputmode="numeric" [maxLength]="i === 0 ? 6 : 1"
+                  [attr.autocomplete]="i === 0 ? 'one-time-code' : 'off'" [attr.aria-label]="'Digit ' + (i + 1) + ' of 6'"
+                  [value]="digit" (input)="onOtpInput($event, i)" (keydown)="onOtpKeyDown($event, i)" (paste)="onOtpPaste($event)" />
               }
             </div>
-          </div>
-        </div>
-      } @else if (currentStep() === 4) {
-        <div class="auth-form">
-          <div class="otp-container">
-            @for (i of [0, 1, 2, 3, 4, 5]; track i) {
-              <input class="otp-input" type="text" maxlength="1" [(ngModel)]="otp()[i]"
-                (input)="onOtpInput($event, i)" (keydown)="onOtpKeyDown($event, i)" (paste)="onOtpPaste($event)" />
-            }
-          </div>
-          <div style="text-align: center;">
-            <button class="auth-forgot" (click)="resendOtp()">Resend OTP</button>
-          </div>
-        </div>
-      }
-
-      @if (!isForgotPassword()) {
-        <div class="auth-actions">
-          @if (currentStep() === 4 || (!isLogin && currentStep() > 1)) {
-            <button class="auth-back" (click)="handleBack()">Back</button>
-          }
-          @if (currentStep() !== 4) {
-            <button class="auth-submit" (click)="handleNext()" [disabled]="store.isLoading()">
-              {{ store.isLoading() ? (isLogin ? 'Signing in...' : 'Creating...') : (isLogin ? 'Sign in' : (currentStep() === 2 ? 'Create account' : 'Next')) }}
+          </fieldset>
+          <div class="actions">
+            <button type="button" class="btn-secondary" [disabled]="busy()" (click)="backFromCode()">Back</button>
+            <button type="submit" class="btn-primary" [disabled]="busy()" [attr.aria-busy]="busy() && !resending()">
+              {{ busy() && !resending() ? 'Verifying…' : 'Verify email' }}
             </button>
-          } @else {
-            <button class="auth-submit" (click)="handleOtpVerification()" [disabled]="store.isLoading()">
-              {{ store.isLoading() ? 'Verifying...' : 'Verify' }}
-            </button>
-          }
-        </div>
+          </div>
+          <button type="button" class="auth-link" [disabled]="busy()" (click)="resendOtp()">
+            {{ busy() && resending() ? 'Sending code…' : 'Resend code' }}
+          </button>
+        </form>
       }
-
-      @if (!isForgotPassword() && (currentStep() === 1 || (isLogin && currentStep() !== 4))) {
-        <div class="auth-divider">or continue with</div>
-        <button class="auth-google-btn" (click)="loginWithGoogle()">
-          <svg width="20" height="20" viewBox="0 0 24 24">
+      @case ('forgot') {
+        <form class="flow" [formGroup]="forgotPasswordForm" (ngSubmit)="sendForgotPasswordLink()">
+          <app-auth-field [group]="forgotPasswordForm" fieldId="forgot-email" name="email" label="Email address"
+            type="email" autocomplete="email" placeholder="you@example.com" />
+          <button type="submit" class="btn-primary btn-block" [disabled]="isForgotLoading() || forgotStatus() !== 'VALID'" [attr.aria-busy]="isForgotLoading()">
+            {{ isForgotLoading() ? 'Sending link…' : 'Send reset link' }}
+          </button>
+          <button class="btn-secondary btn-block" type="button" [disabled]="isForgotLoading()" (click)="open('login')">Back to sign in</button>
+        </form>
+      }
+    }
+    @if (screen() === 'login' || screen() === 'signup') {
+      <div class="flow">
+        <div class="divider">or</div>
+        <button class="btn-secondary btn-block" type="button" [disabled]="busy()" (click)="loginWithGoogle()">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
             <path fill="#EA4335" d="M12 5.04c1.67 0 3.2.58 4.41 1.71l3.29-3.29C17.72 1.58 15.05 1 12 1 7.24 1 3.2 3.73 1.24 7.72l3.88 3c.92-2.73 3.47-4.68 6.88-4.68z"/>
             <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.33H12v4.51h6.46c-.29 1.48-1.14 2.73-2.4 3.58l3.73 2.89c2.18-2.01 3.7-4.97 3.7-8.65z"/>
             <path fill="#FBBC05" d="M5.12 14.72c-.24-.72-.38-1.49-.38-2.28s.14-1.56.38-2.28L1.24 7.72C.45 9.29 0 11.09 0 13s.45 3.71 1.24 5.28l3.88-3z"/>
             <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.73-2.89c-1.09.73-2.51 1.17-4.23 1.17-3.41 0-5.96-1.95-6.88-4.68l-3.88 3C3.2 20.27 7.24 23 12 23z"/>
           </svg>
-          <span>Google</span>
+          Continue with Google
         </button>
-        <p class="auth-switch">
-          {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
-          <button (click)="toggleAuthMode()">{{ isLogin ? 'Sign up' : 'Log in' }}</button>
+        <p class="switch">
+          {{ screen() === 'login' ? 'New to Learning Buddy?' : 'Already have an account?' }}
+          <button class="auth-link" type="button" [disabled]="busy()" (click)="open(screen() === 'login' ? 'signup' : 'login')">
+            {{ screen() === 'login' ? 'Sign up' : 'Sign in' }}
+          </button>
         </p>
-      }
-
-    </div>
-  </div>
-</ion-content>
+      </div>
+    }
+  </ng-template>
+</app-auth-layout>

@@ -1,0 +1,16 @@
+:host { flex: 1; display: grid; place-items: center; min-block-size: 16rem; }
+.chart { position: relative; width: min(100%, 77vh, 44rem); aspect-ratio: 560/440; }
+.orbits { width: 100%; height: 100%; color: var(--studio-orbit); }
+.portrait { position: absolute; inset: 9% 18% 12%; pointer-events: none; }
+.portrait img, model-viewer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+model-viewer { --poster-color: transparent; --progress-bar-height: 0px; opacity: 0; }
+model-viewer.ready { opacity: 1; }
+.portrait img.covered { visibility: hidden; }
+.planet { position: absolute; top: 12%; right: 15%; width: 7.8%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 28% 20%, var(--studio-mint), var(--studio-teal) 54%, var(--studio-deep) 96%); }
+.planet i { position: absolute; inset: 29% -30%; transform: rotate(-28deg); border-radius: 50%; border: 2px solid var(--studio-mint); border-top-color: transparent; }
+.crystal { position: absolute; width: 6.6%; aspect-ratio: 1; left: 14%; bottom: 20%; transform: rotate(-12deg);
+  background: var(--studio-gold); clip-path: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); }
+.crystal i, .crystal b { position: absolute; inset: 0; }
+.crystal i { background: var(--studio-amber); clip-path: polygon(0 25%,50% 50%,50% 100%,0 75%); }
+.crystal b { background: var(--studio-copper); clip-path: polygon(100% 25%,50% 50%,50% 100%,100% 75%); }

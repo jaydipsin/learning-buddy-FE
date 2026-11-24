@@ -1,0 +1,24 @@
+<div class="chart" aria-hidden="true">
+  <svg class="orbits" viewBox="0 0 560 440" fill="none" focusable="false">
+    <circle cx="278" cy="216" r="159" fill="var(--studio-disc)" />
+    <circle cx="278" cy="216" r="176" stroke="currentColor" stroke-dasharray="1 9" />
+    <ellipse cx="280" cy="221" rx="251" ry="89" transform="rotate(-22 280 221)" stroke="currentColor"/>
+    <ellipse cx="280" cy="220" rx="229" ry="123" transform="rotate(37 280 220)" stroke="currentColor" opacity=".45" />
+    <g fill="var(--studio-star)">
+      <path d="m94 129 2 7 7 2-7 2-2 7-2-7-7-2 7-2zm350 170 2 8 8 2-8 2-2 8-2-8-8-2 8-2z"/>
+      <circle cx="151" cy="64" r="2"/><circle cx="467" cy="230" r="2"/><circle cx="165" cy="348" r="2"/>
+      <circle cx="60" cy="281" r="3"/><circle cx="370" cy="95" r="2"/>
+    </g>
+  </svg>
+  <div class="planet"><i></i></div>
+  <div class="portrait">
+    <img src="mascots/buddy-welcome.webp" width="576" height="576" alt="" [class.covered]="modelReady()" />
+    @if (viewerEnabled()) {
+      <model-viewer src="mascots/buddy-welcome.glb" aria-hidden="true" tabindex="-1"
+        loading="eager" interaction-prompt="none" camera-orbit="-13deg 84deg 105%"
+        environment-image="neutral" exposure="1.2" animation-name="Welcome"
+        [class.ready]="modelReady()" (load)="greet($event)" (error)="showPoster()"></model-viewer>
+    }
+  </div>
+  <div class="crystal"><i></i><b></b></div>
+</div>

@@ -6,6 +6,7 @@ import {
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Subject } from 'rxjs';
 import { vi } from 'vitest';
+import { Capacitor } from '@capacitor/core';
 import { App } from './app';
 import { SplashScreenComponent } from './shared/components/splash-screen/splash-screen';
 
@@ -17,7 +18,7 @@ describe('App', () => {
 
   beforeEach(async () => {
     navigation = new Subject<RouterEvent>();
-    sessionStorage.removeItem('hasSeenSplash');
+    vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [{ provide: Router, useValue: { events: navigation } }],
@@ -26,7 +27,13 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('keeps the splash across a guard redirect and releases the outlet when ready', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it('keeps the native greeting visible across redirects and a fast first route', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(App);
     const root: HTMLElement = fixture.nativeElement;
     fixture.detectChanges();
@@ -36,6 +43,10 @@ describe('App', () => {
     fixture.detectChanges();
     expect(root.querySelector('app-splash-screen')).toBeTruthy();
     navigation.next(new NavigationEnd(2, '/auth', '/auth'));
+    fixture.detectChanges();
+    expect(root.querySelector('app-splash-screen')).toBeTruthy();
+    root.querySelector('img')!.dispatchEvent(new Event('load'));
+    vi.advanceTimersByTime(1000);
     fixture.detectChanges();
     expect(root.querySelector('app-splash-screen')).toBeNull();
     expect(root.querySelector('ion-router-outlet')?.hasAttribute('inert')).toBe(false);
@@ -49,9 +60,20 @@ describe('App', () => {
     expect(fixture.nativeElement.querySelector('app-splash-screen')).toBeNull();
   });
 
-  it('skips the automatic welcome on a returning tab', () => {
-    sessionStorage.setItem('hasSeenSplash', 'true');
+  it('bounds the native overlay if navigation or the artwork stalls', () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    vi.advanceTimersByTime(4500);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-splash-screen')).toBeNull();
+  });
+
+  it('skips both automatic and replayed greetings on the web', () => {
+    vi.mocked(Capacitor.isNativePlatform).mockReturnValue(false);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    window.dispatchEvent(new Event('replay-splash'));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('app-splash-screen')).toBeNull();
   });
